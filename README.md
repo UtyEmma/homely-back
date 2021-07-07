@@ -60,3 +60,27 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# homlyBackEnd
+Contains code related to the front end development of the application.
+
+## Description
+The project has three sections or user types. 
+This includes sections  for Agents, Administrators, and Users. 
+Each of these sections have features peculiar to them, and features that every user can perform; 
+access is restricted accordingly.
+
+## Installation
+* Clone the repo
+* Create the DB required in the .env file
+* Open the cli in the root folder, and run
+`php artisan migrate`
+
+## Contributions
+You are welcome to contribute, or suggest changes to this project. Just send an Email to this address _okorieebube1@gmail.com_ , for immediate response.
+
+## Languages
+* Javascript
+* Php
+* ReactJS
+* Laravel
+

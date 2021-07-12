@@ -20,6 +20,7 @@ class CreateAgentsTable extends Migration
             $table->string('firstname');
             $table->string('lastname');
             $table->string('password');
+            $table->string('avatar')->nullable();
             $table->integer('no_of_listings');
             $table->string('location')->nullable();
             $table->string('phone_number')->nullable();

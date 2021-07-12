@@ -18,4 +18,6 @@ class Listing extends Model
     public function agent(){
         return $this->belongsTo(Agent::class, 'agent_id', 'agent_id');
     }
+
+
 }

@@ -30,7 +30,7 @@ class ListingController extends Controller
     }
 
     // Get a User's Listings
-    public function getUserListings(){
+    public function getAgentsListings(){
         $agent = $this->agent();
         try {
             $listings = Agent::find($agent->unique_id)->listings;
@@ -44,8 +44,7 @@ class ListingController extends Controller
     // Select active LIstings
     public function getActiveListings(){
         try {
-            $active_listings = User::find($this->user->user_id)
-                                ->where('active', false)->listings;
+            $active_listings = Listing::all();
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }

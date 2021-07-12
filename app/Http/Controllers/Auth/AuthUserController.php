@@ -35,12 +35,11 @@ class AuthUserController extends Controller
             $user_id = $this->createUniqueToken('users', 'unique_id');
             $h_password = Hash::make($request->password);
 
-            $create_user = User::create(array_merge($request->validated(), 
-                                                    ['unique_id' => $user_id,
-                                                    'password' => $h_password]));
+            User::create(array_merge($request->validated(), 
+                                        ['unique_id' => $user_id,
+                                        'password' => $h_password]));
 
-            $create_user ? $this->verify(User::find($user_id), 'user', false) 
-                            : throw new Exception("User Registration Failed", 500);
+            $this->verify(User::find($user_id), 'user', false);
 
         } catch (Exception $e) {
            return $this->error(500, $e->getMessage()."::".$e->getLine());
@@ -50,7 +49,7 @@ class AuthUserController extends Controller
     }
 
 
-    public function remember (){
+    public function remember(){
 
     }
 

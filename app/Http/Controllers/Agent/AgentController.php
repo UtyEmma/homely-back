@@ -12,12 +12,13 @@ use Illuminate\Support\Facades\Auth;
 class AgentController extends Controller
 {
     public function update(AgentUpdateRequest $request){
+        $agent = $this->agent();
         try {
             
             $request->hasFile('avatar') ? $files = $this->upload($request->file('avatar'), 'user')
                                         : $files = [];
 
-            Agent::find($this->user->id)->update(
+            Agent::find($agent->unique_id)->update(
                         array_merge($request->validated(), ['files' => $files])
                     ); 
 
@@ -33,8 +34,19 @@ class AgentController extends Controller
         return $this->success("Logged In User Loaded", $this->user);
     }
 
-    public function show(Agent $agent){
+
+    public function single(Agent $agent){
         return !$agent ? $this->error(404, "User Not Found") : $this->success("Agent Fetched", $agent);
+    }
+
+    public function show(){
+        try {
+            $agents = Agent::all();
+        } catch (Exception $e) {
+            return $this->error(500, $e->getMessage());
+        }
+
+        return $this->success("All Agents", $agents);
     }
 
     public function deleteUserAccount(Agent $agent){

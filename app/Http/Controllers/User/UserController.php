@@ -12,11 +12,12 @@ use Illuminate\Http\Request;
 class UserController extends Controller
 {
     public function update(UpdateUserRequest $request){
+        $user = auth()->user();
         try {
             $request->hasFile('avatar') ? $files = $this->upload($request->file('avatar'), 'user')
                                         : $files = [];
 
-            User::find($this->user->id)->update(
+            User::find($user->unique_id)->update(
                                             array_merge($request->validated(), ['files' => $files])
                                         ); 
         } catch (Exception $e) {
@@ -45,4 +46,5 @@ class UserController extends Controller
         Auth::logout();
         return $this->success('Account Deleted');
     }
+
 }

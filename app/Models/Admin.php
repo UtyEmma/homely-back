@@ -2,32 +2,21 @@
 
 namespace App\Models;
 
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
-use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Admin extends Authenticatable implements JWTSubject
+class Admin extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    /**
-     * Get the identifier that will be stored in the subject claim of the JWT.
-     *
-     * @return mixed
-     */
-    public function getJWTIdentifier() {
-        return $this->getKey();
-    }
+    protected $fillable = ['unique_id', 'email', 'password', 'firstname', 'lastname'];
 
-    /**
-     * Return a key value array, containing any custom claims to be added to the JWT.
-     *
-     * @return array
-     */
-    public function getJWTCustomClaims() {
-        return [];
-    }
+    protected $primaryKey = 'unique_id';
+    protected $keyType = 'string';
+    public $incrementing = false;
+
+    protected $attributes = [
+        'status' => true
+    ];
 }

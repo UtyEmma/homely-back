@@ -31,24 +31,25 @@ Route::prefix('agent')->group(function(){
     Route::post('signup', [AuthAgentController::class, 'signup']);
 });
 
-// Route::middleware('auth:agent')->group(function(){
+Route::middleware('auth:agent')->group(function(){
     Route::get('resend/{agent}', [AuthAgentController::class, 'resendVerificationLink']);
 
-    // Route::middleware('verified.email')->group(function(){
+    Route::middleware('verified.email')->group(function(){
         Route::prefix('agent')->group(function(){
             Route::post('update', [AgentController::class, 'update']);
             Route::get('auth_user', [AgentController::class, 'getLoggedInUser']);
-            Route::get('user/{user}', [AgentController::class, 'show']);
+            Route::get('user/{user}', [AgentController::class, 'single']);
+            Route::get('all', [AgentController::class, 'show']);
         });
     
         Route::prefix('listing')->group(function(){
             Route::post('create', [ListingController::class, 'createListing']);
-            Route::get('get-listings', [ListingController::class, 'getUserListings']);
-            Route::get('active-listings', [ListingController::class, 'getActiveListings']);
+            Route::get('agents-listings', [ListingController::class, 'getAgentsListings']);
+            Route::get('active', [ListingController::class, 'getActiveListings']);
             Route::get('delete-listings/{listing_id}', [ListingController::class, 'deleteListing']);
         });
-    // });
-// });
+    });
+});
 
 
 

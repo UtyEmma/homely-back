@@ -17,7 +17,7 @@ trait FileHandler{
      */
     public function upload($files, $type){
         !is_array($files) && throw new Exception("No files selected");
-
+        
         for($i=0; $i < count($files); $i++) {
             $file = $files[$i];
 

@@ -20,4 +20,14 @@ trait ResponseStatus {
         ], $code);
     }
 
+    protected function viewError(string $view, int $code, array $data = []){
+        return response()->view($view, $data, $code);
+    }
+
+    protected function viewSuccess(string $view, array $data = []){
+        return response()->view($view, $data, 200);
+    }
+
+
+
 }

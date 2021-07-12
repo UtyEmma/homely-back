@@ -15,6 +15,11 @@ class CreateSupportsTable extends Migration
     {
         Schema::create('supports', function (Blueprint $table) {
             $table->id();
+            $table->string('unique_id')->unique();
+            $table->string('message');
+            $table->string('user_id');
+            $table->string('user_type');
+            $table->string('category');
             $table->timestamps();
         });
     }

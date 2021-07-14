@@ -27,15 +27,18 @@ trait VerifyEmail {
 
     }
 
+
     private function checkVerificationStatus($user){
         $user->isVerified ? throw new Exception("Your Email is Verified", 400) 
                             : $this->checkVerificationAttempt($this->id);
     }
 
+
     private function checkVerificationAttempt($user_id){
         $has_user = Verification::where('user_id', $user_id)->first();
         return $has_user && $has_user->delete();
     }
+
 
     private function createVerificationInstance ($role){
         $unique_id = $this->createUniqueToken('verifications', 'unique_id');
@@ -49,13 +52,6 @@ trait VerifyEmail {
         return $unique_id;
     }
 
-        /**
-     * Send Verification Email
-     *
-     * @param  mixed $verification_id
-     * @param  mixed $user_id
-     * @return void
-     */
     private function sendVerificationEmail($verification_id, $user){
         $details = [
             'greeting' => "Hi ".$user->first_name,

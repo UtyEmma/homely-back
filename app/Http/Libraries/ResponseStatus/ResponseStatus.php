@@ -4,7 +4,7 @@ namespace App\Http\Libraries\ResponseStatus;
 
 trait ResponseStatus {
 
-    protected function success($message="", $data=""){
+    protected function success($message="", $data=[]){
         return response()->json([
             'status' => true,
             'message' => $message,

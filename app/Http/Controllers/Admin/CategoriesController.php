@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 
 class CategoriesController extends Controller
 {
+
     
     public function createCategory(CreateCategoryRequest $request){
         $validated = $request->validated();
@@ -27,7 +28,34 @@ class CategoriesController extends Controller
 
         $title = $request->category_title;
         return redirect('categories')->with('message', "$title category has been created");        
-        
-    }   
+    }  
+    
+    public function deleteCategory($id){
+        if ($category = Category::find($id)) {
+            try {
+                $category->delete();
+                return redirect()->back()->with('message', "Category Deleted");
+            } catch (Exception $e) {
+                return redirect()->back()->with('message', $e->getMessage());
+            }
+        }else{
+            return redirect()->back()->with('message', "Category does not Exist");
+        }
+    }
+
+    public function suspendCategory($id){
+        if ($category = Category::find($id)) {
+            try {
+                $category->status = false;
+                $category->save();
+                
+                return redirect()->back()->with('message', "Category Deleted");
+            } catch (Exception $e) {
+                return redirect()->back()->with('message', $e->getMessage());
+            }
+        }else{
+            return redirect()->back()->with('message', "Category does not Exist");
+        }
+    }
 
 }

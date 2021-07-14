@@ -24,7 +24,7 @@ class Agent extends Authenticatable implements JWTSubject
     ];
 
     public function listings(){
-       return $this->hasMany(Listing::class, 'agent_id', 'unique_id');
+       return $this->hasMany(Listing::class, 'unique_id', 'unique_id');
     }
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.

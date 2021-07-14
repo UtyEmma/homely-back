@@ -22,6 +22,7 @@ class CreateAgentsTable extends Migration
             $table->string('password');
             $table->string('avatar')->nullable();
             $table->integer('no_of_listings');
+            $table->boolean('verified');
             $table->string('location')->nullable();
             $table->string('phone_number')->nullable();
             $table->boolean('isVerified');

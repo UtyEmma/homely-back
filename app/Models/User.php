@@ -37,6 +37,10 @@ class User extends Authenticatable implements JWTSubject
         'remember_token',
     ];
 
+    public function wishlists(){
+        return $this->hasMany(Wishlist::class, 'user_id', 'unique_id');
+    }
+
     /**
      * The attributes that should be cast to native types.
      *

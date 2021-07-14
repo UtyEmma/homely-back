@@ -15,19 +15,15 @@ class AuthUserController extends Controller
 {
 
     public function login(LoginRequest $request){
-        if (!$token = JWTAuth::attempt($request->all())) {
+        if (!$token = Auth::attempt($request->all())) {
             return $this->error(401, 'Invalid Email or Password');
         }
-
         $user = auth()->user();
         
-        return response()->json([
-                'status' => false,
-                'message' => 'Login Successful',
-                'data' => [
-                    'token' => $token,
-                    'user' => $user ]
-            ]);
+        return $this->success("Login Successful", [
+            'token' => $token, 
+            'user' => $user 
+        ]);
     }
 
     public function signup (SignupRequest $request){

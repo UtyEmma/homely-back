@@ -19,9 +19,9 @@
                       <img alt="image" src="{{asset('/img/users/user-1.png')}}" class="rounded-circle author-box-picture">
                       <div class="clearfix"></div>
                       <div class="author-box-name">
-                        <a href="#">{{$agent->firstname}} {{$agent->lastname}}</a>
+                        <a href="#">{{$admin->firstname}} {{$admin->lastname}}</a>
                       </div>
-                      <div class="author-box-job">{{$agent->email}}</div>
+                      <div class="author-box-job">Web Developer</div>
                     </div>
                     <div class="text-center">
                       <div class="author-box-description">
@@ -98,6 +98,45 @@
                     </div>
                   </div>
                 </div>
+                <div class="card">
+                  <div class="card-header">
+                    <h4>Skills</h4>
+                  </div>
+                  <div class="card-body">
+                    <ul class="list-unstyled user-progress list-unstyled-border list-unstyled-noborder">
+                      <li class="media">
+                        <div class="media-body">
+                          <div class="media-title">Java</div>
+                        </div>
+                        <div class="media-progressbar p-t-10">
+                          <div class="progress" data-height="6">
+                            <div class="progress-bar bg-primary" data-width="70%"></div>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="media">
+                        <div class="media-body">
+                          <div class="media-title">Web Design</div>
+                        </div>
+                        <div class="media-progressbar p-t-10">
+                          <div class="progress" data-height="6">
+                            <div class="progress-bar bg-warning" data-width="80%"></div>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="media">
+                        <div class="media-body">
+                          <div class="media-title">Photoshop</div>
+                        </div>
+                        <div class="media-progressbar p-t-10">
+                          <div class="progress" data-height="6">
+                            <div class="progress-bar bg-green" data-width="48%"></div>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
               </div>
               <div class="col-12 col-md-12 col-lg-8">
                 <div class="card">
@@ -118,17 +157,17 @@
                           <div class="col-md-3 col-6 b-r">
                             <strong>Full Name</strong>
                             <br>
-                            <p class="text-muted">{{$agent->firstname}} {{$agent->lastname}}</p>
+                            <p class="text-muted">Emily Smith</p>
                           </div>
                           <div class="col-md-3 col-6 b-r">
                             <strong>Mobile</strong>
                             <br>
-                            <p class="text-muted">{{$agent->phone}}</p>
+                            <p class="text-muted">(123) 456 7890</p>
                           </div>
                           <div class="col-md-3 col-6 b-r">
                             <strong>Email</strong>
                             <br>
-                            <p class="text-muted">{{$agent->email}}</p>
+                            <p class="text-muted">johndeo@example.com</p>
                           </div>
                           <div class="col-md-3 col-6">
                             <strong>Location</strong>
@@ -136,6 +175,13 @@
                             <p class="text-muted">India</p>
                           </div>
                         </div>
+                        <p class="m-t-30">Completed my graduation in Arts from the well known and
+                          renowned institution
+                          of India – SARDAR PATEL ARTS COLLEGE, BARODA in 2000-01, which was
+                          affiliated
+                          to M.S. University. I ranker in University exams from the same
+                          university
+                          from 1996-01.</p>
                         <p>Worked as Professor and Head of the department at Sarda Collage, Rajkot,
                           Gujarat
                           from 2003-2015 </p>
@@ -153,6 +199,27 @@
                           <li>B.A.,Gujarat University, Ahmedabad,India.</li>
                           <li>M.A.,Gujarat University, Ahmedabad, India.</li>
                           <li>P.H.D., Shaurashtra University, Rajkot</li>
+                        </ul>
+                        <div class="section-title">Experience</div>
+                        <ul>
+                          <li>One year experience as Jr. Professor from April-2009 to march-2010
+                            at B.
+                            J. Arts College, Ahmedabad.</li>
+                          <li>Three year experience as Jr. Professor at V.S. Arts &amp; Commerse
+                            Collage
+                            from April - 2008 to April - 2011.</li>
+                          <li>Lorem Ipsum is simply dummy text of the printing and typesetting
+                            industry.
+                          </li>
+                          <li>Lorem Ipsum is simply dummy text of the printing and typesetting
+                            industry.
+                          </li>
+                          <li>Lorem Ipsum is simply dummy text of the printing and typesetting
+                            industry.
+                          </li>
+                          <li>Lorem Ipsum is simply dummy text of the printing and typesetting
+                            industry.
+                          </li>
                         </ul>
                       </div>
                       <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="profile-tab2">

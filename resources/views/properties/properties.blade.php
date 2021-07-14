@@ -6,10 +6,10 @@
         @include('layouts.sidebar')
 
         <div class="main-content">
-            <section class="section">
-                <div class="section-body">
-                <div class="row">
-                    <div class="col-12">
+        <section class="section">
+          <div class="section-body">
+            <div class="row">   
+            <div class="col-12">
                     <div class="card">
                         <div class="card-header d-flex justify-content-between">
                         <h4>All Categories</h4>
@@ -86,10 +86,47 @@
                         </div>
                     </div>
                     </div>
+
+
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between">
+                            <h4>Features</h4>
+                            <button class="btn btn-sm btn-primary">New</button>
+                        </div>
+
+                        <div class="card-body">    
+                            <button type="button" class="btn btn-primary">
+                                Notifications <span class="badge badge-transparent">4</span>
+                            </button>
+                            <button type="button" class="btn btn-primary">
+                                Notifications <span class="badge badge-transparent">4</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
+
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between">
+                            <h4>Amenities</h4>
+                            <button class="btn btn-sm btn-primary">New</button>
+                        </div>
+
+                        <div class="card-body">    
+                            <button type="button" class="btn btn-primary">
+                                Notifications <span class="badge badge-transparent">4</span>
+                            </button>
+                            <button type="button" class="btn btn-primary">
+                                Notifications <span class="badge badge-transparent">4</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </div>
         </div>
+    </div>
+</div>
+
 
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -122,5 +159,6 @@
     </div>
     </div>
 </div>
+
 
 @include('layouts.footer')

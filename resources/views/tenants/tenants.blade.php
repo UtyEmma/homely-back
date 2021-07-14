@@ -27,9 +27,9 @@
                                     #
                                     </th>
                                     <th>Tenant Name</th>
-                                    <th>Progress</th>
-                                    <th>Members</th>
-                                    <th>Due Date</th>
+                                    <th>Profile Image</th>
+                                    <th>Location</th>
+                                    <th>Date Joined</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
@@ -40,21 +40,19 @@
                                 <td>
                                     1
                                 </td>
-                                <td>{{$tenant->firstname}} {{$tenant->lastname}}</td>
-                                    <td class="align-middle">
-                                        <div class="progress progress-xs">
-                                        <div class="progress-bar bg-success width-per-40">
-                                        </div>
-                                        </div>
-                                    </td>
+                                <td><a href="/{{$tenant->unique_id}}">{{$tenant->firstname}} {{$tenant->lastname}}</a></td>
                                 <td>
                                     <img alt="image" src="assets/img/users/user-5.png" width="35">
                                 </td>
-                                <td>2018-01-20</td>
-                                    <td>
-                                        <div class="badge badge-success badge-shadow">Completed</div>
-                                    </td>
-                                <td><a href="#" class="btn btn-primary">Detail</a></td>
+                                <td>{{$tenant->location}}</td>
+                                <td>{{$tenant->created_at}}</td>
+                                <td>
+                                    <div class="badge badge-shadow {{ $tenant->status ? 'badge-danger' : 'badge-success' }}">Completed</div>
+                                </td>
+                                <td>
+                                  <a href="/tenants/suspend/{{$tenant->unique_id}}" class="btn btn-primary">Suspend</a>
+                                  <a href="/tenants/delete/{{$tenant->unique_id}}" class="btn btn-secondary">Delete</a>
+                                </td>
                             </tr>
                             </tbody>
                             @endforeach

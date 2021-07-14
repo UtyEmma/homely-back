@@ -26,10 +26,10 @@
                                     <th class="text-center">
                                     #
                                     </th>
-                                    <th>Tenant Name</th>
-                                    <th>Progress</th>
-                                    <th>Members</th>
-                                    <th>Due Date</th>
+                                    <th>Agent Name</th>
+                                    <th>Location</th>
+                                    <th>No of Listings</th>
+                                    <th>Verified</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
@@ -40,21 +40,22 @@
                                 <td>
                                     1
                                 </td>
-                                <td>{{$agent->firstname}} {{$agent->lastname}}</td>
-                                    <td class="align-middle">
-                                        <div class="progress progress-xs">
-                                        <div class="progress-bar bg-success width-per-40">
-                                        </div>
-                                        </div>
-                                    </td>
+                                <td><a href="agents/{{$agent->unique_id}}">{{$agent->firstname}} {{$agent->lastname}}</a></td>
+                                <td>{{$agent->location}}</td>
+                                <td class="text-center">{{$agent->no_of_listings}}</td>
+                                
                                 <td>
-                                    <img alt="image" src="assets/img/users/user-5.png" width="35">
+
                                 </td>
-                                <td>2018-01-20</td>
-                                    <td>
-                                        <div class="badge badge-success badge-shadow">Completed</div>
-                                    </td>
-                                <td><a href="#" class="btn btn-primary">Detail</a></td>
+                                
+                                <td>
+                                <div class="badge badge-shadow {{ $agent->status ? 'badge-success' : 'badge-warning' }}">{{ $agent->status ? 'active' : 'suspended' }}</div>
+                                </td>
+
+                                <td>
+                                  <a href="agents/suspend/{{$agent->unique_id}}" class="btn btn-primary">{{ $agent->status ? 'Block' : 'Unblock' }}</a>
+                                  <a href="agents/delete/{{$agent->unique_id}}" class="btn btn-primary">Delete</a>
+                              </td>
                             </tr>
                             </tbody>
                             @endforeach

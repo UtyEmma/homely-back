@@ -2,10 +2,10 @@
 
 namespace App\Http\Libraries\Auth;
 
+use App\Models\Agent;
 use Illuminate\Support\Facades\Auth as AuthUser;
 
-trait Auth{
-
+trait Auth{ 
 
     public function tenant(){
         return AuthUser::user();
@@ -15,5 +15,5 @@ trait Auth{
         AuthUser::shouldUse('agent');
         return AuthUser::guard('agent')->user();
     }
-
+    
 }

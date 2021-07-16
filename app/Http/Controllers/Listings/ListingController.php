@@ -13,6 +13,9 @@ class ListingController extends Controller
 {
     public function createListing(CreateListingRequest $request){
 
+        return response()->json([
+            'data' => $request->all()
+        ]);
         $listing_id = $this->createUniqueToken('listings', 'unique_id');
         $details = json_encode($request->details);
         $features = json_encode($request->features);
@@ -21,7 +24,7 @@ class ListingController extends Controller
                                     'unique_id' => $listing_id,
                                     'agent_id' => $this->agent()->unique_id,
                                     'details' => $details,
-                                    'features' => $features
+                                    'features' => json_encode($features)
                                     ]));
     
 

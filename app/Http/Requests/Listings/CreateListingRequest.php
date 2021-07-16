@@ -24,7 +24,7 @@ class CreateListingRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'images' => 'file'
         ];
     }
 }

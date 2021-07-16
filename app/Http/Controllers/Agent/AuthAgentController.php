@@ -17,7 +17,7 @@ class AuthAgentController extends Controller
 {
     public function login(AgentLoginRequest $request){
         auth()->shouldUse('agent');
-        if (!$token = Auth::attempt($request->all())) {
+        if (!$token = JWTAuth::attempt($request->all())) {
             return $this->error(400, 'Invalid Email or Password');
         }
 

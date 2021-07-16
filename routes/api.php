@@ -33,11 +33,11 @@ Route::prefix('agent')->group(function(){
     Route::post('signup', [AuthAgentController::class, 'signup']);
 });
 
-Route::prefix('agent')->middleware('auth:agent')->group(function(){
+Route::prefix('agent')->group(function(){
     
     Route::get('resend/{agent}', [AuthAgentController::class, 'resendVerificationLink']);
 
-    Route::middleware('verified.email')->group(function(){
+    // Route::middleware('verified.email')->group(function(){
 
         Route::post('update', [AgentController::class, 'update']);
         Route::get('auth_user', [AgentController::class, 'getLoggedInUser']);
@@ -52,7 +52,7 @@ Route::prefix('agent')->middleware('auth:agent')->group(function(){
         });
 
 
-    });
+    // });
 });
 
 

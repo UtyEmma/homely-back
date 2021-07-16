@@ -2,14 +2,14 @@
 
 namespace App\Http\Middleware;
 
-use App\Http\Libraries\Status\Status;
+use App\Http\Libraries\ResponseStatus\ResponseStatus;
 use Closure;
 use Exception;
 use Illuminate\Http\Request;
 
 class CheckForVerifiedEmail
 {
-    use Status;
+    use ResponseStatus;
     /**
      * Handle an incoming request.
      *

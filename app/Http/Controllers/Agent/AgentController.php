@@ -12,20 +12,19 @@ use Illuminate\Support\Facades\Auth;
 class AgentController extends Controller
 {
     public function update(AgentUpdateRequest $request){
-        $agent = $this->agent();
         try {
+            $agent = $this->agent();
             
-            $request->hasFile('avatar') ? $files = $this->upload($request->file('avatar'), 'user')
-                                        : $files = [];
+            $request->hasFile('avatar') ? 
+                            $files = $this->handleFiles($request->file('avatar'))
+                            : $files = null;
 
             Agent::find($agent->unique_id)->update(
                         array_merge($request->validated(), ['files' => $files])
                     ); 
-
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
-
         return $this->success("Agent Profile Updated!!!");
     }
 
@@ -55,9 +54,7 @@ class AgentController extends Controller
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
-
         Auth::logout();
-
         return $this->success('Account Deleted');
     }
 }

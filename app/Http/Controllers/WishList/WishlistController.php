@@ -27,7 +27,6 @@ class WishlistController extends Controller
             $user = User::find($tenant->unique_id);
             $user->wishlists = $user->wishlists + 1;
             $user->save();
-            
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
@@ -40,7 +39,6 @@ class WishlistController extends Controller
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
-
         return $this->success("Wishlists Fetched", [
             'wishlists' => $wishlists,
             'no_of_wishlists' => count($wishlists)

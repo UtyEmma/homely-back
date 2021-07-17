@@ -12,8 +12,8 @@ use Illuminate\Http\Request;
 class ListingController extends Controller
 {
     public function createListing(CreateListingRequest $request){
-
         try {
+            $agent = $this->agent();
             $files = []; 
             $request->hasFile('images') && $files = $this->handleFiles($request->file('images'));
     
@@ -22,7 +22,7 @@ class ListingController extends Controller
 
             Listing::create(array_merge($request->all(), [
                                         'unique_id' => $listing_id,
-                                        'agent_id' => $this->agent()->unique_id,
+                                        'agent_id' => $agent->unique_id,
                                         'details' => $request->details,
                                         'features' => $request->features,
                                         'images' => $files
@@ -30,6 +30,9 @@ class ListingController extends Controller
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
+
+        $agent->no_of_listings = $agent->no_of_listings + 1;
+        $agent->save();
 
         return $this->success("Listing has been added Successfully");
     }

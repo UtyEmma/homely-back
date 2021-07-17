@@ -8,14 +8,16 @@ use Illuminate\Support\Facades\Storage;
 
 trait FileHandler{
 
-    /**
-     * File Upload Handler
-     *
-     * @param  mixed $files
-     * @param  mixed $type
-     * @return void
-     */
-    public function upload($files, $type){
+    public function handleFiles($file){
+    
+        !is_array($file) ? $newFile = [$file] : $newFile = $file;
+        $files = $this->upload($newFile);
+        !is_array($files) ? $files = json_encode([$file]) : $files = json_encode($files);
+
+        return $files;
+    }
+
+    public function upload($files){
         !is_array($files) && throw new Exception("No files selected");
         
         for($i=0; $i < count($files); $i++) {

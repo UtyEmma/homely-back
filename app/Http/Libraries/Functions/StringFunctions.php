@@ -10,4 +10,10 @@ trait StringFunctions {
         return implode(' ', $wordsArray);
     }
 
+    public function createDelimitedString($string, $delimiter, $glue){
+        $explode = explode($delimiter, $string);
+        return implode($glue, $explode);
+    }
+
+    
 }

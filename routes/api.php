@@ -33,6 +33,13 @@ Route::prefix('agent')->group(function(){
     Route::post('signup', [AuthAgentController::class, 'signup']);
 });
 
+Route::prefix('listings')->group(function(){
+    Route::get('/', [ListingController::class, 'fetchAll']);
+    Route::get('details', [DetailController::class, 'getDetails']);
+    Route::get('/{slug}', [ListingController::class, 'getSingleListing']);
+});
+
+
 Route::prefix('agent')->group(function(){
     
     Route::get('resend/{agent}', [AuthAgentController::class, 'resendVerificationLink']);
@@ -56,7 +63,6 @@ Route::prefix('agent')->group(function(){
 });
 
 
-
 Route::prefix('tenant')->middleware('api')->group(function(){
 
     Route::get('resend/{user}', [AuthUserController::class, 'resendVerificationLink']);
@@ -73,11 +79,6 @@ Route::prefix('tenant')->middleware('api')->group(function(){
             Route::get('get-wishlist', [WishlistController::class, 'fetchTenantWishlist']);
         });
 
-        Route::prefix('listings')->group(function(){
-            Route::get('/', [ListingController::class, 'fetchAll']);
-            Route::get('details', [DetailController::class, 'getDetails']);
-            Route::get('/{$id}', [ListingController::class, 'fetchSingle']);
-        });
     });
 
 });

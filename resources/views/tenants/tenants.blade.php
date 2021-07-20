@@ -42,15 +42,19 @@
                                 </td>
                                 <td><a href="/{{$tenant->unique_id}}">{{$tenant->firstname}} {{$tenant->lastname}}</a></td>
                                 <td>
-                                    <img alt="image" src="assets/img/users/user-5.png" width="35">
+                                    <img alt="{{$tenant->firstname}}" src="{{$tenant->avatar}}" width="35">
                                 </td>
                                 <td>{{$tenant->location}}</td>
                                 <td>{{$tenant->created_at}}</td>
                                 <td>
-                                    <div class="badge badge-shadow {{ $tenant->status ? 'badge-danger' : 'badge-success' }}">Completed</div>
+                                    <div class="badge badge-shadow {{ $tenant->status ? 'badge-success' : 'badge-danger' }}">
+                                      {{ $tenant->status ? 'active' : 'suspended' }}
+                                    </div>
                                 </td>
                                 <td>
-                                  <a href="/tenants/suspend/{{$tenant->unique_id}}" class="btn btn-primary">Suspend</a>
+                                  <a href="/tenants/suspend/{{$tenant->unique_id}}" class="btn btn-primary">
+                                    {{ $tenant->status ? 'Block' : 'Unblock' }}
+                                  </a>
                                   <a href="/tenants/delete/{{$tenant->unique_id}}" class="btn btn-secondary">Delete</a>
                                 </td>
                             </tr>

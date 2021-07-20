@@ -23,39 +23,30 @@ class CategoriesController extends Controller
                 'unique_id' => $unique_id,
                 'user_id' => $user_id]));
         } catch (Exception $e) {
-            return redirect('categories')->with('message', $e->getMessage());
+            return redirect()->back()->with('message', $e->getMessage());
         }
 
         $title = $request->category_title;
-        return redirect('categories')->with('message', "$title category has been created");        
+        return redirect()->back()->with('message', "$title category has been created");        
     }  
     
     public function deleteCategory($id){
         if ($category = Category::find($id)) {
-            try {
-                $category->delete();
-                return redirect()->back()->with('message', "Category Deleted");
-            } catch (Exception $e) {
-                return redirect()->back()->with('message', $e->getMessage());
-            }
+            $category->delete();
         }else{
             return redirect()->back()->with('message', "Category does not Exist");
         }
+        return redirect()->back()->with('message', "Category Deleted");
     }
 
     public function suspendCategory($id){
         if ($category = Category::find($id)) {
-            try {
-                $category->status = false;
-                $category->save();
-                
-                return redirect()->back()->with('message', "Category Deleted");
-            } catch (Exception $e) {
-                return redirect()->back()->with('message', $e->getMessage());
-            }
+            $category->status = !$category->status;
+            $category->save();
         }else{
             return redirect()->back()->with('message', "Category does not Exist");
         }
+        return redirect()->back()->with('message', "Category Deleted");
     }
 
 }

@@ -25,8 +25,6 @@ class CreateWishlistsTable extends Migration
             $table->string('lga');
             $table->string('area');
             $table->string('landmark');
-            $table->string('longitude');
-            $table->string('latitude');
             $table->string('additional');
             $table->timestamps();
         });

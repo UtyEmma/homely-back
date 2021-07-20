@@ -11,7 +11,7 @@ class Agent extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable;
 
-    protected $fillable = [ 'unique_id', 'email', 'password', 'firstname', 'lastname', 'phone', 'avatar' ];
+    protected $fillable = [ 'unique_id', 'email', 'password', 'firstname', 'lastname', 'phone', 'avatar'];
 
     protected $primaryKey = 'unique_id';
     protected $keyType = 'string';

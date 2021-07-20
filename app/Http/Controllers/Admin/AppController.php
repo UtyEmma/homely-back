@@ -48,9 +48,20 @@ class AppController extends Controller
 
     public function listings(){
         $listings = Listing::all();
+        $array = [];
+        $i = 1;
+
+        foreach ($listings as $key => $listing) {
+            $array[] = array_merge($listing->toArray(), [
+                'index' => $i,
+                'images' => json_decode($listing->images)
+            ]);
+            $i++;
+        }
+
         return view('listings.listings', [
             'admin' => auth()->user(),
-            'listings' => $listings
+            'listings' => json_decode(json_encode($array))
         ]);
     }
 

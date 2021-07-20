@@ -13,7 +13,7 @@ class CreateWishlistRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,15 @@ class CreateWishlistRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            // 'category' => 'required|string',
+            // 'no_rooms' => 'numeric',
+            // 'features' => 'required',
+            // 'amenities' => 'required',
+            // 'budget' => 'numeric',
+            // 'state' => 'string',
+            // 'lga' => 'string',
+            // 'area' => 'string',
+            // 'additional' => 'string'
         ];
     }
 }

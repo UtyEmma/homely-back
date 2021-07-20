@@ -29,8 +29,10 @@ trait VerifyEmail {
 
 
     private function checkVerificationStatus($user){
-        $user->isVerified ? throw new Exception("Your Email is Verified", 400) 
-                            : $this->checkVerificationAttempt($this->id);
+        if($user->isVerified){
+            throw new Exception("Your Email is Verified", 400);
+        } 
+        $this->checkVerificationAttempt($this->id);
     }
 
 

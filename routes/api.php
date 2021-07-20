@@ -31,11 +31,14 @@ Route::prefix('tenant')->group(function(){
 Route::prefix('agent')->group(function(){
     Route::post('login', [AuthAgentController::class, 'login']);
     Route::post('signup', [AuthAgentController::class, 'signup']);
+    Route::get('all', [AgentController::class, 'show']);
+    Route::get('/{slug}', [AgentController::class, 'show']);
 });
 
 Route::prefix('listings')->group(function(){
     Route::get('/', [ListingController::class, 'fetchAll']);
     Route::get('details', [DetailController::class, 'getDetails']);
+    Route::get('/active', [ListingController::class, 'getActiveListings']);
     Route::get('/{slug}', [ListingController::class, 'getSingleListing']);
 });
 
@@ -44,22 +47,19 @@ Route::prefix('agent')->group(function(){
     
     Route::get('resend/{agent}', [AuthAgentController::class, 'resendVerificationLink']);
 
-    // Route::middleware('verified.email')->group(function(){
+    Route::middleware('verified.email')->group(function(){
 
         Route::post('update', [AgentController::class, 'update']);
         Route::get('auth_user', [AgentController::class, 'getLoggedInUser']);
         Route::get('user/{user}', [AgentController::class, 'single']);
-        Route::get('all', [AgentController::class, 'show']);
 
         Route::prefix('listing')->group(function(){
             Route::post('create', [ListingController::class, 'createListing']);
             Route::get('agents-listings', [ListingController::class, 'getAgentsListings']);
-            Route::get('active', [ListingController::class, 'getActiveListings']);
             Route::get('delete-listings/{listing_id}', [ListingController::class, 'deleteListing']);
         });
 
-
-    // });
+    });
 });
 
 
@@ -75,7 +75,7 @@ Route::prefix('tenant')->middleware('api')->group(function(){
         Route::get('user/{user}', [UserController::class, 'show']);
 
         Route::prefix('wishlist')->group(function(){
-            Route::post('create', [WishlistController::class, 'create']);
+            Route::post('create', [WishlistController::class, 'createWishlist']);
             Route::get('get-wishlist', [WishlistController::class, 'fetchTenantWishlist']);
         });
 

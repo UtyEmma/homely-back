@@ -22,7 +22,8 @@ class CreateUsersTable extends Migration
             $table->string('location')->nullable();
             $table->string('phone')->nullable();
             $table->string('avatar')->nullable();
-            $table->string('isVerified')->nullable();
+            $table->boolean('isVerified');
+            $table->boolean('status');
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

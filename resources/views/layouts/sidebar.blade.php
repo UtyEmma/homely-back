@@ -10,9 +10,6 @@
             <li class="active">
               <a href="/" class="nav-link"><i data-feather="monitor"></i><span>Overview</span></a>
             </li>
-            <li class="">
-              <a href="/profile" class="nav-link"><i data-feather="user"></i><span>Profile</span></a>
-            </li>
 
             <li class="menu-header">Main</li>
             <li>

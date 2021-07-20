@@ -14,18 +14,22 @@ class AgentController extends Controller
     public function update(AgentUpdateRequest $request){
         try {
             $agent = $this->agent();
-            
+            $files = [];
+
             $request->hasFile('avatar') ? 
                             $files = $this->handleFiles($request->file('avatar'))
                             : $files = null;
 
             Agent::find($agent->unique_id)->update(
-                        array_merge($request->validated(), ['files' => $files])
+                        array_merge($request->validated(), ['avatar' => $files])
                     ); 
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
-        return $this->success("Agent Profile Updated!!!");
+
+        $updated_agent = Agent::find($agent->unique_id);
+        
+        return $this->success("Agent Profile Updated!!!", ['agent' => $updated_agent]);
     }
 
 
@@ -45,7 +49,10 @@ class AgentController extends Controller
             return $this->error(500, $e->getMessage());
         }
 
-        return $this->success("All Agents", $agents);
+        return $this->success("All Agents", [
+            'agents' => $agents,
+            'count' => count($agents)
+        ]);
     }
 
     public function deleteUserAccount(Agent $agent){

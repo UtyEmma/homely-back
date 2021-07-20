@@ -13,7 +13,6 @@ class TenantController extends Controller
 
     }
 
-
     public function deleteTenant($id){
         if ($tenant = User::find($id)) {
             try {
@@ -30,7 +29,7 @@ class TenantController extends Controller
     public function suspendTenant($id){
         if ($tenant = User::find($id)) {
             try {
-                $tenant->status = false;
+                $tenant->status = !$tenant->status;
                 $tenant->save();
                 
                 return redirect('tenants')->with('message', "Tenant Suspended");

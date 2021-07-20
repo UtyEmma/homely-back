@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 
 class ListingController extends Controller
 {
+    use CompileListings;
+
     public function createListing(CreateListingRequest $request){
         try {
             $agent = $this->agent();
@@ -31,6 +33,7 @@ class ListingController extends Controller
             return $this->error(500, $e->getMessage());
         }
 
+        $agent = Agent::find($agent->unique_id);
         $agent->no_of_listings = $agent->no_of_listings + 1;
         $agent->save();
 
@@ -50,7 +53,7 @@ class ListingController extends Controller
                     $array[$i] = array_merge($listing->toArray(), [
                                     'images' => json_decode($listing->images),
                                     'features' => json_decode($listing->features),
-                                    'details' => json_decode($listing->details)
+                                    'details' => json_decode($listing->details) 
                                 ]);
                     $i++;
                 }
@@ -65,7 +68,40 @@ class ListingController extends Controller
         return $this->success("Listings Loaded", $array);
     }
 
-    // Select active LIstings
+    public function fetchAll (Request $request){
+        try {
+            $i = 0;
+            $array = [];
+            
+            if (count($request->query()) < 1) {
+                $listings = Listing::all();
+            }else{
+                $listings = $this->compileListingWithQuery($request);
+            }
+            
+            if (count($listings) > 0) {
+                foreach($listings as $listing) {
+                    $array[$i] = array_merge($listing->toArray(), [
+                                    'images' => json_decode($listing->images),
+                                    'features' => json_decode($listing->features),
+                                    'details' => json_decode($listing->details),
+                                ]);
+                    $i++;
+                }
+            }else{
+                $array = null;
+            }
+        }catch (Exception $e) {
+            return $this->error(500, $e->getMessage()." Code:".$e->getCode());
+        }
+
+        return $this->success("Active Listings Loaded", [
+            'listings' => $array,
+            'count' => count($array)
+        ]);
+        
+    }
+
     public function getActiveListings(){
         try {
             $i = 0;
@@ -89,7 +125,10 @@ class ListingController extends Controller
             return $this->error(500, $e->getMessage());
         }
 
-        return $this->success("Active Listings Loaded", $array);
+        return $this->success("Active Listings Loaded", [
+            'listings' => $array,
+            'count' => count($array)
+        ]);
     }
 
     // Delete a Single Listing

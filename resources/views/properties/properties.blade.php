@@ -31,8 +31,6 @@
                                         </th>
                                         <th>Category Title</th>
                                         <th>Category Description</th>
-                                        <th>Members</th>
-                                        <th>Due Date</th>
                                         <th>Status</th>
                                         <th>Action</th>
                                     </tr>
@@ -46,19 +44,13 @@
                                     <td>{{$category->category_title}}</td>
                                     <td class="align-middle">{{$category->category_desc}}</td>
                                     <td>
-                                        <img alt="image" src="assets/img/users/user-5.png" width="35">
+                                        <div class="badge badge-shadow {{ $category->status ? 'badge-success' : 'badge-danger' }}">
+                                            {{ $category->status ? 'Active' : 'Inactive' }}
+                                        </div>
                                     </td>
-                                    <td>2018-01-20</td>
-                                        <td>
-                                            @if ($category->status)
-                                                <div class="badge badge-success badge-shadow">Completed</div>
-                                            @else
-                                                <div class="badge badge-warning badge-shadow">Delisted</div>
-                                            @endif
-                                        </td>
                                     <td>
-                                        <a href="category/unlist/{{$category->unique_id}}" class="btn btn-primary">Unlist</a>
-                                        <a href="category/delete/{{$category->unique_id}}" class="btn btn-secondary">Delete</a>
+                                        <a href="categories/suspend/{{$category->unique_id}}" class="btn btn-primary">{{ $category->status ? 'Delist' : 'Enlist' }}</a>
+                                        <a href="categories/delete/{{$category->unique_id}}" class="btn btn-secondary">Remove</a>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -109,8 +101,18 @@
                 <div class="col-12 col-md-6 col-lg-6">
                     <div class="card">
                         <div class="card-header d-flex justify-content-between">
-                            <h4>Amenities</h4>
-                            <button class="btn btn-sm btn-primary">New</button>
+                            <div>
+                                <h4>Amenities</h4>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <input type="text" class="form-control">
+                                </div>
+                                <div>
+                                    <button class="btn btn-sm btn-primary">New</button>
+                                </div>
+                            </div>  
                         </div>
 
                         <div class="card-body">    
@@ -138,7 +140,7 @@
             <span aria-hidden="true">&times;</span>
         </button>
         </div>
-        <form action="/categories/create" method="POST">
+        <form action="categories/create" method="POST">
             @csrf
             <div class="modal-body">
                 <div class="form-group">

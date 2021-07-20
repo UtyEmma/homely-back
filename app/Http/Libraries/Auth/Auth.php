@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\Auth as AuthUser;
 trait Auth{ 
 
     public function tenant(){
-        return AuthUser::user();
+        AuthUser::shouldUse('api');
+        return Auth::guard('api')->user();
     }
 
     public function agent(){

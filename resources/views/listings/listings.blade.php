@@ -14,7 +14,7 @@
               <div class="col-12">
                 <div class="card">
                   <div class="card-header">
-                    <h4>Listings Table</h4>
+                    <h4 class="text-uppercase">Listings Table</h4>
                   </div>
                   <div class="card-body">
                     <div class="table-responsive">
@@ -26,9 +26,8 @@
                                     <th class="text-center">
                                     #
                                     </th>
-                                    <th>Tenant Name</th>
-                                    <th>Progress</th>
-                                    <th>Members</th>
+                                    <th>Listing Title</th>
+                                    <th>Listing Image</th>
                                     <th>Due Date</th>
                                     <th>Status</th>
                                     <th>Action</th>
@@ -38,23 +37,22 @@
                             <tbody>
                             <tr>
                                 <td>
-                                    1
+                                    {{$listing->index}}
                                 </td>
                                 <td>{{$listing->title}}</td>
-                                    <td class="align-middle">
-                                        <div class="progress progress-xs">
-                                        <div class="progress-bar bg-success width-per-40">
-                                        </div>
-                                        </div>
-                                    </td>
                                 <td>
-                                    <img alt="image" src="assets/img/users/user-5.png" width="35">
+                                    <img alt="{{$listing->title}}" src="{{$listing->images[0]->url}}" width="35">
                                 </td>
                                 <td>2018-01-20</td>
                                     <td>
-                                        <div class="badge badge-success badge-shadow">Completed</div>
+                                        <div class="badge badge-shadow {{ $listing->status ? 'badge-success' : 'badge-danger' }}">
+											{{ $listing->status ? 'active' : 'suspended' }}
+										</div>
                                     </td>
-                                <td><a href="#" class="btn btn-primary">Detail</a></td>
+                                <td>
+									<a href="listings/suspend/{{$listing->unique_id}}" class="btn btn-primary">{{ $listing->status ? 'Block' : 'Unblock' }}</a>
+									<a href="listings/delete/{{$listing->unique_id}}" class="btn btn-secondary">Delete</a>
+                                </td>
                             </tr>
                             </tbody>
                             @endforeach

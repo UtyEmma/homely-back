@@ -18,10 +18,6 @@ trait FileHandler{
     public function upload($files){
         !is_array($files) && throw new Exception("No files selected");
 
-        return response()->json([
-            'files' => $files
-        ]);
-        
         for($i=0; $i < count($files); $i++) {
             $file = $files[$i];
             !file_exists($file) && throw new Exception("No files Selected");

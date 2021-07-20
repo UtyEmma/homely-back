@@ -59,8 +59,8 @@ Route::middleware('auth')->group(function(){
 
     Route::prefix('categories')->group(function(){
         Route::post('create', [CategoriesController::class, 'createCategory']);
-        Route::delete('delete/{id}', [CategoriesController::class, 'deleteCategory']);
-        Route::delete('suspend/{id}', [CategoriesController::class, 'suspendCategory']);
+        Route::get('delete/{id}', [CategoriesController::class, 'deleteCategory']);
+        Route::get('suspend/{id}', [CategoriesController::class, 'suspendCategory']);
     });
 
     Route::prefix('features')->group(function(){

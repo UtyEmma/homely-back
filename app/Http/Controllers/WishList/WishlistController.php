@@ -14,15 +14,21 @@ class WishlistController extends Controller
     public function createWishlist(CreateWishlistRequest $request){
         try {
             $validated = $request->validated();
-            $tenant = $this->tenant();
+            $tenant = auth()->user();
             $unique_id = $this->createUniqueToken('wishlists', 'unique_id');
+
+            return response()->json([
+                'tennt'=> $tenant
+            ]);
 
             $new_wishlist = Wishlist::create(array_merge($validated, [
                 'unique_id' => $unique_id,
                 'user_id' => $tenant->unique_id
             ]));
 
-            $this->sendWishlistNotification($new_wishlist);
+            
+
+            // $this->sendWishlistNotification($new_wishlist);
 
             $user = User::find($tenant->unique_id);
             $user->wishlists = $user->wishlists + 1;

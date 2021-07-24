@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use App\Models\WishList;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -20,7 +21,8 @@ class User extends Authenticatable implements JWTSubject
 
     protected $attributes = [
         'isVerified' => false,
-        'status' => true
+        'status' => true,
+        'wishlist' => 0
     ];
     
     protected $hidden = [

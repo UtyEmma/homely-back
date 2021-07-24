@@ -14,34 +14,34 @@ class WishlistController extends Controller
     public function createWishlist(CreateWishlistRequest $request){
         try {
             $validated = $request->validated();
-            $tenant = auth()->user();
+            $tenant = $this->tenant();
             $unique_id = $this->createUniqueToken('wishlists', 'unique_id');
-
-            return response()->json([
-                'tennt'=> $tenant
-            ]);
+            $features = json_encode($request->features);
+            $amenities = json_encode($request->amenities);
 
             $new_wishlist = Wishlist::create(array_merge($validated, [
                 'unique_id' => $unique_id,
-                'user_id' => $tenant->unique_id
+                'user_id' => $tenant->unique_id,
+                'features' => $features,
+                'amenities' => $amenities,
+                'budget' => $request->budget
             ]));
 
-            
-
             // $this->sendWishlistNotification($new_wishlist);
-
             $user = User::find($tenant->unique_id);
             $user->wishlists = $user->wishlists + 1;
             $user->save();
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
+
+        return $this->success('Wishlist Item Added');
     }
 
     public function fetchTenantWishlist(){
         try {
             $tenant = $this->tenant();
-            $wishlists = User::find($tenant->unique_id)->wishlist;
+            $wishlists = Wishlist::where('user_id', $tenant->unique_id)->get();
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }

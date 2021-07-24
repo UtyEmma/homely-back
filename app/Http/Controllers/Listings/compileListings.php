@@ -11,7 +11,7 @@ trait CompileListings{
         $auth = auth()->user();
         $user = User::find($auth->unique_id);
 
-        
+
     }
 
     protected function compileListingWithQuery($request){
@@ -24,15 +24,15 @@ trait CompileListings{
             return $q->where('local_govt', $lga);
         });
 
-        $query->when($request->query('category'), function($q, $category){
-            return $q->where('category', $category);
+        $query->when($request->query('type'), function($q, $category){
+            return $q->where('type', $category);
         });
 
-        $query->when($request->query('income'), function($q, $income){
-            return $q->where('income', $income);
+        $query->when($request->query('price'), function($q, $income){
+            return $q->where('initial_price', $income);
         });
 
-        $posts = $query->get();
+        $listing = $query->get();
         return $listing;
     }
 }

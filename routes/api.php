@@ -1,12 +1,12 @@
 <?php
 
-use App\Http\Controllers\Admin\DetailController;
 use App\Http\Controllers\Agent\AgentController;
 use App\Http\Controllers\Agent\AuthAgentController;
 use App\Http\Controllers\Auth\AuthUserController;
 use App\Http\Controllers\Listings\ListingController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\WishList\WishlistController;
+use App\Http\Controllers\Details\DetailController;
 use App\Models\Verification;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Http\Request;
@@ -37,9 +37,14 @@ Route::prefix('agent')->group(function(){
 
 Route::prefix('listings')->group(function(){
     Route::get('/', [ListingController::class, 'fetchAll']);
-    Route::get('details', [DetailController::class, 'getDetails']);
+    // Route::get('details', [DetailController::class, 'getDetails']);
     Route::get('/active', [ListingController::class, 'getActiveListings']);
     Route::get('/{slug}', [ListingController::class, 'getSingleListing']);
+});
+
+Route::prefix('details')->group(function(){
+    Route::get('/', [DetailController::class, 'fetchDetails']);
+    Route::get('categories', [DetailController::class, 'fetchCategories']);
 });
 
 
@@ -82,3 +87,5 @@ Route::prefix('tenant')->middleware('api')->group(function(){
     });
 
 });
+
+

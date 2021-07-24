@@ -11,8 +11,7 @@ class CreateUsersTable extends Migration
      *
      * @return void
      */
-    public function up()
-    {
+    public function up(){
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('unique_id')->unique();
@@ -23,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('phone')->nullable();
             $table->string('avatar')->nullable();
             $table->boolean('isVerified');
+            $table->string('wishlists');
             $table->boolean('status');
             $table->string('password');
             $table->rememberToken();

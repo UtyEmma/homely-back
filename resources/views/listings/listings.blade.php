@@ -1,60 +1,65 @@
 @include('layouts.header')
 
-<div id="app">
-    <div class="main-wrapper main-wrapper-1">
-@include('layouts.nav')
 
 @include('layouts.sidebar')
 
+<div id="main">
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
 
-<div class="main-content">
-        <section class="section">
-          <div class="section-body">
+    <div class="page-heading">
+        <div class="page-title">
             <div class="row">
-              <div class="col-12">
-                <div class="card">
-                  <div class="card-header">
-                    <h4 class="text-uppercase">Listings Table</h4>
-                  </div>
-                  <div class="card-body">
-                    <div class="table-responsive">
-                      <table class="table table-striped" id="table-1">
-
-                        @if (isset($listings) && count($listings) > 0)
-                            <thead>
-                                <tr>
-                                    <th class="text-center">
-                                    #
-                                    </th>
-                                    <th>Listing Title</th>
-                                    <th>Listing Image</th>
-                                    <th>Due Date</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            @foreach ($listings as $listing)
-                            <tbody>
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3>Properties</h3>
+                    <p class="text-subtitle text-muted">Current Listings</p>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">DataTable</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <section class="section">
+            <div class="card">
+                <div class="card-header">
+                    Filter
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped" id="table1">
+                    @if (isset($listings) && count($listings) > 0)
+                        <thead>
                             <tr>
-                                <td>
-                                    {{$listing->index}}
-                                </td>
+                                <th>Index</th>
+                                <th>Title</th>
+                                <th>Image</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach ($listings as $listing)
+                            <tr>
+                                <td>{{$listing->index}}</td>
                                 <td>{{$listing->title}}</td>
+                                <td><img alt="{{$listing->title}}" src="{{$listing->images[0]->url}}" width="35"></td>
                                 <td>
-                                    <img alt="{{$listing->title}}" src="{{$listing->images[0]->url}}" width="35">
+                                  <div class="badge badge-shadow {{ $listing->status ? 'bg-success' : 'bg-danger' }}">
+                                    {{ $listing->status ? 'active' : 'suspended' }}
+                                  </div>
                                 </td>
-                                <td>2018-01-20</td>
-                                    <td>
-                                        <div class="badge badge-shadow {{ $listing->status ? 'badge-success' : 'badge-danger' }}">
-											{{ $listing->status ? 'active' : 'suspended' }}
-										</div>
-                                    </td>
                                 <td>
-									<a href="listings/suspend/{{$listing->unique_id}}" class="btn btn-primary">{{ $listing->status ? 'Block' : 'Unblock' }}</a>
-									<a href="listings/delete/{{$listing->unique_id}}" class="btn btn-secondary">Delete</a>
+                                  <a href="listings/suspend/{{$listing->unique_id}}" class="btn btn-primary">{{ $listing->status ? 'Block' : 'Unblock' }}</a>
+                                  <a href="listings/delete/{{$listing->unique_id}}" class="btn btn-secondary">Delete</a>
                                 </td>
                             </tr>
-                            </tbody>
                             @endforeach
                         @else
                         <div class="card shadow-none">
@@ -73,15 +78,13 @@
                             </div>
                         </div>            
                         @endif
-                      </table>
-                    </div>
-                  </div>
+                  </tbody>
+                </table>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+                    </div>
+        </section>
+    </div>
+
 
 
 @include('layouts.footer')

@@ -1,15 +1,29 @@
-  <!-- General JS Scripts -->
-  <script src="{{asset('js/app.min.js')}}"></script>
-  <!-- JS Libraies -->
-  <script src="{{asset('bundles/apexcharts/apexcharts.min.js')}}"></script>
-  <!-- Page Specific JS File -->
-  <script src="{{asset('js/page/index.js')}}"></script>
-  <!-- Template JS File -->
-  <script src="{{asset('js/scripts.js')}}"></script>
-  <!-- Custom JS File -->
-  <script src="{{asset('js/custom.js')}}"></script>
+          <footer>
+              <div class="footer clearfix mb-0 text-muted">
+                  <div class="float-start">
+                      <p>2021 &copy; Mazer</p>
+                  </div>
+                  <div class="float-end">
+                      <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a
+                              href="http://ahmadsaugi.com">A. Saugi</a></p>
+                  </div>
+              </div>
+          </footer>
+        </div>
+    </div>
+
+    <script src="{{asset('vendors/perfect-scrollbar/perfect-scrollbar.min.js')}}"></script>
+    <script src="{{asset('js/bootstrap.bundle.min.js')}}"></script>
+
+    <script src="{{asset('vendors/apexcharts/apexcharts.js')}}"></script>
+    <script src="{{asset('js/pages/dashboard.js')}}"></script>
+    <script src="{{asset('vendors/simple-datatables/simple-datatables.js')}}"></script>
+    <script>
+        // Simple Datatable
+        let table1 = document.querySelector('#table1');
+        let dataTable = new simpleDatatables.DataTable(table1);
+    </script>
+    <script src="{{asset('js/main.js')}}"></script>
 </body>
 
-
-<!-- index.html  21 Nov 2019 03:47:04 GMT -->
 </html>

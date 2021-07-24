@@ -1,37 +1,87 @@
-<div class="main-sidebar sidebar-style-2">
-        <aside id="sidebar-wrapper">
-          <div class="sidebar-brand">
-            <a href="index.html"> <img alt="image" src="assets/img/logo.png" class="header-logo" /> <span
-                class="logo-name">Otika</span>
-            </a>
-          </div>
-          <ul class="sidebar-menu">
-            <li class="menu-header">Dashboard</li>
-            <li class="active">
-              <a href="/" class="nav-link"><i data-feather="monitor"></i><span>Overview</span></a>
-            </li>
+<div id="sidebar" class="active">
+            <div class="sidebar-wrapper active">
+                <div class="sidebar-header">
+                    <div class="d-flex justify-content-between">
+                        <div class="logo">
+                            <a href="index.html"><img src="assets/images/logo/logo.png" alt="Logo" srcset=""></a>
+                        </div>
+                        <div class="toggler">
+                            <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="sidebar-menu">
+                    <ul class="menu">
+                        <li class="sidebar-title">Menu</li>
 
-            <li class="menu-header">Main</li>
-            <li>
-              <a href="/tenants" class="nav-link"><i data-feather="user"></i><span>Tenants</span></a>
-            </li>
-            <li>
-              <a href="/agents" class="nav-link"><i data-feather="briefcase"></i><span>Agents</span></a>
-            </li>
-            <li>
-              <a href="/listings" class="nav-link"><i data-feather="home"></i><span>Properties</span></a>
-            </li>
-            <li class="menu-header">Tenants</li>
-            <li>
-              <a href="/wishlists" class="nav-link"><i data-feather="list"></i><span>Wishlists</span></a>
-            </li>
-            <li>
-              <a href="/reports" class="nav-link"><i data-feather="message-square"></i><span>User Reports</span></a>
-            </li>
-            <li class="menu-header">Admin</li>
-            <li>
-              <a href="/properties" class="nav-link"><i data-feather="layers"></i><span>Property Information</span></a>
-            </li>
-          </ul>
-        </aside>
-      </div>
+                        <li class="sidebar-item active ">
+                            <a href="/" class='sidebar-link'>
+                                <i class="bi bi-grid-fill"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item">
+                            <a href="profile" class='sidebar-link'>
+                                <i class="bi bi-person-fill"></i>
+                                <span>Profile</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-title">Main</li>
+
+                        <li class="sidebar-item  has-sub">
+                            <a href="#" class='sidebar-link'>
+                                <i class="bi bi-people-fill"></i>
+                                <span>Tenants</span>
+                            </a>
+                            <ul class="submenu ">
+                                <li class="submenu-item ">
+                                    <a href="/tenants">View Tenants</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="sidebar-item  has-sub">
+                            <a href="#" class='sidebar-link'>
+                                <i class="bi bi-house-fill"></i>
+                                <span>Listings</span>
+                            </a>
+                            <ul class="submenu ">
+                                <li class="submenu-item ">
+                                    <a href="/listings">View Listings</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="sidebar-item  has-sub">
+                            <a href="agents" class='sidebar-link'>
+                                <i class="bi bi-person-square"></i>
+                                <span>Agents</span>
+                            </a>
+                            <ul class="submenu ">
+                                <li class="submenu-item ">
+                                    <a href="/agents">View Agents</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="sidebar-title">Actions</li>
+                        
+                        <li class="sidebar-item  has-sub">
+                            <a href="#" class='sidebar-link'>
+                                <i class="bi bi-people-fill"></i>
+                                <span>Property Info</span>
+                            </a>
+                            <ul class="submenu ">
+                                <li class="submenu-item ">
+                                    <a href="properties">Property Info</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                    </ul>
+                </div>
+                <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
+            </div>
+        </div>

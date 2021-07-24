@@ -66,7 +66,11 @@ Route::middleware('auth')->group(function(){
     Route::prefix('features')->group(function(){
         Route::post('create-features', [DetailController::class, 'createFeatures']);
         Route::get('delete/{id}', [DetailController::class, 'deleteFeatures']);
+    });
+
+    Route::prefix('amenities')->group(function(){
         Route::post('create-amenities', [DetailController::class, 'createAmenities']);
+        Route::get('delete/{id}', [DetailController::class, 'deleteAmenities']);
     });
 });
 

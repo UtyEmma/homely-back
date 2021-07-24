@@ -9,7 +9,7 @@ trait Auth{
 
     public function tenant(){
         AuthUser::shouldUse('api');
-        return Auth::guard('api')->user();
+        return AuthUser::guard('api')->user();
     }
 
     public function agent(){

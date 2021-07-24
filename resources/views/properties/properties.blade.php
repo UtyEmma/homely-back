@@ -1,134 +1,196 @@
 @include('layouts.header')
 
-<div id="app">
-    <div class="main-wrapper main-wrapper-1">
-        @include('layouts.nav')
-        @include('layouts.sidebar')
+@include('layouts.sidebar')
+<div id="main">
+    @include('layouts.nav')
 
-        <div class="main-content">
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3>Property Information</h3>
+                    <p class="text-subtitle text-muted">For user to check they list</p>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Property Info</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Basic Tables start -->
         <section class="section">
-          <div class="section-body">
-            <div class="row">   
-            <div class="col-12">
+            <div class="row" id="basic-table">
+                <div class="col-12 col-md-12">
                     <div class="card">
                         <div class="card-header d-flex justify-content-between">
-                        <h4>All Categories</h4>
-                        <button type="button" class="btn btn-primary" data-toggle="modal"
-                                        data-target="#exampleModalCenter">Create Category</button>
+                            <h4 class="card-title">Available Categories</h4>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                                Create Category
+                            </button>
                         </div>
-                        <div class="card-body">
-                            @isset($_SESSION['message'])
-                                {{$_SESSION['message']}}
-                            @endisset
-                        <div class="table-responsive">
-                            <table class="table table-striped" id="table-1">
+                        <div class="card-content">
+                            <div class="card-body pt-0">
 
-                            @if (isset($categories) && count($categories) > 0)
-                                <thead>
-                                    <tr>
-                                        <th class="text-center">
-                                        #
-                                        </th>
-                                        <th>Category Title</th>
-                                        <th>Category Description</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                @foreach ($categories as $category)
-                                <tbody>
-                                <tr>
-                                    <td>
-                                        {{$category->id}}
-                                    </td>
-                                    <td>{{$category->category_title}}</td>
-                                    <td class="align-middle">{{$category->category_desc}}</td>
-                                    <td>
-                                        <div class="badge badge-shadow {{ $category->status ? 'badge-success' : 'badge-danger' }}">
-                                            {{ $category->status ? 'Active' : 'Inactive' }}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="categories/suspend/{{$category->unique_id}}" class="btn btn-primary">{{ $category->status ? 'Delist' : 'Enlist' }}</a>
-                                        <a href="categories/delete/{{$category->unique_id}}" class="btn btn-secondary">Remove</a>
-                                    </td>
-                                </tr>
-                                </tbody>
-                                @endforeach
-                            @else
-                            <div class="card shadow-none">
-                                <div class="card-body">
-                                    <div class="empty-state" data-height="400">
-                                    <div class="empty-state-icon">
-                                        <i class="fas fa-question"></i>
-                                    </div>
-                                    <h2>We couldn't find any data</h2>
-                                    <p class="lead">
-                                        Sorry we can't find any data, to get rid of this message, make at least 1 entry.
-                                    </p>
-                                    <button type="button" class="btn btn-primary" data-toggle="modal"
-                                        data-target="#exampleModalCenter">Create Category</button>
-                                    <a href="#" class="mt-4 bb">Need Help?</a>
-                                    </div>
+                                <!-- Table with outer spacing -->
+                                <div class="table-responsive">
+                                    <table class="table table-lg position-relative">
+                                    @if (isset($categories) && count($categories) > 0)
+                                        <thead>
+                                            <tr>
+                                                <th>Title</th>
+                                                <th>Description</th>
+                                                <th>Status</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="position-relative">
+                                        @foreach ($categories as $category)
+                                            <tr>
+                                                <td class="text-bold-500">{{$category->category_title}}</td>
+                                                <td>{{$category->category_desc}}</td>
+                                                <td class="text-bold-500">
+                                                    <div class="badge badge-shadow {{ $category->status ? 'bg-success' : 'bg-danger' }}">
+                                                        {{ $category->status ? 'Active' : 'Inactive' }}
+                                                    </div>
+                                                </td>
+                                                <td class="dropdown">
+                                                    <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="bi bi-three-dots"></i>
+                                                    </button>
+                                                    <div class="dropdown-menu dropup action-dropdown" aria-labelledby="dropdownMenuButton">
+                                                        <a class="dropdown-item"  >Edit</a>
+                                                        <a class="dropdown-item" href="categories/suspend/{{$category->unique_id}}">
+                                                        {{ $category->status ? 'Suspend' : 'Restore' }}
+                                                        </a>
+                                                        <a class="dropdown-item" href="#">Delete</a>
+                                                    </div>
+                                                    </div>
+                                                </div>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+
+                                            @else
+                                            <div class="card shadow-none">
+                                                <div class="card-body">
+                                                    <div class="empty-state" data-height="400">
+                                                    <div class="empty-state-icon">
+                                                        <i class="fas fa-question"></i>
+                                                    </div>
+                                                    <h2>We couldn't find any data</h2>
+                                                    <p class="lead">
+                                                        Sorry we can't find any data, to get rid of this message, make at least 1 entry.
+                                                    </p>
+                                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                        data-target="#exampleModalCenter">Create Category</button>
+                                                    <a href="#" class="mt-4 bb">Need Help?</a>
+                                                    </div>
+                                                </div>
+                                            </div>         
+                                        @endif
+                                    </table>
                                 </div>
-                            </div>         
-                            @endif
-                            </table>
-                        </div>
-                        </div>
-                    </div>
-                    </div>
-
-
-                <div class="col-12 col-md-6 col-lg-6">
-                    <div class="card">
-                        <div class="card-header d-flex justify-content-between">
-                            <h4>Features</h4>
-                            <button class="btn btn-sm btn-primary">New</button>
-                        </div>
-
-                        <div class="card-body">    
-                            <button type="button" class="btn btn-primary">
-                                Notifications <span class="badge badge-transparent">4</span>
-                            </button>
-                            <button type="button" class="btn btn-primary">
-                                Notifications <span class="badge badge-transparent">4</span>
-                            </button>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </section>
+        </div>
 
-                <div class="col-12 col-md-6 col-lg-6">
-                    <div class="card">
-                        <div class="card-header d-flex justify-content-between">
-                            <div>
-                                <h4>Amenities</h4>
-                            </div>
-
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-header">
                             <div class="row">
                                 <div class="col-6">
-                                    <input type="text" class="form-control">
+                                    <h4 class="card-title">Amenities</h4>
+                                    <p><span class="badge alert-primary">{{count($amenities)}} </span> Amenities Listed</p>  
                                 </div>
-                                <div>
-                                    <button class="btn btn-sm btn-primary">New</button>
-                                </div>
-                            </div>  
+                            </div>
                         </div>
-
-                        <div class="card-body">    
-                            <button type="button" class="btn btn-primary">
-                                Notifications <span class="badge badge-transparent">4</span>
-                            </button>
-                            <button type="button" class="btn btn-primary">
-                                Notifications <span class="badge badge-transparent">4</span>
-                            </button>
+                        <div class="card-body">
+                            @if($amenities && count($amenities) > 0)
+                                @foreach($amenities as $amenity)
+                                    <span class="badge px-4 py-2 bg-success m-1">{{$amenity->amenity_title}}</span>
+                                @endforeach
+                            @else
+                                <div>
+                                    <h2>No Amenities! Please Create</h2>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="card-footer col-12">
+                            <div class="col-6">  
+                                <form action="amenities/create-amenities" method="post">
+                                    @csrf
+                                    <div class="col-12">
+                                        <div class="row gx-1 bg-white">
+                                            <div class="col-10">
+                                                <input type="text" name="amenity_title" class="form-control form-control-sm" placeholder="New Amenity">
+                                            </div>
+                                            <div class="col-2">
+                                                <button type="submit" class="btn btn-primary btn-sm">Add</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
-        </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-6">
+                                    <h4 class="card-title">Features</h4>
+                                    <p><span class="badge alert-primary">{{count($features)}} </span> Features Listed</p>  
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            @if($features && count($features) > 0)
+                                @foreach($features as $feature)
+                                    <span class="badge px-4 py-2 bg-success m-1">{{$feature->feature_title}}</span>
+                                @endforeach
+                            @else
+                                <div>
+                                    <h2>No Available Features!</h2>
+                                    <p>Create a new one below</div>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="card-footer col-12">
+                            <div class="col-6">  
+                                <form action="features/create-features" method="post">
+                                    @csrf
+                                    <div class="col-12">
+                                        <div class="row gx-1 bg-white">
+                                            <div class="col-10">
+                                                <input type="text" name="feature_title" class="form-control form-control-sm" placeholder="New Feature">
+                                            </div>
+                                            <div class="col-2">
+                                                <button type="submit" class="btn btn-primary btn-sm">Add</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
     </div>
-</div>
-
 
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">

@@ -70,16 +70,14 @@ class ListingController extends Controller
 
     public function fetchAll (Request $request){
         try {
-            $i = 0;
             $array = [];
             
-            if (count($request->query()) < 1) {
-                $listings = Listing::all();
-            }else{
-                $listings = $this->compileListingWithQuery($request);
-            }
+            count($request->query()) < 1 
+                    ? $listings = Listing::all() 
+                        : $listings = $this->compileListingWithQuery($request);
             
             if (count($listings) > 0) {
+                $i = 0;
                 foreach($listings as $listing) {
                     $array[$i] = array_merge($listing->toArray(), [
                                     'images' => json_decode($listing->images),
@@ -88,14 +86,13 @@ class ListingController extends Controller
                                 ]);
                     $i++;
                 }
-            }else{
-                $array = null;
             }
+
         }catch (Exception $e) {
             return $this->error(500, $e->getMessage()." Code:".$e->getCode());
         }
 
-        return $this->success("Active Listings Loaded", [
+        return $this->success("Listings Loaded", [
             'listings' => $array,
             'count' => count($array)
         ]);

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\Agent;
 use App\Models\Category;
+use App\Models\Feature;
+use App\Models\Amenities;
 use App\Models\Listing;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -80,9 +82,13 @@ class AppController extends Controller
     
     public function properties(){
         $categories = Category::all();
+        $amenities = Amenities::all();
+        $features = Feature::all();
         return view('properties.properties', [
             'admin' => auth('web')->user(),
-            'categories' => $categories
+            'categories' => $categories,
+            'amenities' => $amenities,
+            'features' => $features
         ]);
     }
 }

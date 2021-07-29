@@ -14,12 +14,15 @@ class ListingController extends Controller
     use CompileListings;
 
     public function createListing(CreateListingRequest $request){
-        try {
+        // try {
             $agent = $this->agent();
+            
             $files = []; 
             $request->hasFile('images') && $files = $this->handleFiles($request->file('images'));
     
             $listing_id = $this->createUniqueToken('listings', 'unique_id');
+
+
             $slug = $this->createDelimitedString($request->title, ' ', '-');
 
             Listing::create(array_merge($request->all(), [
@@ -27,11 +30,12 @@ class ListingController extends Controller
                                         'agent_id' => $agent->unique_id,
                                         'details' => $request->details,
                                         'features' => $request->features,
-                                        'images' => $files
+                                        'images' => $files,
+                                        'slug' => $slug
                                         ]));
-        } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
-        }
+        // } catch (Exception $e) {
+        //     return $this->error(500, $e->getMessage()." :--- ".$e->getLine());
+        // }
 
         $agent = Agent::find($agent->unique_id);
         $agent->no_of_listings = $agent->no_of_listings + 1;

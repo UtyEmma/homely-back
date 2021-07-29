@@ -52,7 +52,7 @@ Route::prefix('agent')->group(function(){
     
     Route::get('resend/{agent}', [AuthAgentController::class, 'resendVerificationLink']);
 
-    Route::middleware('verified.email')->group(function(){
+    // Route::middleware('verified.email')->group(function(){
 
         Route::post('update', [AgentController::class, 'update']);
         Route::get('auth_user', [AgentController::class, 'getLoggedInUser']);
@@ -64,7 +64,7 @@ Route::prefix('agent')->group(function(){
             Route::get('delete-listings/{listing_id}', [ListingController::class, 'deleteListing']);
         });
 
-    });
+    // });
 });
 
 

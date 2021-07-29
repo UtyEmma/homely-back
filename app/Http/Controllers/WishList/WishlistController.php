@@ -28,6 +28,7 @@ class WishlistController extends Controller
             ]));
 
             // $this->sendWishlistNotification($new_wishlist);
+            
             $user = User::find($tenant->unique_id);
             $user->wishlists = $user->wishlists + 1;
             $user->save();

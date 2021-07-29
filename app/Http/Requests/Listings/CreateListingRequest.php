@@ -27,7 +27,7 @@ class CreateListingRequest extends FormRequest
     {
         return [
             'images.*' => ['image','mimes:jpeg,png,gif,webp','max:2048'],
-            'title' => ['required', 'unique:agents,title,except,id'],
+            'title' => ['required', 'unique:App\Models\Listing,title'],
             'email' => Rule::unique('listings', 'title')->where(function ($query) {
                 return $query->where('agent_id', auth()->user()->unique_id);
             })

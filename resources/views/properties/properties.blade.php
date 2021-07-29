@@ -29,7 +29,8 @@
                     <div class="card">
                         <div class="card-header d-flex justify-content-between">
                             <h4 class="card-title">Available Categories</h4>
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                            <button type="button" class="btn btn-outline-primary block"
+                                data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
                                 Create Category
                             </button>
                         </div>
@@ -87,8 +88,10 @@
                                                     <p class="lead">
                                                         Sorry we can't find any data, to get rid of this message, make at least 1 entry.
                                                     </p>
-                                                    <button type="button" class="btn btn-primary" data-toggle="modal"
-                                                        data-target="#exampleModalCenter">Create Category</button>
+                                                    <button type="button" class="btn btn-outline-primary block"
+                                                        data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
+                                                        Create Category
+                                                    </button>
                                                     <a href="#" class="mt-4 bb">Need Help?</a>
                                                     </div>
                                                 </div>

@@ -9,7 +9,6 @@ use Exception;
 use Illuminate\Support\Facades\Notification;
 
 trait VerifyEmail {
-
     use ResponseStatus, Token;
 
     private $id;
@@ -62,11 +61,16 @@ trait VerifyEmail {
             'thanks' => 'Copy this token your app to reset your password'
         ]; 
         
-        try {  
+        try {
             Notification::send($user, new EmailVerification($details));
         } catch (Exception $e) {
-            throw new Exception($e->getMessage(), $e->getCode());
+            $error = $e->getMessage();
         }
+        // try {  
+        //     Notification::send($user, new EmailVerification($details));
+        // } catch (Exception $e) {
+        //     throw new Exception($e->getMessage(), $e->getCode());
+        // }
         
         return true;           
     }

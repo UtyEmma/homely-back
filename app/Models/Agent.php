@@ -20,7 +20,8 @@ class Agent extends Authenticatable implements JWTSubject
     protected $attributes = [
         'no_of_listings' => 0,
         'isVerified' => false,
-        'status' => true
+        'status' => true,
+        'verified' => false      
     ];
 
     public function listings(){

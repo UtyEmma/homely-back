@@ -37,7 +37,7 @@ class AuthUserController extends Controller
                                         'password' => $h_password]));
 
             $this->verify(User::find($user_id), 'user', false);
-
+            
         } catch (Exception $e) {
            return $this->error(500, $e->getMessage()."::".$e->getLine());
         }

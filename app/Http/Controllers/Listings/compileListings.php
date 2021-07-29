@@ -10,18 +10,17 @@ trait CompileListings{
     protected function compileListings(){
         $auth = auth()->user();
         $user = User::find($auth->unique_id);
-
-
     }
 
     protected function compileListingWithQuery($request){
         $query = Listing::query();
+        
         $query->when($request->query('state'), function($q, $state){
             return $q->where('state', $state);
         });
 
-        $query->when($request->query('lga'), function($q, $lga){
-            return $q->where('local_govt', $lga);
+        $query->when($request->query('city'), function($q, $lga){
+            return $q->where('city', $lga);
         });
 
         $query->when($request->query('type'), function($q, $category){

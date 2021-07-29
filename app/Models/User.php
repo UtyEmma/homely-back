@@ -22,7 +22,7 @@ class User extends Authenticatable implements JWTSubject
     protected $attributes = [
         'isVerified' => false,
         'status' => true,
-        'wishlist' => 0
+        'wishlists' => 0
     ];
     
     protected $hidden = [

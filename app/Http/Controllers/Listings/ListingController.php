@@ -14,7 +14,7 @@ class ListingController extends Controller
     use CompileListings;
 
     public function createListing(CreateListingRequest $request){
-        // try {
+        try {
             $agent = $this->agent();
             
             $files = []; 
@@ -33,9 +33,9 @@ class ListingController extends Controller
                                         'images' => $files,
                                         'slug' => $slug
                                         ]));
-        // } catch (Exception $e) {
-        //     return $this->error(500, $e->getMessage()." :--- ".$e->getLine());
-        // }
+        } catch (Exception $e) {
+            return $this->error(500, $e->getMessage()." :--- ".$e->getLine());
+        }
 
         $agent = Agent::find($agent->unique_id);
         $agent->no_of_listings = $agent->no_of_listings + 1;

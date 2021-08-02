@@ -28,8 +28,8 @@ class AgentController extends Controller
         }
 
         $updated_agent = Agent::find($agent->unique_id);
-        
-        return $this->success("Agent Profile Updated!!!", ['agent' => $updated_agent]);
+        $agent_data = array_merge($updated_agent->toArray(), ['avatar' => json_decode($updated_agent->avatar)[0]->url]);        
+        return $this->success("Agent Profile Updated!!!", ['agent' => $agent_data]);
     }
 
 

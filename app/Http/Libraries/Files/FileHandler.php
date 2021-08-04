@@ -16,26 +16,34 @@ trait FileHandler{
     }
 
     public function upload($files){
-        !is_array($files) && throw new Exception("No files selected");
+        if(!is_array($files)){
+            throw new Exception("No files selected");
+        }
+
 
         for($i=0; $i < count($files); $i++) {
             $file = $files[$i];
-            !file_exists($file) && throw new Exception("No files Selected");
+            if(!file_exists($file)){
+                throw new Exception("No files Selected");
+            }
             $url = Cloudinary::uploadFile($file->getRealPath())->getSecurePath();
-            !$url && throw new Exception("File Could Not Be Saved");
+            if(!$url){
+                throw new Exception("File Could Not Be Saved");
+            }
+
             $file_array[$i]['url'] = $url;
         }
 
         return $file_array;
     }
-    
+
     public function replace($files, $type, $oldFiles, $hasFile){
         if ($oldFiles) {
             foreach ($oldFiles as $value) {
                 Storage::delete($value->path);
-            }   
+            }
         }
-        
+
         if ($hasFile) {
             $uploaded_files = $this->upload($files, $type);
             return $uploaded_files;

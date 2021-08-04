@@ -86,7 +86,7 @@ Route::prefix('tenant')->middleware('api')->group(function(){
         });
 
         Route::prefix('reviews')->group(function(){
-            Route::post('create', [ReviewController::class, 'createReview']);
+            Route::post('create/{listing_id}', [ReviewController::class, 'createReview']);
         });
     });
 

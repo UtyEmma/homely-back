@@ -20,6 +20,7 @@ class CreateReviewsTable extends Migration
             $table->integer('rating');
             $table->string('listing_id');
             $table->text('review');
+            $table->boolean('status');
             $table->timestamps();
         });
     }

@@ -32,14 +32,12 @@ class AgentController extends Controller
         return $this->success("Agent Profile Updated!!!", ['agent' => $agent_data]);
     }
 
-
     public function getLoggedInUser(){
-        return $this->success("Logged In User Loaded", $this->user);
+        return $this->success("Logged In User Loaded", $this->agent());
     }
 
-
-    public function single(Agent $agent){
-        return !$agent ? $this->error(404, "User Not Found") : $this->success("Agent Fetched", $agent);
+    public function single($agent){
+        return !Agent::find($agent) ? $this->error(404, "User Not Found") : $this->success("Agent Fetched", $agent);
     }
 
     public function show(){
@@ -48,7 +46,6 @@ class AgentController extends Controller
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
-
         return $this->success("All Agents", [
             'agents' => $agents,
             'count' => count($agents)
@@ -57,11 +54,11 @@ class AgentController extends Controller
 
     public function deleteUserAccount(Agent $agent){
         try {
+            Auth::logout();
             $agent->delete();
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
-        Auth::logout();
         return $this->success('Account Deleted');
     }
 }

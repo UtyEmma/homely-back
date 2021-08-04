@@ -31,7 +31,6 @@ class CreateListingsTable extends Migration
             $table->string('status')->nullable();
             $table->string('images')->nullable();
             $table->string('video_links')->nullable();
-            $table->string('virtual_tour')->nullable();
             $table->string('address')->nullable();
             $table->string('state')->nullable();
             $table->string('city')->nullable();
@@ -41,6 +40,8 @@ class CreateListingsTable extends Migration
             $table->string('latitude')->nullable();
             $table->json('details')->nullable();
             $table->json('features')->nullable();
+            $table->string('rating')->nullable();
+            $table->integer('views');
             $table->timestamps();
         });
     }

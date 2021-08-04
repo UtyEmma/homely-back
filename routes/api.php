@@ -7,6 +7,7 @@ use App\Http\Controllers\Listings\ListingController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\WishList\WishlistController;
 use App\Http\Controllers\Details\DetailController;
+use App\Http\Controllers\Reviews\ReviewController;
 use App\Models\Verification;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Http\Request;
@@ -37,7 +38,6 @@ Route::prefix('agent')->group(function(){
 
 Route::prefix('listings')->group(function(){
     Route::get('/', [ListingController::class, 'fetchAll']);
-    // Route::get('details', [DetailController::class, 'getDetails']);
     Route::get('/active', [ListingController::class, 'getActiveListings']);
     Route::get('/{slug}', [ListingController::class, 'getSingleListing']);
 });
@@ -57,11 +57,13 @@ Route::prefix('agent')->group(function(){
         Route::post('update', [AgentController::class, 'update']);
         Route::get('auth_user', [AgentController::class, 'getLoggedInUser']);
         Route::get('user/{user}', [AgentController::class, 'single']);
+        Route::get('logout', [AuthAgentController::class, 'logout']);
 
         Route::prefix('listing')->group(function(){
             Route::post('create', [ListingController::class, 'createListing']);
             Route::get('agents-listings', [ListingController::class, 'getAgentsListings']);
-            Route::get('delete-listings/{listing_id}', [ListingController::class, 'deleteListing']);
+            Route::get('delete/{listing_id}', [ListingController::class, 'deleteListing']);
+            Route::get('remove/{listing_id}', [ListingController::class, 'agentRemoveListing']);
         });
 
     // });
@@ -73,7 +75,6 @@ Route::prefix('tenant')->middleware('api')->group(function(){
     Route::get('resend/{user}', [AuthUserController::class, 'resendVerificationLink']);
 
     Route::middleware('verified.email')->group(function(){
-        
         Route::post('logout', [AuthUserController::class, 'logout']);
         Route::post('update', [UserController::class, 'update']);
         Route::get('auth_user', [UserController::class, 'getLoggedInUser']);
@@ -84,6 +85,9 @@ Route::prefix('tenant')->middleware('api')->group(function(){
             Route::get('get-wishlist', [WishlistController::class, 'fetchTenantWishlist']);
         });
 
+        Route::prefix('reviews')->group(function(){
+            Route::post('create', [ReviewController::class, 'createReview']);
+        });
     });
 
 });

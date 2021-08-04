@@ -16,14 +16,17 @@ class AuthUserController extends Controller
 
     public function login(LoginRequest $request){
         auth()->shouldUse('api');
-        if (!$token = JWTAuth::attempt($request->all())) {
-            return $this->error(401, 'Invalid Email or Password');
+        if (!$token = JWTAuth::attempt($request->all())) { 
+            return $this->error(401, 'Invalid Email or Password'); 
         }
         $user = auth()->user();
-        
+        $current_user = User::find($user->unique_id);
+
+        $avatar = $user->avatar ? $avatar = json_decode($current_user->avatar)[0]->url : $avatar = null;
+
         return $this->success("Login Successful", [
             'token' => $token, 
-            'user' => $user 
+            'user' => array_merge($current_user->toArray(), ['avatar' => $avatar])
         ]);
     }
 

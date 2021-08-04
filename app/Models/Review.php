@@ -5,24 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Listing extends Model
+class Review extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = ['unique_id', 'listing_id', 'reviewer_id', 'review', 'rating'];
 
     protected $primaryKey = 'unique_id';
     protected $keyType = 'string';
     public $incrementing = false;
 
-    public function agent(){
-        return $this->belongsTo(Agent::class, 'agent_id', 'agent_id');
-    }
-
     public $attributes = [
-        'status' => 'active',
-        'views' => 0
+        'status' => 1,
     ];
-
-
 }

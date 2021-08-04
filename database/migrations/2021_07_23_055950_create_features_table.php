@@ -18,6 +18,7 @@ class CreateFeaturesTable extends Migration
             $table->string('unique_id')->unique();
             $table->string('feature_title');
             $table->string('feature_desc')->nullable();
+            $table->string('feature_slug')->nullable();
             $table->string('status');
             $table->timestamps();
         });

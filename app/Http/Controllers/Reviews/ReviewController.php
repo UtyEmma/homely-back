@@ -15,7 +15,8 @@ class ReviewController extends Controller
             $unique_id = $this->createUniqueToken('reviews', 'unique_id');
             Review::create(array_merge($request->all(), [
                 'reviewer_id' => $user->unique_id,
-                'listing_id' => $listing_id
+                'listing_id' => $listing_id,
+                'unique_id' => $unique_id
             ]));
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());

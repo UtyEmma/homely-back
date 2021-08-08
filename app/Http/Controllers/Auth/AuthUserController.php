@@ -15,7 +15,6 @@ class AuthUserController extends Controller
 {
 
     public function login(LoginRequest $request){
-        auth()->shouldUse('api');
         if (!$token = JWTAuth::attempt($request->all())) { 
             return $this->error(401, 'Invalid Email or Password'); 
         }

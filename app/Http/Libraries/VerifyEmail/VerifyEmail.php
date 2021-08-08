@@ -66,11 +66,6 @@ trait VerifyEmail {
         } catch (Exception $e) {
             $error = $e->getMessage();
         }
-        // try {  
-        //     Notification::send($user, new EmailVerification($details));
-        // } catch (Exception $e) {
-        //     throw new Exception($e->getMessage(), $e->getCode());
-        // }
         
         return true;           
     }

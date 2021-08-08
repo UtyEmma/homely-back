@@ -15,24 +15,24 @@ class ListingController extends Controller
 
     public function createListing(CreateListingRequest $request){
         try {
-            $agent = $this->agent();
-            
+            $agent = auth()->user();
             $files = []; 
+
             $request->hasFile('images') && $files = $this->handleFiles($request->file('images'));
+            $inital_fees = $request->rent + $request->extra_fees;
     
             $listing_id = $this->createUniqueToken('listings', 'unique_id');
-
-
             $slug = $this->createDelimitedString($request->title, ' ', '-');
 
             Listing::create(array_merge($request->all(), [
                                             'unique_id' => $listing_id,
                                             'agent_id' => $agent->unique_id,
-                                            'details' => $request->details,
-                                            'features' => $request->features,
+                                            'amenities' => json_encode($request->amenities),
                                             'images' => $files,
-                                            'slug' => strtolower($slug) 
+                                            'slug' => strtolower($slug),
+                                            'initial_fees' => $inital_fees 
                                         ]));
+
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage()." :--- ".$e->getLine());
         }
@@ -41,13 +41,17 @@ class ListingController extends Controller
         $agent->no_of_listings = $agent->no_of_listings + 1;
         $agent->save();
 
-        return $this->success($request->title." has been added to your Listings");
+        $listing = Listing::find($listing_id);
+
+        return $this->success($request->title." has been added to your Listings", [
+            'listing' => $listing
+        ]);
     }
 
 
     public function getAgentsListings(){
         try {
-            $agent = $this->agent();
+            $agent = auth()->user();
             $array = [];
             $listings = Agent::find($agent->unique_id)->listings;
             $i = 0;
@@ -55,9 +59,8 @@ class ListingController extends Controller
             if (count($listings) > 0) {
                 foreach ($listings as $listing) {
                     $array[$i] = array_merge($listing->toArray(), [
-                                    'image' => json_decode($listing->images)[0]->url,
-                                    'features' => json_decode($listing->features),
-                                    'details' => json_decode($listing->details), 
+                                    'image' => json_decode($listing->images)[0],
+                                    'amenities' => json_decode($listing->amenities),
                                     'created_at' => $this->parseTimestamp($listing->created_at)->date
                                 ]);
                     $i++;
@@ -75,7 +78,7 @@ class ListingController extends Controller
     }
 
     public function agentRemoveListing($listing_id){
-        $agent = $this->agent();
+        $agent = auth()->user();
         $array = [];
         $i = 0;
         $listing = Listing::find($listing_id);
@@ -84,17 +87,7 @@ class ListingController extends Controller
 
         $listings = Agent::find($agent->unique_id)->listings;
 
-        if (count($listings) > 0) {
-            foreach ($listings as $listing) {
-                $array[$i] = array_merge($listing->toArray(), [
-                                'image' => json_decode($listing->images)[0]->url,
-                                'features' => json_decode($listing->features),
-                                'details' => json_decode($listing->details), 
-                                'created_at' => $this->parseTimestamp($listing->created_at)->date
-                            ]);
-                $i++;
-            }
-        }
+        $array = $this->formatListingDetails($listings);
 
         return $this->success('Property Removed Successfully', [
             'listings' => $array,
@@ -102,75 +95,44 @@ class ListingController extends Controller
         ]);
     }
 
-    public function fetchAll (Request $request){
+    public function fetchListings(Request $request){
         try {
-            $array = [];
-            
+            $user = auth()->user();
+
             count($request->query()) < 1 
-                    ? $listings = Listing::all() 
+                    ? $listings = $this->compileListings() 
                         : $listings = $this->compileListingWithQuery($request);
-            
-            if (count($listings) > 0) {
-                $i = 0;
-                foreach($listings as $listing) {
-                    $agent = Agent::find($listing->agent_id);
-                    $array[$i] = array_merge($listing->toArray(), [
-                                    'images' => json_decode($listing->images),
-                                    'features' => json_decode($listing->features),
-                                    'details' => json_decode($listing->details),
-                                    'created_at' => $this->parseTimestamp($listing->created_at)->date,
-                                ]);
-                    $i++;
-                }
-            }
+
+            $featured_listings = $this->compileFeaturedListings($user);
 
         }catch (Exception $e) {
-            return $this->error(500, $e->getMessage()." Code:".$e->getCode());
+            return $this->error(500, $e->getMessage()." Line:".$e->getLine());
         }
-
         return $this->success("Listings Loaded", [
-            'listings' => $array,
-            'count' => count($array)
+            'listings' => $listings,
+            'featured' => $featured_listings
         ]);
-        
+
     }
 
-    public function getActiveListings(){
+    public function fetchPopularListings(){
         try {
-            $i = 0;
-            $array = [];
-            $active_listings = Listing::all();
-
-            if (count($active_listings) > 0) {
-                foreach ($active_listings as $listing) {
-                    $array[$i] = array_merge($listing->toArray(), [
-                                    'images' => json_decode($listing->images),
-                                    'features' => json_decode($listing->features),
-                                    'details' => json_decode($listing->details),
-                                ]);
-                    $i++;
-                }
-            }else{
-                $array = null;
-            }
-
+            $listings = $this->compilePopularListings();
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
 
-        return $this->success("Active Listings Loaded", [
-            'listings' => $array,
-            'count' => count($array)
+        return $this->success("Popular Listings Fetched", [
+            'listings' => $listings
         ]);
     }
 
     public function deleteListing(Listing $listing_id){
-        try {
+        try { 
             $listing_id->delete();
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
-
         return $this->success("Listing Deleted");   
     }
 

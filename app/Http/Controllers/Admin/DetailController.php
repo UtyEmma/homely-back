@@ -28,6 +28,7 @@ class DetailController extends Controller
     public function createAmenities(CreateAmenityRequest $request){
         try {
             $unique_id = $this->createUniqueToken('amenities', 'unique_id');
+            
             Amenities::create(array_merge($request->all(), [
                 'unique_id' => $unique_id
             ]));

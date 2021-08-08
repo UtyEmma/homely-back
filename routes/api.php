@@ -17,15 +17,13 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
-|
 | Here is where you can register API routes for your application. These
 | routes are loaded by the RouteServiceProvider within a group which
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
 Route::prefix('tenant')->group(function(){
-    Route::post('login', [AuthUserController::class, 'login']);
+    Route::post('login', [AuthUserController::class, 'login'])->middleware('role:tenant');
     Route::post('signup', [AuthUserController::class, 'signup']);
 });
 
@@ -33,12 +31,12 @@ Route::prefix('agent')->group(function(){
     Route::post('login', [AuthAgentController::class, 'login']);
     Route::post('signup', [AuthAgentController::class, 'signup']);
     Route::get('all', [AgentController::class, 'show']);
-    Route::get('/{slug}', [AgentController::class, 'show']);
+    Route::get('/{slug}', [AgentController::class, 'single']);
 });
 
-Route::prefix('listings')->group(function(){
-    Route::get('/', [ListingController::class, 'fetchAll']);
-    Route::get('/active', [ListingController::class, 'getActiveListings']);
+Route::prefix('listings')->middleware('role')->group(function(){
+    Route::get('/', [ListingController::class, 'fetchListings']);
+    Route::get('/popular', [ListingController::class, 'fetchPopularListings']);
     Route::get('/{slug}', [ListingController::class, 'getSingleListing']);
 });
 
@@ -47,17 +45,20 @@ Route::prefix('details')->group(function(){
     Route::get('categories', [DetailController::class, 'fetchCategories']);
 });
 
+Route::prefix('reviews')->group(function(){
+    Route::get('fetch/{listing_id}', [ReviewController::class, 'fetchListingReviews']);
+});
 
-Route::prefix('agent')->group(function(){
+
+Route::prefix('agent')->middleware('role:agent')->group(function(){
     
     Route::get('resend/{agent}', [AuthAgentController::class, 'resendVerificationLink']);
+    Route::get('logout', [AuthAgentController::class, 'logout']);
 
-    // Route::middleware('verified.email')->group(function(){
-
+    Route::middleware('verified.email:agent')->group(function(){
         Route::post('update', [AgentController::class, 'update']);
         Route::get('auth_user', [AgentController::class, 'getLoggedInUser']);
         Route::get('user/{user}', [AgentController::class, 'single']);
-        Route::get('logout', [AuthAgentController::class, 'logout']);
 
         Route::prefix('listing')->group(function(){
             Route::post('create', [ListingController::class, 'createListing']);
@@ -66,15 +67,18 @@ Route::prefix('agent')->group(function(){
             Route::get('remove/{listing_id}', [ListingController::class, 'agentRemoveListing']);
         });
 
-    // });
+        Route::prefix('reviews')->group(function(){
+            Route::get('/', [ReviewController::class, 'fetchAgentReviews']);
+        });
+    });
 });
 
 
-Route::prefix('tenant')->middleware('api')->group(function(){
-
+Route::prefix('tenant')->middleware('role:tenant')->group(function(){
+    
     Route::get('resend/{user}', [AuthUserController::class, 'resendVerificationLink']);
 
-    Route::middleware('verified.email')->group(function(){
+    Route::middleware('verified.email:tenant')->group(function(){
         Route::post('logout', [AuthUserController::class, 'logout']);
         Route::post('update', [UserController::class, 'update']);
         Route::get('auth_user', [UserController::class, 'getLoggedInUser']);

@@ -8,9 +8,12 @@ use App\Models\Agent;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Agent\CompileAgents;
 
 class AgentController extends Controller
 {
+    use CompileAgents;
+    
     public function update(AgentUpdateRequest $request){
         try {
             $agent = $this->agent();
@@ -28,27 +31,40 @@ class AgentController extends Controller
         }
 
         $updated_agent = Agent::find($agent->unique_id);
-        $agent_data = array_merge($updated_agent->toArray(), ['avatar' => json_decode($updated_agent->avatar)[0]->url]);        
-        return $this->success("Agent Profile Updated!!!", ['agent' => $agent_data]);
+        $agent = array_merge($updated_agent->toArray(), ['avatar' => json_decode($updated_agent->avatar)[0]]);        
+        return $this->success("Agent Profile Updated!!!", ['agent' => $agent]);
     }
 
     public function getLoggedInUser(){
         return $this->success("Logged In User Loaded", $this->agent());
     }
 
-    public function single($agent){
-        return !Agent::find($agent) ? $this->error(404, "User Not Found") : $this->success("Agent Fetched", $agent);
+    public function single($id){
+        try {
+            $agent = Agent::find($id) ? Agent::find($id) : throw new Exception("User Not Found", 404);
+        } catch (Exception $e) {
+            return $this->error($e->getCode(), $e->getMessage());
+        } 
+
+        $listings = Agent::find($id)->listings;
+        $reviews = Agent::find($id)->reviews;
+
+        return $this->success("Agent Fetched", [
+            'agent' => $agent,
+            'listing' => $listings,
+            'reviews' => $reviews
+        ]);
     }
 
     public function show(){
         try {
-            $agents = Agent::all();
+            $agents = $this->compileAgents();
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
+
         return $this->success("All Agents", [
-            'agents' => $agents,
-            'count' => count($agents)
+            'agents' => $agents
         ]);
     }
 

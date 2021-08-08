@@ -24,7 +24,7 @@ trait DateFunctions
         $dt = Carbon::createFromFormat('Y-m-d H:i:s', $timestamp);
         return json_decode(json_encode([
             'date' => $dt->format('jS F Y'),
-            'time' => $dt->format('h:i A')
+            'time' => $dt->format('g:i A')
         ]));
     }
 

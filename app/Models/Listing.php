@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Review;
 
 class Listing extends Model
 {
@@ -16,7 +17,11 @@ class Listing extends Model
     public $incrementing = false;
 
     public function agent(){
-        return $this->belongsTo(Agent::class, 'agent_id', 'agent_id');
+        return $this->belongsTo(Agent::class, 'agent_id', 'unique_id');
+    }
+
+    public function reviews(){
+        return $this->hasMany(Review::class, 'listing_id', 'unique_id');
     }
 
     public $attributes = [

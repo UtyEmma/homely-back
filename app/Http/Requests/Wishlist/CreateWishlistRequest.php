@@ -24,11 +24,16 @@ class CreateWishlistRequest extends FormRequest
     public function rules()
     {
         return [
-            'category' => 'required|string',
-            'no_rooms' => 'numeric',
+            'desc' => 'required|string',
+            'category' => ['required', 'string'],
+            'no_bedrooms' => 'numeric',
+            'no_bathrooms' => 'numeric',
             'budget' => 'required|numeric',
             'area' => 'string',
-            'additional' => 'string'
+            'additional' => 'string',
+            'state' => 'required',
+            'city' => 'required',
+            'area' => 'required'
         ];
     }
 }

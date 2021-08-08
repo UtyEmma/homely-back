@@ -19,6 +19,7 @@ class CreateReviewsTable extends Migration
             $table->string('reviewer_id');
             $table->integer('rating');
             $table->string('listing_id');
+            $table->string('agent_id');
             $table->text('review');
             $table->boolean('status');
             $table->timestamps();

@@ -60,7 +60,7 @@ class AuthAgentController extends Controller
     }
 
     public function logout(){
-        Auth::logout();
+        auth()->logout();
         return $this->success();
     }
 }

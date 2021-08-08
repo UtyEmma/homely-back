@@ -28,9 +28,19 @@ class CreateListingRequest extends FormRequest
         return [
             'images.*' => ['image','mimes:jpeg,png,gif,webp','max:2048'],
             'title' => ['required', 'unique:App\Models\Listing,title'],
-            'email' => Rule::unique('listings', 'title')->where(function ($query) {
-                return $query->where('agent_id', auth()->user()->unique_id);
-            })
+            'tenure' => ['required', 'string'],
+            'rent' => ['required', 'numeric'],
+            'extra_fees' => ['numeric'],
+            'video_links' => ['string', 'url'],
+            'state' => ['required', 'string'],
+            'city' => ['required', 'string'],
+            'address' => ['required', 'string'],
+            'landmark' => ['string'],
+            'longitude' => ['required'],
+            'latitude' => ['required'],
+            'no_bedrooms' => ['required', 'numeric'],
+            'no_bathrooms' => ['required', 'numeric'],
+            'extra_info' => ['string'],
         ];
     }
 }

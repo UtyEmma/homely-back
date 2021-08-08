@@ -18,12 +18,13 @@ class CreateWishlistsTable extends Migration
             $table->string('unique_id')->unique();
             $table->string('user_id');
             $table->string('category');
-            $table->string('no_rooms');
-            $table->string('features');
+            $table->string('no_bedrooms');
+            $table->string('no_bathrooms');
+            $table->string('desc');
             $table->string('amenities');
             $table->string('budget');
             $table->string('state');
-            $table->string('lga');
+            $table->string('city');
             $table->string('area');
             $table->string('additional');
             $table->timestamps();

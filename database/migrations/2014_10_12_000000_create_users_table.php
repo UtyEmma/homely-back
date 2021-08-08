@@ -22,6 +22,8 @@ class CreateUsersTable extends Migration
             $table->string('phone')->nullable();
             $table->string('avatar')->nullable();
             $table->boolean('isVerified');
+            $table->string('state');
+            $table->string('lga');
             $table->string('wishlists');
             $table->boolean('status');
             $table->string('password');

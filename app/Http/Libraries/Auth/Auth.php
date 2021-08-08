@@ -9,8 +9,8 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 trait Auth{ 
 
     public function tenant(){
-        auth()->shouldUse('api');
-        return AuthUser::guard('api')->user();
+        auth()->shouldUse('tenant');
+        return AuthUser::guard('tenant')->user();
     }
 
     public function agent(){

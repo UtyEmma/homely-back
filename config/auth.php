@@ -41,7 +41,7 @@ return [
             'provider' => 'admin',
         ],
 
-        'api' => [
+        'tenant' => [
             'driver' => 'jwt',
             'provider' => 'users'
         ],

@@ -23,7 +23,7 @@ trait FileHandler{
             !file_exists($file) && throw new Exception("No files Selected");
             $url = Cloudinary::uploadFile($file->getRealPath())->getSecurePath();
             !$url && throw new Exception("File Could Not Be Saved");
-            $file_array[$i]['url'] = $url;
+            $file_array[$i] = $url;
         }
 
         return $file_array;

@@ -30,7 +30,15 @@ class AgentUpdateRequest extends FormRequest
             'avatar' => 'file',
             'email' => 'required|email|string',
             'location' => 'string',
-            'phone_number' => 'numeric'
+            'phone_number' => 'numeric',
+            'state' => 'string',
+            'city' => 'string',
+            'website' => 'url',
+            'twitter' => 'url',
+            'facebook' => 'url',
+            'instagram' => 'url',
+            'bio' => 'string',
+            'title' => 'string'
         ];
     }
 }

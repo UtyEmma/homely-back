@@ -17,7 +17,7 @@ class CreateAmenitiesTable extends Migration
             $table->id();
             $table->string('unique_id')->unique();
             $table->string('amenity_title')->unique();
-            $table->string('amenity_desc');
+            $table->string('amenity_desc')->nullable();
             $table->string('amenity_slug')->nullable();
             $table->boolean('status');
             $table->timestamps();

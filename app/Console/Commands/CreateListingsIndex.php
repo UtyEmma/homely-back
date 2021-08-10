@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use TeamTNT\TNTSearch\TNTSearch;
+use TNTSearch;
 
 class CreateListingsIndex extends Command
 {
@@ -12,15 +12,13 @@ class CreateListingsIndex extends Command
      *
      * @var string
      */
-    protected $signature = 'create:search-suggestions';
-
+    protected $signature = 'index:listings';
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Create an Index for Fuzzy Search suggestions';
-
+    protected $description = 'Create an Index for Listings Search';
     /**
      * Create a new command instance.
      *
@@ -30,30 +28,15 @@ class CreateListingsIndex extends Command
     {
         parent::__construct();
     }
-
     /**
      * Execute the console command.
      *
      * @return int
      */
-    public function handle()
-    {
-        $tnt = new TNTSearch;
-        $driver = config('database.default');
-
-        $tnt->loadConfig(array_merge(config("database.connections.{$driver}"), [
-            'storage' => storage_path(),
-            'stemmer' => \TeamTNT\TNTSearch\Stemmer\NoStemmer::class
-        ]));
-
-        $edgeTokenizer = new \TeamTNT\TNTSearch\Support\EdgeNgramTokenizer;
-
-        $indexer = $tnt->createIndex('listings.index');
-        $indexer->query('SELECT id, title, description, type, landmark FROM listings');
-        $indexer->setTokenizer($edgeTokenizer);
+    public function handle(){
+        // $tnt = new TNTSearch();
+        $indexer = TNTSearch::createIndex('listings.index');
+        $indexer->query('SELECT id, unique_id, title, description, type, landmark FROM listings;');
         $indexer->run();
-
-        $productTokenizer = new \TeamTNT\TNTSearch\Support\ProductTokenizer;
-        $indexer->setTokenizer($productTokenizer);
     }
 }

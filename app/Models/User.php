@@ -7,17 +7,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use App\Models\WishList;
 
 class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [ 'unique_id', 'email', 'password', 'location', 'firstname', 'lastname',];
+    protected $fillable = [ 'unique_id', 'email', 'password', 'location', 'firstname', 'lastname', 'status'];
 
     protected $primaryKey = 'unique_id';
     protected $keyType = 'string';
@@ -25,13 +21,10 @@ class User extends Authenticatable implements JWTSubject
 
     protected $attributes = [
         'isVerified' => false,
+        'status' => true,
+        'wishlists' => 0
     ];
     
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
     protected $hidden = [
         'password',
         'remember_token',

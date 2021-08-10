@@ -16,11 +16,13 @@ class SearchController extends Controller
         // }catch(Exception $e){
         //     return $this->error(500, $e->getMessage());
         // }
+        $query->when($request->query('keyword'), function($q, $keyword){
+            return $q->query('keyword', '/%$keyword%/');
+        });
+
         $query->when($request->query('category'), function($q, $category){
             return $q->where('category', $category);
         });
-
-        // $query->when($request->query('keyword'))
 
         $query->when($request->query('bedrooms'), function($q, $bedrooms){
             return $q->where('bedrooms', $lga);

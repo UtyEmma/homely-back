@@ -26,7 +26,8 @@ class AgentController extends Controller
 
     public function deleteAgent($id){
         if ($agent = Agent::find($id)) {
-            return $this->deleteModel($agent, "Agent");
+            $agent->delete();
+            return redirect()->back()->with('message', "Agent Deleted");
         }else{
             return redirect()->back()->with('message', "Agent does not Exist");
         }
@@ -34,7 +35,9 @@ class AgentController extends Controller
 
     public function suspendAgent($id){
         if ($agent = Agent::find($id)) {
-            return $this->suspendModel($agent, "Agent");
+            $agent->status = !$agent->status;
+            $agent->save();
+            return redirect()->back()->with('message', "Agent Suspended");
         }else{
             return redirect()->back()->with('message', "Agent does not Exist");
         }

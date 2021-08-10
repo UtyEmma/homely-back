@@ -29,7 +29,8 @@ class AgentUpdateRequest extends FormRequest
             'lastname' => 'required|string',
             'avatar' => 'file',
             'email' => 'required|email|string',
-            'location' => 'string'
+            'location' => 'string',
+            'phone_number' => 'numeric'
         ];
     }
 }

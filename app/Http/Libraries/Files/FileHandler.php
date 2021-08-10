@@ -8,46 +8,42 @@ use Illuminate\Support\Facades\Storage;
 
 trait FileHandler{
 
-    /**
-     * File Upload Handler
-     *
-     * @param  mixed $files
-     * @param  mixed $type
-     * @return void
-     */
-    public function upload($files, $type){
-        !is_array($files) && throw new Exception("No files selected");
-        
+    public function handleFiles($file){
+        !is_array($file) ? $newFile = [$file] : $newFile = $file;
+        $files = $this->upload($newFile);
+        !is_array($files) ? $files = json_encode([$file]) : $files = json_encode($files);
+        return $files;
+    }
+
+    public function upload($files){
+        if(!is_array($files)){
+            throw new Exception("No files selected");
+        }
+
+
         for($i=0; $i < count($files); $i++) {
             $file = $files[$i];
-
-            !file_exists($file) && throw new Exception("No files Selected");
-            
+            if(!file_exists($file)){
+                throw new Exception("No files Selected");
+            }
             $url = Cloudinary::uploadFile($file->getRealPath())->getSecurePath();
-
-            !$url && throw new Exception("File Could Not Be Saved");
+            if(!$url){
+                throw new Exception("File Could Not Be Saved");
+            }
 
             $file_array[$i]['url'] = $url;
         }
-        
+
         return $file_array;
     }
-    
-    /**
-     * Replace Files
-     *
-     * @param  mixed $files
-     * @param  mixed $type
-     * @param  mixed $oldFiles
-     * @return void
-     */
+
     public function replace($files, $type, $oldFiles, $hasFile){
         if ($oldFiles) {
             foreach ($oldFiles as $value) {
                 Storage::delete($value->path);
-            }   
+            }
         }
-        
+
         if ($hasFile) {
             $uploaded_files = $this->upload($files, $type);
             return $uploaded_files;

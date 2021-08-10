@@ -18,15 +18,14 @@ class UserController extends Controller
                                         : $files = [];
 
             User::find($user->unique_id)->update(
-                                            array_merge($request->validated(), ['files' => $files])
-                                        ); 
+                                        array_merge($request->validated(), ['files' => json_encode($files)])
+                                    );
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
 
         return $this->success("User Profile Updated!!!");
     }
-
 
     public function getLoggedInUser(){
         return $this->success("Logged In User Loaded", $this->user);
@@ -36,13 +35,13 @@ class UserController extends Controller
         return !$user ? $this->error(404, "User Not Found") : $this->success("", $user);
     }
 
-    public function deleteUserAccount(User $user){
+    public function deleteUserAccount($user){
+        if(!$user = User::find($user)){return $this->error(404, "User Not Found");}
         try {
             $user->delete();
-        } catch (Exception $e) {
+        }catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
-
         Auth::logout();
         return $this->success('Account Deleted');
     }

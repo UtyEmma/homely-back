@@ -11,31 +11,21 @@ class ListingsController extends Controller
 {
     public function deleteListing($id){
         if($listing = Listing::find($id)) {
-            try {
-                $listing->delete();
-            } catch (Exception $e) {
-                return redirect()->back()->with('message', $e->getMessage());                
-            }   
-
-            return redirect()->back()->with('message', 'Listing Deleted!!!');
+            $listing->delete(); 
         }else{
             return redirect()->back()->with('message', 'Listing Does not Exist!!!');
         }
+        return redirect()->back()->with('message', 'Listing Deleted!!!');
     }
 
     public function suspendListing($id){
         if ($listing = Listing::find($id)) {
-            try {
-                $listing->status = false;
-                $listing->save();
-            } catch (Exception $e) {
-                return redirect()->back()->with('message', $e->getMessage());                
-            }   
-
-            return redirect()->back()->with('message', 'Listing Suspended!!!');
+            $listing->status = !$listing->status;
+            $listing->save(); 
         }else{
             return redirect()->back()->with('message', 'Listing Does not Exist!!!');
         }
+        return redirect()->back()->with('message', 'Listing Suspended!!!');
     }
 
     public function single($id){

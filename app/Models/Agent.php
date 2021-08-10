@@ -11,7 +11,7 @@ class Agent extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable;
 
-    protected $fillable = [ 'unique_id', 'email', 'password', 'firstname', 'lastname', 'phone', 'avatar' ];
+    protected $fillable = [ 'unique_id', 'email', 'password', 'firstname', 'lastname', 'phone_number', 'avatar'];
 
     protected $primaryKey = 'unique_id';
     protected $keyType = 'string';
@@ -20,11 +20,12 @@ class Agent extends Authenticatable implements JWTSubject
     protected $attributes = [
         'no_of_listings' => 0,
         'isVerified' => false,
-        'status' => true
+        'status' => true,
+        'verified' => false      
     ];
 
     public function listings(){
-       return $this->hasMany(Listing::class, 'unique_id', 'unique_id');
+       return $this->hasMany(Listing::class, 'agent_id', 'unique_id');
     }
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.

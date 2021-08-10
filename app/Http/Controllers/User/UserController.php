@@ -24,7 +24,11 @@ class UserController extends Controller
             return $this->error(500, $e->getMessage());
         }
 
-        return $this->success("User Profile Updated!!!");
+        $user = User::find($user->unique_id);
+        $tenant = array_merge($user->toArray(), ['avatar' => json_decode($updated_agent->avatar)[0]]);
+        return $this->success("User Profile Updated!!!", [
+            'tenant' => $tenant
+        ]);
     }
 
     public function getLoggedInUser(){

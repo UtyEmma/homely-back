@@ -27,12 +27,14 @@ class CreateAgentsTable extends Migration
             $table->text('bio')->nullable();
             $table->string('title')->nullable();
             $table->string('state')->nullable();
+            $table->string('views')->nullable();
             $table->string('city')->nullable();
             $table->integer('no_of_listings');
             $table->boolean('verified');
             $table->string('phone_number')->nullable();
             $table->integer('no_reviews')->nullable();
             $table->integer('rating')->nullable();
+            $table->string('password_reset')->nullable();
             $table->boolean('isVerified');
             $table->string('status');
             $table->timestamps();

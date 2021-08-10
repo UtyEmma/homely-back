@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Agent;
 
 use App\Models\Agent;
+
 trait CompileAgents {
 
 
     protected function compileAgents(){
-        $data = Agent::where('status', true)->get();
+        $data = Agent::where('status', 'active')->get();
         return $this->formatAgentData($data);
     }
 

@@ -27,6 +27,7 @@ class CreateUsersTable extends Migration
             $table->string('wishlists');
             $table->boolean('status');
             $table->string('password');
+            $table->string('password_reset')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

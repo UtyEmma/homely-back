@@ -19,6 +19,7 @@ class Review extends Model
 
     public $attributes = [
         'status' => 1,
+        'reported' => false
     ];
 
     public function publisher(){

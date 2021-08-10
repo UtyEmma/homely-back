@@ -17,19 +17,21 @@ class AuthAgentController extends Controller
 {
     public function login(AgentLoginRequest $request){
         auth()->shouldUse('agent');
+
         if (!$token = JWTAuth::attempt($request->all())) {
             return $this->error(400, 'Invalid Email or Password');
         }
 
         $user = auth()->user();
+
+        $agent = array_merge($user->toArray(), [
+            'avatar' => json_decode($user->avatar)
+        ]);
         
-        return response()->json([
-                'status' => false,
-                'message' => 'Login Successful',
-                'data' => [
-                    'token' => $token,
-                    'user' => $user ]
-            ]);
+        return $this->success('Login Successful', [
+            'token' => $token,
+            'user' => $agent
+        ]);
     }
 
     public function signup (SignupAgentRequest $request){
@@ -59,6 +61,7 @@ class AuthAgentController extends Controller
         return $this->verify($agent, 'agent', true);
     }
 
+    
     public function logout(){
         auth()->logout();
         return $this->success();

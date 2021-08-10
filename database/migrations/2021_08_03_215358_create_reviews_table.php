@@ -22,6 +22,8 @@ class CreateReviewsTable extends Migration
             $table->string('agent_id');
             $table->text('review');
             $table->boolean('status');
+            $table->string('report');
+            $table->boolean('reported');
             $table->timestamps();
         });
     }

@@ -21,7 +21,7 @@
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">DataTable</li>
+                            <!-- <li class="breadcrumb-item active" aria-current="page">DataTable</li> -->
                         </ol>
                     </nav>
                 </div>
@@ -49,7 +49,7 @@
                             <tr>
                                 <td>{{$listing->index}}</td>
                                 <td>{{$listing->title}}</td>
-                                <td><img alt="{{$listing->title}}" src="{{$listing->images[0]->url}}" width="35"></td>
+                                <td><img alt="{{$listing->title}}" src="{{$listing->images[0]}}" width="35"></td>
                                 <td>
                                   <div class="badge badge-shadow {{ $listing->status ? 'bg-success' : 'bg-danger' }}">
                                     {{ $listing->status ? 'active' : 'suspended' }}

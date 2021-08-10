@@ -9,10 +9,11 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Agent\CompileAgents;
+use App\Http\Controllers\Listings\CompileListings;
 
 class AgentController extends Controller
 {
-    use CompileAgents;
+    use CompileAgents, CompileListings;
     
     public function update(AgentUpdateRequest $request){
         try {
@@ -49,9 +50,15 @@ class AgentController extends Controller
         $listings = Agent::find($id)->listings;
         $reviews = Agent::find($id)->reviews;
 
+        $formatted_agent = array_merge($agent->toArray(), [
+                            'avatar' => json_decode($agent->avatar),
+                        ]);
+
+        $formatted_listings = $this->formatListingData($listings);
+
         return $this->success("Agent Fetched", [
-            'agent' => $agent,
-            'listing' => $listings,
+            'agent' => $formatted_agent,
+            'listing' => $formatted_listings,
             'reviews' => $reviews
         ]);
     }

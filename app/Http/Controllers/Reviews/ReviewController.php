@@ -10,8 +10,7 @@ use App\Models\Listing;
 use App\Models\Agent;
 use App\Http\Controllers\Reviews\CompileReviews;
 
-class ReviewController extends Controller
-{
+class ReviewController extends Controller{
     use CompileReviews;
 
     public function createReview(Request $request, $listing_id){
@@ -49,10 +48,12 @@ class ReviewController extends Controller
         return $this->success('Your Review has been Submitted', $reviews);
     }
 
-    public function fetchAgentReviews($agent_id){
+
+    public function fetchAgentReviews(){
         try{
-            $agent = $this->agent();
-            $reviews = Agent::find($agent->unique_id)->reviews;
+            $agent = auth()->user();
+            $agents_reviews = Agent::find($agent->unique_id)->reviews;
+            $reviews = $this->compileReviewsData($agents_reviews); 
         }catch(Exception $e) {
             return $this->error(500, $e->getMessage());
         }
@@ -63,6 +64,7 @@ class ReviewController extends Controller
         ]);
     }
 
+    
     public function fetchListingReviews($listing_id){
         try { 
             $listings_reviews = Listing::find($listing_id)->reviews;
@@ -72,4 +74,22 @@ class ReviewController extends Controller
         }
         return $this->success('Fetched Reviews', $reviews);
     }
+
+
+    public function reportUser(Request $request, $review_id){
+        try {
+            $validated = Validator::make([
+                'report' => 'required|string'
+            ]);
+
+            $review = Review::find($review_id);
+            $review->update([
+                'report' => $request->report,
+                'reported' => true
+            ]);
+        } catch (Exception $e) {
+            return $this->error(500, $e->getMessage());
+        }
+    }
+
 }

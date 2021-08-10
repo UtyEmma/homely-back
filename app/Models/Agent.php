@@ -24,7 +24,8 @@ class Agent extends Authenticatable implements JWTSubject
         'isVerified' => false,
         'status' => 'active',
         'verified' => false,
-        'no_reviews' => 0      
+        'no_reviews' => 0,
+        'views' => 0      
     ];
 
     public function listings(){

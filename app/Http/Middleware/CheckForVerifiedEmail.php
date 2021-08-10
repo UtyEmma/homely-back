@@ -17,10 +17,9 @@ class CheckForVerifiedEmail
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle(Request $request, Closure $next, $role)
-    {
+    public function handle(Request $request, Closure $next, $role){
         try {
-            if (!$request->user($role)) { throw new Exception('The Authenticated User does not Exist', 403); }
+            if (!$request->user($role)) { throw new Exception('The Authenticated User does not Exist', 401); }
             if (!$request->user($role)->isVerified) { throw new Exception('User not verified', 403); }
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());

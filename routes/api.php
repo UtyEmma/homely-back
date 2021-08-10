@@ -8,6 +8,7 @@ use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\WishList\WishlistController;
 use App\Http\Controllers\Details\DetailController;
 use App\Http\Controllers\Reviews\ReviewController;
+use App\Http\Controllers\Search\SearchController;
 use App\Models\Verification;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Http\Request;
@@ -22,32 +23,6 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::prefix('tenant')->group(function(){
-    Route::post('login', [AuthUserController::class, 'login'])->middleware('role:tenant');
-    Route::post('signup', [AuthUserController::class, 'signup']);
-});
-
-Route::prefix('agent')->group(function(){
-    Route::post('login', [AuthAgentController::class, 'login']);
-    Route::post('signup', [AuthAgentController::class, 'signup']);
-    Route::get('all', [AgentController::class, 'show']);
-    Route::get('/{slug}', [AgentController::class, 'single']);
-});
-
-Route::prefix('listings')->middleware('role')->group(function(){
-    Route::get('/', [ListingController::class, 'fetchListings']);
-    Route::get('/popular', [ListingController::class, 'fetchPopularListings']);
-    Route::get('/{slug}', [ListingController::class, 'getSingleListing']);
-});
-
-Route::prefix('details')->group(function(){
-    Route::get('/', [DetailController::class, 'fetchDetails']);
-    Route::get('categories', [DetailController::class, 'fetchCategories']);
-});
-
-Route::prefix('reviews')->group(function(){
-    Route::get('fetch/{listing_id}', [ReviewController::class, 'fetchListingReviews']);
-});
 
 
 Route::prefix('agent')->middleware('role:agent')->group(function(){
@@ -56,6 +31,7 @@ Route::prefix('agent')->middleware('role:agent')->group(function(){
     Route::get('logout', [AuthAgentController::class, 'logout']);
 
     Route::middleware('verified.email:agent')->group(function(){
+        
         Route::post('update', [AgentController::class, 'update']);
         Route::get('auth_user', [AgentController::class, 'getLoggedInUser']);
         Route::get('user/{user}', [AgentController::class, 'single']);
@@ -69,8 +45,11 @@ Route::prefix('agent')->middleware('role:agent')->group(function(){
 
         Route::prefix('reviews')->group(function(){
             Route::get('/', [ReviewController::class, 'fetchAgentReviews']);
+            Route::post('/report/{review_id}', [ReviewController::class, 'reportUser']);
         });
+
     });
+    
 });
 
 
@@ -94,6 +73,39 @@ Route::prefix('tenant')->middleware('role:tenant')->group(function(){
         });
     });
 
+});
+
+
+Route::prefix('tenant')->group(function(){
+    Route::post('login', [AuthUserController::class, 'login'])->middleware('role:tenant');
+    Route::post('signup', [AuthUserController::class, 'signup']);
+    Route::post('forgot-password', [AuthUserController::class, 'forgotPassword']);
+    Route::post('reset-password', [AuthUserController::class, 'resetPassword']);
+});
+
+Route::prefix('agent')->group(function(){
+    Route::post('login', [AuthAgentController::class, 'login']);
+    Route::post('signup', [AuthAgentController::class, 'signup']);
+    Route::get('all', [AgentController::class, 'show']);
+    Route::get('/{slug}', [AgentController::class, 'single']);
+    Route::post('forgot-password', [AuthAgentController::class, 'forgotPassword']);
+    Route::post('reset-password', [AuthAgentController::class, 'resetPassword']);
+});
+
+Route::prefix('listings')->middleware('role')->group(function(){
+    Route::get('/', [ListingController::class, 'fetchListings']);
+    Route::get('/popular', [ListingController::class, 'fetchPopularListings']);
+    Route::get('/{slug}', [ListingController::class, 'getSingleListing']);
+    Route::post('/search', [SearchController::class, 'searchListings']);
+});
+
+Route::prefix('details')->group(function(){
+    Route::get('/', [DetailController::class, 'fetchDetails']);
+    Route::get('categories', [DetailController::class, 'fetchCategories']);
+});
+
+Route::prefix('reviews')->group(function(){
+    Route::get('fetch/{listing_id}', [ReviewController::class, 'fetchListingReviews']);
 });
 
 

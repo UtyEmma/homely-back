@@ -6,33 +6,23 @@ use App\Models\Listing;
 use App\Models\User;
 use App\Models\Agent;
 use App\Models\Category;
+use App\Http\Libraries\Functions\StringFunctions;
 
 trait CompileListings{
 
     protected function compileListings(){
         $all = Listing::where('status', 'active')->get();
-        $listings = $this->formatListingData($listings);
+        $listings = $this->formatListingData($all);
         return $listings;
     }
 
     protected function compileListingWithQuery($request){
         $query = Listing::query();
         
-        $query->when($request->query('state'), function($q, $state){
-            return $q->where('state', $state);
-        });
-
-        $query->when($request->query('city'), function($q, $lga){
-            return $q->where('city', $lga);
-        });
-
-        $query->when($request->query('type'), function($q, $category){
-            return $q->where('type', $category);
-        });
-
-        $query->when($request->query('price'), function($q, $income){
-            return $q->where('initial_price', $income);
-        });
+        $query->when($request->query('state'), function($q, $state){ return $q->where('state', $state); });
+        $query->when($request->query('city'), function($q, $lga){ return $q->where('city', $lga); });
+        $query->when($request->query('type'), function($q, $category){ return $q->where('type', $category); });
+        $query->when($request->query('price'), function($q, $income){ return $q->where('rent', $income); });
 
         $listing = $query->get();
         return $listing;
@@ -45,8 +35,6 @@ trait CompileListings{
         return $this->formatListingData($related_listings);
     }
 
-
-    /** Fetch Listings Related to The Current User */
     private function fetchUserRelatedListings ($user, $index) {
         $listings = [];
 
@@ -60,6 +48,7 @@ trait CompileListings{
         count($related_listings) < $index && $listings = array_merge($related_listings, Listing::all()->toArray());
 
         return $listings;
+        
     }
 
     private function formatListingData($listings){
@@ -83,14 +72,27 @@ trait CompileListings{
     private function compilePopularListings(){
         $array = [];
         $categories = Category::all();
-        
+        $i = 0;
         if (count($categories) > 0) {
             foreach ($categories as $key => $category) {
-                $category_listings = Listing::where('type', $category->category_title)->orderBy('views', 'desc')->limit(9)->get();
-                $formatted_listings = $this->formatListingData($category_listings);
-    
-                $array[$category->category_title] = $formatted_listings;
+                $title = $category->category_title;
+
+                $category_listings = Listing::where('type', $title)->orderBy('views', 'desc')->limit(9)->get();
+                
+                if (count($category_listings) > 0 && $i < 7) {
+                    $formatted_listings = $this->formatListingData($category_listings);
+                    $array[$i]['listings'] = $formatted_listings;
+                    $slug = $this->createDelimitedString($title, ' ', '_');
+                    
+                    $array[$i]['category'] = [
+                        'title' => $category->category_title,
+                        'slug' => strtolower($slug)
+                    ];   
+                }
+
+                $i++;
             }   
+
         }
 
         return $array;

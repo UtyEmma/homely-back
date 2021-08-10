@@ -48,8 +48,12 @@ class AuthUserController extends Controller
     }
 
 
-    public function remember(){
-
+    public function forgotPassword(Request $request){
+        try {
+            $this->recoverPassword();
+        } catch (Exception $e) {
+            return $this->error($e->getMessage(), 500);
+        }
     }
 
 

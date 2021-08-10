@@ -59,7 +59,7 @@ class ListingController extends Controller
             if (count($listings) > 0) {
                 foreach ($listings as $listing) {
                     $array[$i] = array_merge($listing->toArray(), [
-                                    'image' => json_decode($listing->images)[0],
+                                    'image' => json_decode($listing->images),
                                     'amenities' => json_decode($listing->amenities),
                                     'created_at' => $this->parseTimestamp($listing->created_at)->date
                                 ]);
@@ -87,7 +87,7 @@ class ListingController extends Controller
 
         $listings = Agent::find($agent->unique_id)->listings;
 
-        $array = $this->formatListingDetails($listings);
+        $array = $this->formatListingData($listings);
 
         return $this->success('Property Removed Successfully', [
             'listings' => $array,
@@ -127,16 +127,16 @@ class ListingController extends Controller
         ]);
     }
 
-    public function deleteListing(Listing $listing_id){
+    public function deleteListing($listing_id){
         try { 
-            $listing_id->delete();
+            $listing = Listing::find($listing_id);
+            $listing->delete();
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
         return $this->success("Listing Deleted");   
     }
 
-    // Get a single Listing
     public function getSingleListing($slug){
         try {
             $listing = Listing::where('slug', $slug)->first();

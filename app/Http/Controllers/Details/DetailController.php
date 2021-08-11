@@ -13,7 +13,7 @@ class DetailController extends Controller
 {
     public function fetchDetails(){
         try {
-            $features = $this->formatDetails(Feature::select('feature_title')->get(), 'feature_title');
+            // $features = $this->formatDetails(Feature::select('feature_title')->get(), 'feature_title');
             $amenities = $this->formatDetails(Amenities::select('amenity_title')->get(), 'amenity_title');
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
@@ -21,7 +21,7 @@ class DetailController extends Controller
 
 
         return $this->success('Details Fetched', [
-            'features' => json_decode(json_encode($features)),
+            // 'features' => json_decode(json_encode($features)),
             'amenities' => json_decode(json_encode($amenities))
         ]);
     }

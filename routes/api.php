@@ -97,6 +97,7 @@ Route::prefix('listings')->middleware('role')->group(function(){
     Route::get('/popular', [ListingController::class, 'fetchPopularListings']);
     Route::get('/{slug}', [ListingController::class, 'getSingleListing']);
     Route::post('/search', [SearchController::class, 'searchListings']);
+    Route::post('/update-views/{listing_id}', [ListingController::class, 'updateListingViews']);
 });
 
 Route::prefix('details')->group(function(){

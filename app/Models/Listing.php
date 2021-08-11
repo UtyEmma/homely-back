@@ -30,18 +30,15 @@ class Listing extends Model
     public function toSearchableArray()
     {
         $array = $this->toArray();
-        return $array;
+        $index_data = [
+            'unique_id' => $array['unique_id'],
+            'title' => $array['title'],
+            'description' => $array['description'],
+            'type' => $array['type']
+        ];
+        return $index_data;
     }
 
-    public function searchableAs()
-    {
-        return 'listings';
-    }
-
-    public function getScoutKey()
-    {
-        return $this->unique_id;
-    }
 
     public $attributes = [
         'status' => 'active',

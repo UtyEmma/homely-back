@@ -5,21 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Support extends Model
+class Chat extends Model
 {
     use HasFactory;
 
-    protected $fillable = [ 'unique_id', 'agent_id', 'status', 'title', 'no_messages' ];
+    protected $fillable = [ 'unique_id', 'sender', 'issue_id', 'message', 'status', 'agent_id' ];
 
     protected $primaryKey = 'unique_id';
     protected $keyType = 'string';
     public $incrementing = false;
 
     protected $attributes = [
-        'status' => 'pending'
+        'status' => 'unread',
     ];
-
-    public function chats (){
-        return $this->hasMany(Chat::class, 'issue_id', 'unique_id');
-    }
 }

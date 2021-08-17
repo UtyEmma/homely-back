@@ -6,18 +6,45 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Listing;
 use App\Http\Controllers\Listings\CompileListings;
+use Exception;
 
-class SearchController extends Controller
-{
+class SearchController extends Controller{
     use CompileListings;
 
     public function searchListings(Request $request){
         try{
-            $listings = $this->filterListings($request);
+            $query = Listing::query();
 
-            if ($request->keyword) {
-                $listings = Listing::search($request->keyword)->where('status', 'active')->get();
-            }
+            $query->when($request->keyword, function($q, $keyword){ 
+                return Listing::search($keyword)->where('status', 'active')->get(); 
+            });
+
+            $query->when($request->type, function($q, $type){ 
+                return $q->where('type', $type); 
+            });
+
+            $query->when($request->state, function($q, $state){ 
+                return $q->where('state', $state); 
+            });
+
+            $query->when($request->city, function($q, $city){ 
+                return $q->where('city', $city); 
+            });
+
+            $query->when($request->price, function($q, $income){ 
+                return $q->where('rent', $income); 
+            });
+
+            $query->when($request->bedrooms, function($q, $bedrooms){ 
+                return $q->where('no_bedrooms', $bedrooms); 
+            });
+
+            $query->when($request->bathrooms, function($q, $bathrooms){ 
+                return $q->where('no_bathrooms', $bathrooms); 
+            });
+
+            $listings = $this->formatListingData($query->get());
+        
         }catch(Exception $e){
             return $this->error(500, $e->getMessage());
         }
@@ -25,39 +52,4 @@ class SearchController extends Controller
         return $this->success('Search Results', $listings);
     }
 
-    private function filterListings($request){
-        $listing = new Listing;
-        $query = $listing->query();
-
-        $query->when($request->query('type'), function($q, $category){
-            return $q->where('type', $category);
-        });
-
-        $query->when($request->query('bedrooms'), function($q, $bedrooms){
-            return $q->where('no_bedrooms', $lga);
-        });
-
-        $query->when($request->query('bathrooms'), function($q, $bathrooms){
-            return $q->where('no_bathrooms', $bathrooms);
-        });
-
-        $query->when($request->query('state'), function($q, $state){
-            return $q->where('state', $state);
-        });
-
-        $query->when($request->query('city'), function($q, $city){
-            return $q->where('city', $city);
-        });
-
-        $query->when($request->query('areas'), function($q, $areas){
-            return $q->where('areas', $areas);
-        });
-
-        $query->when($request->query('price'), function($q, $price){ 
-            return $q->where('rent', $price);
-        });
-
-        $listings = $query->get();
-        return $listings;
-    }
 }

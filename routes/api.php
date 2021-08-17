@@ -9,6 +9,8 @@ use App\Http\Controllers\WishList\WishlistController;
 use App\Http\Controllers\Details\DetailController;
 use App\Http\Controllers\Reviews\ReviewController;
 use App\Http\Controllers\Search\SearchController;
+use App\Http\Controllers\Support\ChatController;
+use App\Http\Controllers\Support\SupportController;
 use App\Models\Verification;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Http\Request;
@@ -46,6 +48,21 @@ Route::prefix('agent')->middleware('role:agent')->group(function(){
         Route::prefix('reviews')->group(function(){
             Route::get('/', [ReviewController::class, 'fetchAgentReviews']);
             Route::post('/report/{review_id}', [ReviewController::class, 'reportUser']);
+        });
+
+        Route::prefix('support')->group(function(){
+            Route::post('/create', [SupportController::class, 'initiateNewIssue']);
+            Route::get('/', [SupportController::class, 'fetchAgentTickets']);
+            Route::get('/delete', [SupportController::class, 'deleteTicket']);
+        });
+
+        Route::prefix('chats')->group(function(){
+            Route::post('/send', [ChatController::class, 'sendMessage']);
+            Route::get('/{ticket_id}', [ChatController::class, 'fetchChats']);
+        });
+
+        Route::prefix('wishlists')->group(function(){
+            Route::get('/', [AgentController::class, 'fetchAgentWishlists']);
         });
 
     });

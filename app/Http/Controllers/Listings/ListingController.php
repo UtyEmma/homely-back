@@ -122,9 +122,7 @@ class ListingController extends Controller
             return $this->error(500, $e->getMessage());
         }
 
-        return $this->success("Popular Listings Fetched", [
-            'listings' => $listings
-        ]);
+        return $this->success("Popular Listings Fetched", $listings);
     }
 
     public function deleteListing($listing_id){
@@ -157,7 +155,13 @@ class ListingController extends Controller
             'period' => $this->getDateInterval($listing->created_at)
         ]);
 
-        return $this->success("Listing Loaded", $single_listing);
+
+        $agent = Agent::find($listing->agent_id);
+
+        return $this->success("Listing Loaded", [
+            'listing' => $single_listing,
+            'agent' => $agent
+        ]);
     }
 
     public function formatListingDetails($details, $model){

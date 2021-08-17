@@ -11,24 +11,22 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+
     public function update(UpdateUserRequest $request){
         $user = auth()->user();
         try {
-            $request->hasFile('avatar') ? $files = $this->upload($request->file('avatar'), 'user')
-                                        : $files = [];
+            
+            $request->hasFile('avatar') ? $files = $this->handleFiles($request->file('avatar')) : $files = [];
+            User::find($user->unique_id)->update(array_merge($request->validated(), ['avatar' => json_encode($files)]));
 
-            User::find($user->unique_id)->update(
-                                        array_merge($request->validated(), ['files' => json_encode($files)])
-                                    );
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
 
         $user = User::find($user->unique_id);
-        $tenant = array_merge($user->toArray(), ['avatar' => json_decode($updated_agent->avatar)[0]]);
-        return $this->success("User Profile Updated!!!", [
-            'tenant' => $tenant
-        ]);
+        $tenant = array_merge($user->toArray(), ['avatar' => json_decode($user->avatar)[0]]);
+
+        return $this->success("User Profile Updated!!!", [ 'tenant' => $tenant ]);
     }
 
     public function getLoggedInUser(){

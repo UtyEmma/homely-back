@@ -25,7 +25,8 @@ class Agent extends Authenticatable implements JWTSubject
         'status' => 'active',
         'verified' => false,
         'no_reviews' => 0,
-        'views' => 0      
+        'views' => 0,
+        'title' => "Bayof Agent"      
     ];
 
     public function listings(){

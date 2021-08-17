@@ -74,23 +74,22 @@ trait CompileListings{
         $categories = Category::all();
         $i = 0;
         if (count($categories) > 0) {
-            foreach ($categories as $key => $category) {
+            foreach ($categories as $key => $category) {      
                 $title = $category->category_title;
-
+                             
                 $category_listings = Listing::where('type', $title)->orderBy('views', 'desc')->limit(9)->get();
-                
+                $formatted_listings = $this->formatListingData($category_listings);
+
                 if (count($category_listings) > 0 && $i < 7) {
-                    $formatted_listings = $this->formatListingData($category_listings);
-                    $array[$i]['listings'] = $formatted_listings;
                     $slug = $this->createDelimitedString($title, ' ', '_');
-                    
+    
+                    $array[$i]['listings'] = $formatted_listings;
                     $array[$i]['category'] = [
                         'title' => $category->category_title,
                         'slug' => strtolower($slug)
                     ];   
+                    $i++;
                 }
-
-                $i++;
             }   
 
         }

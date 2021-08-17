@@ -10,10 +10,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Agent\CompileAgents;
 use App\Http\Controllers\Listings\CompileListings;
+use App\Http\Controllers\Wishlist\CompileWishlist;
 
 class AgentController extends Controller
 {
-    use CompileAgents, CompileListings;
+    use CompileAgents, CompileListings, CompileWishlist;
+
+    private function isAgent($id) {
+        if(!$agent = Agent::find($id)){throw new Exception("The Requested Agent does not Exist", 404);}
+        return;
+    }
     
     public function update(AgentUpdateRequest $request){
         try {
@@ -75,13 +81,25 @@ class AgentController extends Controller
         ]);
     }
 
-    public function deleteUserAccount(Agent $agent){
+    public function deleteUserAccount(){
         try {
+            $agent = auth()->user();
             Auth::logout();
             $agent->delete();
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
         return $this->success('Account Deleted');
+    }
+
+    public function fetchAgentWishlists(){
+        try {
+            $agent = auth()->user();
+            $wishlists = $this->compileAgentWishlist($agent->unique_id);
+        } catch (Exception $e) {
+            return $this->error(500, $e->getMessage());
+        }
+
+        return $this->success("Wishlists Fetched", $wishlists);
     }
 }

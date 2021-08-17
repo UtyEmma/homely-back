@@ -42,4 +42,16 @@ class AgentController extends Controller
             return redirect()->back()->with('message', "Agent does not Exist");
         }
     }
+
+    public function verifyAgent($id){
+        if (Agent::exists($id)) {
+            $agent->verified = !$agent->verified;
+            $agent->save();
+            return redirect()->back()->with('message', Agent::find($id)->verified ? "Agent Verified" : "Agent Unverified");
+        }else{
+            return redirect()->back()->with('message', "Agent does not exist");
+        }
+    }
+
+    
 }

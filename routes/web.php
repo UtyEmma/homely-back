@@ -7,7 +7,10 @@ use App\Http\Controllers\Admin\Auth\AuthController;
 use App\Http\Controllers\Admin\CategoriesController;
 use App\Http\Controllers\Admin\DetailController;
 use App\Http\Controllers\Admin\ListingsController;
+use App\Http\Controllers\Admin\ReviewsController;
+use App\Http\Controllers\Admin\SupportController;
 use App\Http\Controllers\Admin\TenantController;
+use App\Http\Controllers\Admin\WishlistController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -71,6 +74,25 @@ Route::middleware('auth')->group(function(){
     Route::prefix('amenities')->group(function(){
         Route::post('create-amenities', [DetailController::class, 'createAmenities']);
         Route::get('delete/{id}', [DetailController::class, 'deleteAmenities']);
+    });
+
+    Route::prefix('support')->group(function(){
+        Route::get('/', [SupportController::class, 'fetchTickets']);
+        Route::get('/{ticket_id}', [SupportController::class, 'singleTicket']);
+        Route::get('/resolve', [SupportController::class, 'markTicketAsResolved']);
+        Route::get('/delete', [SupportController::class, 'deleteTicket']);
+    });
+
+    Route::prefix('reviews')->group(function(){
+        Route::get('/', [ReviewsController::class, 'fetchReviews']);
+        Route::get('/block/{id}', [ReviewsController::class, 'blockReviews']);
+        Route::get('/delete/{id}', [ReviewsController::class, 'deleteReviews']);
+    });
+
+    Route::prefix('wishlists')->group(function(){
+        Route::get('/', [WishlistController::class, 'fetchWishlists']);
+        Route::get('/block/{id}', [WishlistController::class, 'blockWishlists']);
+        Route::get('/delete/{id}', [WishlistController::class, 'deleteWishlists']);
     });
 });
 

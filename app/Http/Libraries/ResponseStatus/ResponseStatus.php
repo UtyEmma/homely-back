@@ -4,7 +4,7 @@ namespace App\Http\Libraries\ResponseStatus;
 
 trait ResponseStatus {
 
-    protected function success($message="", $data=[]){
+    protected function success(string $message="", $data=[]){
         return response()->json([
             'status' => true,
             'message' => $message,
@@ -12,7 +12,7 @@ trait ResponseStatus {
         ], 200);
     }
 
-    protected function error($code, $message="", $data=''){
+    protected function error(int $code, string $message="", $data=[]){
         return response()->json([
             'status' => false,
             'message' => $message,
@@ -20,12 +20,16 @@ trait ResponseStatus {
         ], $code);
     }
 
-    protected function viewError(string $view, int $code, array $data = []){
+    protected function view(string $view, int $code = null, array $data = []){
         return response()->view($view, $data, $code);
     }
 
-    protected function viewSuccess(string $view, array $data = []){
-        return response()->view($view, $data, 200);
+    protected function redirectBack(string $key = "", string $value = ""){
+        if ($key) {
+            return redirect()->back()->with($key, $value);   
+        }
+
+        return redirect()->back();
     }
 
 

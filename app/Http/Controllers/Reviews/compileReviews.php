@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Reviews;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Libraries\Functions\DateFunctions;
+use App\Models\Review;
 
 trait CompileReviews{
     use DateFunctions;
@@ -37,11 +38,29 @@ trait CompileReviews{
     }
 
     protected function calculateRatings($id, $type){
-        $ratings = Reviews::select('rating')->where($type, $id)->get();
+        $ratings = Review::select('rating')->where($type, $id)->get();
         $total_ratings = 0;
         foreach ($ratings as  $value) {
-            $total_ratings = $total_ratings + $value;
+            $total_ratings = $total_ratings + $value->rating;
         }
         return $total_ratings/ count($ratings);
+    }
+
+    protected function matchReviewToListing($reviews){
+        $array = [];
+        if (count($reviews) > 0) {
+            foreach ($reviews as $key => $review) {
+                $listing = Review::find($review->unique_id)->listing;
+                $publisher = Review::find($review->unique_id)->publisher;
+                if ($listing) {
+                    $array[] = array_merge($review->toArray(), [
+                        'listing_title' => $listing->title,
+                        'listing_slug' => $listing->slug,
+                        'publisher_name' => $publisher->firstname." ".$publisher->lastname
+                    ]);   
+                }
+            }
+        }
+        return $array;
     }
 }

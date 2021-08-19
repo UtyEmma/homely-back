@@ -160,7 +160,7 @@ class ListingController extends Controller
 
         return $this->success("Listing Loaded", [
             'listing' => $single_listing,
-            'agent' => $agent
+            'agent' => array_merge($agent->toArray(), ['avatar' => json_decode($agent->avatar)])
         ]);
     }
 

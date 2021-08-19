@@ -9,6 +9,7 @@ use App\Models\Review;
 use App\Models\Listing;
 use App\Models\Agent;
 use App\Http\Controllers\Reviews\CompileReviews;
+use Illuminate\Support\Facades\Validator;
 
 class ReviewController extends Controller{
     use CompileReviews;
@@ -16,7 +17,7 @@ class ReviewController extends Controller{
     public function createReview(Request $request, $listing_id){
         $user = auth()->user();
 
-        if (Review::where('listing_id', $listing_id)->where('reviewer_id', $user->unique_id)) {
+        if (Review::where('listing_id', $listing_id)->where('reviewer_id', $user->unique_id)->first()) {
             return $this->error(405, "You have already reviewed this Listing");
         }
 

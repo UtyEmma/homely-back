@@ -23,10 +23,14 @@ class Review extends Model
     ];
 
     public function publisher(){
-        return $this->belongsTo(User::class, 'unique_id', 'reviewer_id');
+        return $this->belongsTo(User::class, 'reviewer_id', 'unique_id');
     }
 
     public function agent(){
-        return $this->belongsTo(Agent::class, 'unique_id', 'agent_id');
+        return $this->belongsTo(Agent::class, 'agent_id', 'unique_id');
+    }
+
+    public function listing(){
+        return $this->belongsTo(Listing::class, 'listing_id', 'unique_id');
     }
 }

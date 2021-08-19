@@ -19,4 +19,7 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests, Token, VerifyEmail, ResponseStatus, 
         FileHandler, Auth, StringFunctions, DateFunctions;
+
+
+    
 }

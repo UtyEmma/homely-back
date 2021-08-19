@@ -22,4 +22,8 @@ class Support extends Model
     public function chats (){
         return $this->hasMany(Chat::class, 'issue_id', 'unique_id');
     }
+
+    public function agent (){
+        return $this->belongsTo(Agent::class, 'agent_id', 'unique_id');
+    }
 }

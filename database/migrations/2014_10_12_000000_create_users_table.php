@@ -26,6 +26,7 @@ class CreateUsersTable extends Migration
             $table->string('lga');
             $table->integer('wishlists');
             $table->boolean('status');
+            $table->integer('no_favourites');
             $table->string('auth_driver')->nullable();
             $table->string('password')->nullable();
             $table->string('password_reset')->nullable();

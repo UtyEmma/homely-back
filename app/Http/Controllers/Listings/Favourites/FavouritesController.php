@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Listings\Favourites;
 
 use App\Http\Controllers\Controller;
@@ -17,7 +16,7 @@ class FavouritesController extends Controller{
         try {
             $user = auth()->user();
 
-            if (!$listing = Listing::find($listing_id)) {
+            if (!Listing::find($listing_id)) {
                 throw new Exception("Property does not Exist", 404);
             }
 
@@ -33,11 +32,27 @@ class FavouritesController extends Controller{
                 'listing_id' => $listing_id
             ]);
 
+            $user = User::find($user->unique_id);
+            $user->no_favourites = $user->no_favourites + 1;
+            $user->save();
+
+            $favourites = (array) User::find($user->unique_id)->favourites;
+            $array = [];
+            
+            foreach ($favourites as $key => $favourite){
+                $listing_id = $favourite->listing_id;
+                $array[] = Listing::find($listing_id);
+            }
+
+            $listings = $this->formatListingData($array);
+
         } catch (Exception $e) {
-            return $this->error($e->getCode(), $e->getMessage());
+            return $this->error(500, $e->getMessage());
         }
 
-        return $this->success("Property added to your favourites");
+        return $this->success("Property added to your favourites", [
+            'status' => true
+        ]);
     }
 
     public function removeFromFavourites($listing_id){
@@ -47,16 +62,34 @@ class FavouritesController extends Controller{
                 throw new Exception("This property is not added to your Favourites", 400);
             }
             $favourite->delete();
+
+            $user = User::find($user->unique_id);
+            $user->no_favourites = $user->no_favourites + 1;
+            $user->save();
+
+            $favourites = (array) User::find($user->unique_id)->favourites;
+            $array = [];
+            
+            foreach ($favourites as $key => $favourite){
+                $listing_id = $favourite->listing_id;
+                $array[] = Listing::find($listing_id);
+            }
+
+            $listings = $this->formatListingData($array);
+
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }
-        return $this->success("Property has been removed from your Favourites");
+        return $this->success("Property has been removed from your Favourites", [
+            'listings' => $listings,
+            'status' => false
+        ]);
     }
 
-    public function fetchFavourites($listing_id){
+    public function fetchFavourites(){
         try {
             $user = auth()->user();
-            $favourites = User::find($user->unique_id)->favourites;
+            $favourites = (array) User::find($user->unique_id)->favourites;
             $array = [];
             
             foreach ($favourites as $key => $favourite){
@@ -66,7 +99,7 @@ class FavouritesController extends Controller{
 
             $listings = $this->formatListingData($array);
         } catch (Exception $e) {
-            return $this->error($e->getCode(), $e->getMessage());
+            return $this->error(500, $e->getMessage());
         }
 
         return $this->success("Favourites Fetched", [

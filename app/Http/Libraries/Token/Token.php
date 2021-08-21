@@ -7,11 +7,6 @@ use Illuminate\Support\Str;
 
 trait Token {
 
-    /**
-     * Generate a Short UUID Token
-     *
-     * @return void
-     */
     protected function generateId(){
         $uuid = (string) Str::uuid();
         $trim = explode('-', $uuid);
@@ -19,23 +14,15 @@ trait Token {
         return $id;
     }
         
-    /**
-     * Check if the Generated UUID Token is used
-     *
-     * @param  mixed $table
-     * @return void
-     */
     protected function createUniqueToken($table, $column){
         $id = $this->generateId();  
         DB::table($table)->where($column, '=', $id)->first() ? $status = false : $status = $id;    
 
-        if (!$status) {
-            return $this->make($table, $column);
-        }
+        if (!$status) { return $this->createUniqueToken($table, $column); }
         return $status;                
     }
     
-    protected function createRandomToken($table, $column){
+    protected function createRandomToken(){
         $random = rand(10000, 99999);
         return $random;
     }

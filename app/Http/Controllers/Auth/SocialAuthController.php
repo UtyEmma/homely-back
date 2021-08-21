@@ -22,9 +22,9 @@ class SocialAuthController extends Controller
             
             if (!$user = $this->checkForExistingUser($user_data, $request->type)) {
                 if($request->type === 'tenant'){
-                    $this->createTenant($user_data);
+                    $user = $this->createTenant($user_data);
                 }elseif ($request->type === 'agent') {
-                    $this->createAgent($user_data);
+                    $user = $this->createAgent($user_data);
                 }else {
                     throw new Exception("Invalid Authentication Request", 401);
                 }       

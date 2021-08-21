@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\ReviewsController;
 use App\Http\Controllers\Admin\SupportController;
 use App\Http\Controllers\Admin\TenantController;
 use App\Http\Controllers\Admin\WishlistController;
+use App\Models\Admin;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -93,6 +94,14 @@ Route::middleware('auth')->group(function(){
         Route::get('/', [WishlistController::class, 'fetchWishlists']);
         Route::get('/block/{id}', [WishlistController::class, 'blockWishlists']);
         Route::get('/delete/{id}', [WishlistController::class, 'deleteWishlists']);
+    });
+
+    Route::prefix('admins')->group(function(){
+        Route::get('/', [AppController::class, 'admins']);
+        Route::get('/delete/{id}', [AdminController::class, 'deleteAdmin']);
+        Route::get('/suspend/{id}', [AdminController::class, 'suspendAdmin']);
+        Route::get('/{id}', [AdminController::class, 'singleAdmin']);
+
     });
 });
 

@@ -3,14 +3,17 @@
 use App\Http\Controllers\Agent\AgentController;
 use App\Http\Controllers\Agent\AuthAgentController;
 use App\Http\Controllers\Auth\AuthUserController;
+use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\Listings\ListingController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\WishList\WishlistController;
 use App\Http\Controllers\Details\DetailController;
+use App\Http\Controllers\Listings\Favourites\FavouritesController;
 use App\Http\Controllers\Reviews\ReviewController;
 use App\Http\Controllers\Search\SearchController;
 use App\Http\Controllers\Support\ChatController;
 use App\Http\Controllers\Support\SupportController;
+use App\Models\Review;
 use App\Models\Verification;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Http\Request;
@@ -88,10 +91,15 @@ Route::prefix('tenant')->middleware('role:tenant')->group(function(){
         Route::prefix('reviews')->group(function(){
             Route::post('create/{listing_id}', [ReviewController::class, 'createReview']);
         });
+
+        Route::prefix('favourites')->group(function(){
+            Route::get('add/{listing_id}', [FavouritesController::class, 'addToFavourites']);
+            Route::get('remove/{listing_id}', [FavouritesController::class, 'removeFromFavourites']);
+            Route::get('/', [FavouritesController::class, 'fetchFavourites']);
+        });
     });
 
 });
-
 
 Route::prefix('tenant')->group(function(){
     Route::post('login', [AuthUserController::class, 'login'])->middleware('role:tenant');
@@ -124,6 +132,10 @@ Route::prefix('details')->group(function(){
 
 Route::prefix('reviews')->group(function(){
     Route::get('fetch/{listing_id}', [ReviewController::class, 'fetchListingReviews']);
+});
+
+Route::prefix('social')->group(function(){
+    Route::post('auth', [SocialAuthController::class, 'handleAuth']);
 });
 
 

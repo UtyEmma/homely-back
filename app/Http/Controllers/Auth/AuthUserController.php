@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\User\LoginRequest;
 use App\Http\Requests\Auth\User\SignupRequest;
 use App\Models\User;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;

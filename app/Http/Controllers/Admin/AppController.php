@@ -91,4 +91,11 @@ class AppController extends Controller
             'features' => $features
         ]);
     }
+
+    public function admins(){
+        $admins = Admin::all();
+        return view('admins.admins', [
+            'admins' => $admins
+        ]);
+    }
 }

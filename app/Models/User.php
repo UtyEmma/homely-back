@@ -13,7 +13,7 @@ class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable;
 
-    protected $fillable = [ 'unique_id', 'email', 'password', 'location', 'firstname', 'lastname', 'status'];
+    protected $fillable = [ 'unique_id', 'email', 'password', 'location', 'firstname', 'lastname', 'status', 'auth_driver', 'avatar', 'isVerified'];
 
     protected $primaryKey = 'unique_id';
     protected $keyType = 'string';
@@ -32,6 +32,10 @@ class User extends Authenticatable implements JWTSubject
 
     public function wishlists(){
         return $this->hasMany(Wishlist::class, 'user_id', 'unique_id');
+    }
+
+    public function favourties(){
+        return $this->hasMany(Favourite::class, 'user_id', 'unique_id');
     }
 
     /**

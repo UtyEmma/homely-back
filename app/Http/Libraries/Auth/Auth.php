@@ -17,5 +17,9 @@ trait Auth{
         auth()->shouldUse('agent');
         return AuthUser::guard('agent')->user();
     }
+
+    public function exists(){
+        
+    }
     
 }

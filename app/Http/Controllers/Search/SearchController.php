@@ -16,7 +16,7 @@ class SearchController extends Controller{
             $query = Listing::query();
 
             $query->when($request->keyword, function($q, $keyword){ 
-                return Listing::search($keyword)->where('status', 'active')->get(); 
+                return Listing::search($keyword)->get(); 
             });
 
             $query->when($request->type, function($q, $type){ 

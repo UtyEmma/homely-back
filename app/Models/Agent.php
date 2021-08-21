@@ -12,8 +12,8 @@ class Agent extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable;
 
-    protected $fillable = [ 'unique_id', 'email', 'password', 'firstname', 'lastname', 'phone_number', 'avatar', 
-                            'state', 'twitter', 'facebook', 'instagram', 'city', 'website', 'bio', 'title'];
+    protected $fillable = [ 'unique_id', 'email', 'password', 'firstname', 'lastname', 'phone_number', 'avatar', 'isVerified',
+                                'state', 'twitter', 'facebook', 'instagram', 'city', 'website', 'bio', 'title', 'auth_driver'];
 
     protected $primaryKey = 'unique_id';
     protected $keyType = 'string';
@@ -28,6 +28,8 @@ class Agent extends Authenticatable implements JWTSubject
         'views' => 0,
         'title' => "Bayof Agent"      
     ];
+
+
 
     public function listings(){
        return $this->hasMany(Listing::class, 'agent_id', 'unique_id');

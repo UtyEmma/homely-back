@@ -19,7 +19,7 @@ class CreateAgentsTable extends Migration
             $table->string('email')->unique();
             $table->string('firstname');
             $table->string('lastname');
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->string('avatar')->nullable();
             $table->string('twitter')->nullable();
             $table->string('instagram')->nullable();
@@ -28,6 +28,7 @@ class CreateAgentsTable extends Migration
             $table->string('title')->nullable();
             $table->string('state')->nullable();
             $table->string('views')->nullable();
+            $table->string('auth_driver')->nullable();
             $table->string('city')->nullable();
             $table->integer('no_of_listings');
             $table->boolean('verified');

@@ -24,9 +24,10 @@ class CreateUsersTable extends Migration
             $table->boolean('isVerified');
             $table->string('state');
             $table->string('lga');
-            $table->string('wishlists');
+            $table->integer('wishlists');
             $table->boolean('status');
-            $table->string('password');
+            $table->string('auth_driver')->nullable();
+            $table->string('password')->nullable();
             $table->string('password_reset')->nullable();
             $table->rememberToken();
             $table->timestamps();

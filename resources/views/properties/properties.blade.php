@@ -106,50 +106,65 @@
             </section>
         </div>
 
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-content">
-                        <div class="card-header">
-                            <div class="row">
-                                <div class="col-6">
-                                    <h4 class="card-title">Amenities</h4>
-                                    <p><span class="badge alert-primary">{{count($amenities)}} </span> Amenities Listed</p>  
-                                </div>
-                            </div>
+        <div class="card">
+            <div class="card-content">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="card-title">Amenities</h4>
+                            <p><span class="badge alert-primary">{{count($amenities)}} </span> Amenities Listed</p>  
                         </div>
-                        <div class="card-body">
-                            @if($amenities && count($amenities) > 0)
-                                @foreach($amenities as $amenity)
-                                    <span class="badge px-4 py-2 bg-success m-1">{{$amenity->amenity_title}}</span>
-                                @endforeach
-                            @else
-                                <div>
-                                    <h2>No Amenities! Please Create</h2>
-                                </div>
-                            @endif
-                        </div>
-                        <div class="card-footer col-12">
-                            <div class="col-6">  
-                                <form action="amenities/create-amenities" method="post">
-                                    @csrf
-                                    <div class="col-12">
-                                        <div class="row gx-1 bg-white">
-                                            <div class="col-10">
-                                                <input type="text" name="amenity_title" class="form-control form-control-sm" placeholder="New Amenity">
-                                            </div>
-                                            <div class="col-2">
-                                                <button type="submit" class="btn btn-primary btn-sm">Add</button>
+
+                        <div class="col-6">  
+                            <form action="amenities/create-amenities" method="post">
+                                @csrf
+                                <div class="col-12">
+                                    <div class="row gx-1 bg-white">
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-8">
+                                                    <input type="text" name="amenity_title" class="form-control" placeholder="New Amenity">
+                                                </div>
+                                                <div class="col-4">
+                                                    <button type="submit" class="btn btn-primary btn-block">Add Amenity</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
+                <div class="card-body">
+                    @if($amenities && count($amenities) > 0)
+                        <div class="row gx-2 gy-1">
+                            @foreach($amenities as $amenity)
+                                <div class="col-md-3">
+                                    <div class="bg-light p-2 pb-0 pt-3 rounded d-flex justify-content-between align-content-center">
+                                        <div class="d-flex">
+                                            <div style="width: 8px; height: 8px;" class="p-1 mt-2 me-2 rounded-circle {{$amenity->status ? 'bg-success' : 'bg-warning' }}"></div>
+                                            <p class="position-relative">{{$amenity->amenity_title}}</p>
+                                        </div>
+
+                                        <div class="d-flex">
+                                            <a href="/edit/{{$amenity->unique_id}}"><i class="bi bi-pencil"></i></a>
+                                            <a href="/delete/{{$amenity->unique_id}}" class="ms-2"><i class="bi bi-trash"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div>
+                            <h2>No Amenities! Please Create</h2>
+                        </div>
+                    @endif
+                </div>
+                </div>
             </div>
-            <div class="col-md-6">
+
+            <!-- <div class="col-md-6">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-header">
@@ -190,7 +205,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
         
     </div>

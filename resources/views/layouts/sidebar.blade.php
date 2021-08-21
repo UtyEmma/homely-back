@@ -21,86 +21,56 @@
                     </a>
                 </li>
 
-                <li class="sidebar-item">
+                <!-- <li class="sidebar-item">
                     <a href="profile" class='sidebar-link'>
                         <i class="bi bi-person-fill"></i>
                         <span>Profile</span>
                     </a>
-                </li>
+                </li> -->
 
                 <li class="sidebar-title">Main</li>
 
-                <li class="sidebar-item  has-sub">
-                    <a href="#" class='sidebar-link'>
+                <li class="sidebar-item">
+                    <a href="/tenants" class='sidebar-link'>
                         <i class="bi bi-people-fill"></i>
                         <span>Tenants</span>
                     </a>
-                    <ul class="submenu ">
-                        <li class="submenu-item ">
-                            <a href="/tenants">View Tenants</a>
-                        </li>
-                    </ul>
                 </li>
 
-                <li class="sidebar-item  has-sub">
-                    <a href="#" class='sidebar-link'>
+                <li class="sidebar-item">
+                    <a href="/listings" class='sidebar-link'>
                         <i class="bi bi-house-fill"></i>
                         <span>Listings</span>
                     </a>
-                    <ul class="submenu ">
-                        <li class="submenu-item ">
-                            <a href="/listings">View Listings</a>
-                        </li>
-                    </ul>
                 </li>
 
-                <li class="sidebar-item  has-sub">
-                    <a href="agents" class='sidebar-link'>
+                <li class="sidebar-item">
+                    <a href="/agents" class='sidebar-link'>
                         <i class="bi bi-person-square"></i>
                         <span>Agents</span>
                     </a>
-                    <ul class="submenu ">
-                        <li class="submenu-item ">
-                            <a href="/agents">View Agents</a>
-                        </li>
-                    </ul>
                 </li>
 
-                <li class="sidebar-item  has-sub">
-                    <a href="agents" class='sidebar-link'>
+                <li class="sidebar-item">
+                    <a href="/wishlists" class='sidebar-link'>
                         <i class="bi bi-heart-fill"></i>
                         <span>Wishlists</span>
                     </a>
-                    <ul class="submenu ">
-                        <li class="submenu-item ">
-                            <a href="/wishlists">View</a>
-                        </li>
-                    </ul>
                 </li>
 
 
-                <li class="sidebar-item  has-sub">
-                    <a href="" class='sidebar-link'>
+                <li class="sidebar-item">
+                    <a href="/reviews" class='sidebar-link'>
                         <i class="bi bi-bookmark-star-fill"></i>
                         <span>Reviews</span>
                     </a>
-                    <ul class="submenu ">
-                        <li class="submenu-item ">
-                            <a href="/reviews">View Reviews</a>
-                        </li>
-                    </ul>
                 </li>
 
-                <li class="sidebar-item  has-sub">
-                    <a href="#" class='sidebar-link'>
+                <li class="sidebar-item">
+                    <a href="/properties" class='sidebar-link'>
                         <i class="bi bi-house-door-fill"></i>
                         <span>Property Info</span>
                     </a>
-                    <ul class="submenu ">
-                        <li class="submenu-item ">
-                            <a href="properties">Property Info</a>
-                        </li>
-                    </ul>
                 </li>
 
                 <li class="sidebar-title">Actions</li>
@@ -112,10 +82,9 @@
                     </a>
                     <ul class="submenu ">
                         <li class="submenu-item ">
-                            <a href="/admins">View</a>
+                            <a href="/admins">View Admins</a>
                         </li>
-                    </ul>
-                    <ul class="submenu ">
+
                         <li class="submenu-item ">
                             <a href="/register">Register Admin</a>
                         </li>

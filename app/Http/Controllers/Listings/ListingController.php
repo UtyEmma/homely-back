@@ -155,7 +155,6 @@ class ListingController extends Controller
             'period' => $this->getDateInterval($listing->created_at)
         ]);
 
-
         $agent = Agent::find($listing->agent_id);
 
         return $this->success("Listing Loaded", [
@@ -174,5 +173,4 @@ class ListingController extends Controller
         } 
         return $array;
     }
-
 }

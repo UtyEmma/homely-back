@@ -10,9 +10,9 @@ use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-    public function single($id){
+    public function singleAdmin($id){
         if ($admin = Admin::find($id)) {
-            return view('', $admin);
+            return view('admins.admin-details', ['admin' => $admin]);
         }else{
             return redirect()->back()->with('message', 'Admin Does not Exist!!!');
         }
@@ -27,7 +27,7 @@ class AdminController extends Controller
                 return redirect()->back()->with('message', $e->getMessage());
             }
         }else{
-            return redirect()->back()->with('message', "Admin does not Exist");
+            return redirect()->back()->with('error', "Admin does not Exist");
         }
     }
 

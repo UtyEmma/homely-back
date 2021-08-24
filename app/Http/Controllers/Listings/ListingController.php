@@ -44,7 +44,7 @@ class ListingController extends Controller
         $listing = Listing::find($listing_id);
 
         return $this->success($request->title." has been added to your Listings", [
-            'listing' => $listing
+            'listing' => array_merge($listing->toArray(), ['images' => json_decode($listing->images)]) 
         ]);
     }
 
@@ -152,7 +152,7 @@ class ListingController extends Controller
             'features' => $features,
             'details' => json_decode($listing->details),
             'images' => json_decode($listing->images),
-            'period' => $this->getDateInterval($listing->created_at)
+            'period' => str_replace("before","ago", $this->getDateInterval($listing->created_at))
         ]);
 
         $agent = Agent::find($listing->agent_id);

@@ -8,6 +8,7 @@ use App\Models\Feature;
 use App\Models\Amenities;
 use App\Models\Category;
 use Exception;
+use Illuminate\Support\Arr;
 
 class DetailController extends Controller
 {
@@ -22,7 +23,7 @@ class DetailController extends Controller
 
         return $this->success('Details Fetched', [
             // 'features' => json_decode(json_encode($features)),
-            'amenities' => json_decode(json_encode($amenities))
+            'amenities' => $amenities
         ]);
     }
 
@@ -31,7 +32,8 @@ class DetailController extends Controller
         foreach ($detail as $key => $value) {
             $array[] = $value[$title];
         }
-        return $array;
+        $sorted_array = Arr::sort($array);
+        return $sorted_array;
     }
 
     public function fetchCategories(){

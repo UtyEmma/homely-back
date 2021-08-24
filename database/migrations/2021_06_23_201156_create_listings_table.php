@@ -38,7 +38,7 @@ class CreateListingsTable extends Migration
             $table->string('landmark')->nullable();
             $table->string('longitude')->nullable();
             $table->string('latitude')->nullable();
-            $table->string('extra_info')->nullable();
+            $table->text('extra_info')->nullable();
             $table->string('valid_till')->nullable();
             $table->json('amenities')->nullable();
             $table->string('rating')->nullable();

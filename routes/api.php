@@ -13,10 +13,6 @@ use App\Http\Controllers\Reviews\ReviewController;
 use App\Http\Controllers\Search\SearchController;
 use App\Http\Controllers\Support\ChatController;
 use App\Http\Controllers\Support\SupportController;
-use App\Models\Review;
-use App\Models\Verification;
-use Illuminate\Auth\Notifications\VerifyEmail;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -46,6 +42,7 @@ Route::prefix('agent')->middleware('role:agent')->group(function(){
             Route::get('agents-listings', [ListingController::class, 'getAgentsListings']);
             Route::get('delete/{listing_id}', [ListingController::class, 'deleteListing']);
             Route::get('remove/{listing_id}', [ListingController::class, 'agentRemoveListing']);
+            Route::get('rented/{listing_id}', [ListingController::class, 'setListingAsRented']);
         });
 
         Route::prefix('reviews')->group(function(){
@@ -90,6 +87,8 @@ Route::prefix('tenant')->middleware('role:tenant')->group(function(){
 
         Route::prefix('reviews')->group(function(){
             Route::post('create/{listing_id}', [ReviewController::class, 'createReview']);
+            Route::post('edit', [ReviewController::class, 'updateReview']);
+            Route::get('delete/{review_id}', [ReviewController::class, 'deleteReview']);
         });
 
         Route::prefix('favourites')->group(function(){

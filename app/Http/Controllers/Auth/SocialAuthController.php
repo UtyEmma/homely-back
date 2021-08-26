@@ -29,7 +29,7 @@ class SocialAuthController extends Controller
                     throw new Exception("Invalid Authentication Request", 401);
                 }       
             }elseif (!$this->checkForDriver($user, $request->driver)) {
-                return $this->error(401, "Invalid Authentication Request");   
+                return $this->error(401, "Invalid Authentication Request, Incorrect Driver");   
             }
 
             auth()->shouldUse($request->type);
@@ -58,7 +58,7 @@ class SocialAuthController extends Controller
     }
 
     private function checkForDriver($user, $driver){
-        return $user->driver === $driver ? true : false;
+        return $user->auth_driver === $driver ? true : false;
     }
 
     private function checkForExistingUser($user, $type){

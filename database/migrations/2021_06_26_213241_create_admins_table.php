@@ -19,6 +19,7 @@ class CreateAdminsTable extends Migration
             $table->string('email')->unique();
             $table->string('firstname');
             $table->string('lastname');
+            $table->string('role');
             $table->string('phone')->nullable();
             $table->string('avatar')->nullable();
             $table->string('status')->nullable();

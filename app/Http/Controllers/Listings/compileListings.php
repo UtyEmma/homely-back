@@ -56,7 +56,6 @@ trait CompileListings{
         
         if (count($listings) > 0) {
             foreach($listings as $listing) {
-                $agent = Agent::find($listing['agent_id']);
                 $listing = Listing::find($listing['unique_id']);
 
                 $array[] = array_merge($listing->toArray(), [

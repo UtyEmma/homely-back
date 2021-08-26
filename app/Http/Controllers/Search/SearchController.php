@@ -13,11 +13,9 @@ class SearchController extends Controller{
 
     public function searchListings(Request $request){
         try{
-            $query = Listing::query();
+            $listings = Listing::search($request->keyword)->where('status','active')->get();
 
-            $query->when($request->keyword, function($q, $keyword){ 
-                return Listing::search($keyword)->get(); 
-            });
+            $query = collect($listings);
 
             $query->when($request->type, function($q, $type){ 
                 return $q->where('type', $type); 
@@ -43,7 +41,7 @@ class SearchController extends Controller{
                 return $q->where('no_bathrooms', $bathrooms); 
             });
 
-            $listings = $this->formatListingData($query->get());
+            $listings = $this->formatListingData($query);
         
         }catch(Exception $e){
             return $this->error(500, $e->getMessage());

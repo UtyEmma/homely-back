@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Libraries\Functions\DateFunctions;
 use App\Models\Review;
+use Exception;
 
 trait CompileReviews{
     use DateFunctions;
@@ -62,5 +63,12 @@ trait CompileReviews{
             }
         }
         return $array;
+    }
+
+    protected function checkIfReviewBelongstoCurrentUser ($review_id) {
+        if (!Review::find($review_id)) { throw new Exception("Sorry! The Review does not exist!", 404); }
+        if (!$review = Review::find($review_id)->publisher) { 
+            throw new Exception("The review does not belong to the current user", 400);
+        }
     }
 }

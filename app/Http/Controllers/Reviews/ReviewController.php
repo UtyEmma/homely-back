@@ -93,4 +93,34 @@ class ReviewController extends Controller{
         }
     }
 
+    public function updateReview(Request $request){
+        try {
+            $user = auth()->user();
+            $this->checkIfReviewBelongstoCurrentUser($request->unique_id);
+            Review::where('unique_id', $request->unique_id)->update((array) $request->all());
+        } catch (Exception $e) {
+            return $this->error(500, $e->getMessage());
+        }
+        
+        $review = Review::find($request->unique_id);
+        return $this->success("Your Review has been updated", [
+            'review' => $review
+        ]);
+    }
+
+
+    public function deleteReview($review_id){
+        try {
+            $user = auth()->user();
+            $this->checkIfReviewBelongstoCurrentUser($review_id);
+            Review::find($review_id)->delete();
+        } catch (Exception $e) {
+            return $this->error($e->getCode(), $e->getMessage());
+        }
+        
+        $review = Review::find($review_id);
+        return $this->success("Your Review has been Deleted");
+    }
+
+    
 }

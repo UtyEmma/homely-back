@@ -14,7 +14,7 @@ class AdminController extends Controller
         if ($admin = Admin::find($id)) {
             return view('admins.admin-details', ['admin' => $admin]);
         }else{
-            return redirect()->back()->with('message', 'Admin Does not Exist!!!');
+            return redirect()->back()->with('error', 'Admin Does not Exist!!!');
         }
     }
 
@@ -22,9 +22,9 @@ class AdminController extends Controller
         if ($admin = Admin::find($id)) {
             try {
                 $admin->delete();
-                return redirect()->back()->with('message', "Admin Deleted");
+                return redirect()->back()->with('success', "Admin Deleted");
             } catch (Exception $e) {
-                return redirect()->back()->with('message', $e->getMessage());
+                return redirect()->back()->with('error', $e->getMessage());
             }
         }else{
             return redirect()->back()->with('error', "Admin does not Exist");
@@ -35,15 +35,17 @@ class AdminController extends Controller
     public function suspendAdmin($id){
         if ($admin = Admin::find($id)) {
             try {
-                $admin->status = false;
+                $admin->status = !$admin->status;
                 $admin->save();
+
+                $message = $admin->status ? 'Restored' : 'Suspended'; 
                 
-                return redirect()->back()->with('message', "Admin Deleted");
+                return redirect()->back()->with('success', "Admin ".$message);
             } catch (Exception $e) {
-                return redirect()->back()->with('message', $e->getMessage());
+                return redirect()->back()->with('error', $e->getMessage());
             }
         }else{
-            return redirect()->back()->with('message', "Admin does not Exist");
+            return redirect()->back()->with('error', "Admin does not Exist");
         }
     }
 

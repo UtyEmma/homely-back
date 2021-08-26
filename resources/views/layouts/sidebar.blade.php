@@ -21,12 +21,12 @@
                     </a>
                 </li>
 
-                <!-- <li class="sidebar-item">
+                <li class="sidebar-item">
                     <a href="profile" class='sidebar-link'>
                         <i class="bi bi-person-fill"></i>
                         <span>Profile</span>
                     </a>
-                </li> -->
+                </li>
 
                 <li class="sidebar-title">Main</li>
 

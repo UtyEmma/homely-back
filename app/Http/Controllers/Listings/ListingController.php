@@ -173,4 +173,23 @@ class ListingController extends Controller
         } 
         return $array;
     }
+
+    public function updateListing(Request $request, $listing_id){
+        
+    }
+
+    public function setListingAsRented($listing_id){
+        try {
+            if (!$listing = Listing::find($listing_id)) { throw new Exception("Listing Not Found", 404); }
+            $listing->rented = true;
+            $listing->status = 'rented';
+            $listing->save();
+        } catch (Exception $e) {
+            return $this->error(500, $e->getMessage());
+        }
+
+        return $this->success("Listing Set as Rented", [
+            'listing' => $listing
+        ]);
+    }
 }

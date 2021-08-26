@@ -38,7 +38,9 @@ class AgentController extends Controller
         }
 
         $updated_agent = Agent::find($agent->unique_id);
-        $agent = array_merge($updated_agent->toArray(), ['avatar' => json_decode($updated_agent->avatar)[0]]);        
+        $avatar = $updated_agent->avatar ? json_decode($updated_agent->avatar)[0] : "";
+
+        $agent = array_merge($updated_agent->toArray(), ['avatar' => $avatar]);        
         return $this->success("Agent Profile Updated!!!", ['agent' => $agent]);
     }
 
@@ -46,25 +48,32 @@ class AgentController extends Controller
         return $this->success("Logged In User Loaded", $this->agent());
     }
 
-    public function single($id){
+    public function single($username){
         try {
-            $agent = Agent::find($id) ? Agent::find($id) : throw new Exception("User Not Found", 404);
+            $agent = Agent::where('username', $username)->first() ? Agent::where('username', $username)->first() : throw new Exception("User Not Found", 404);
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         } 
 
-        $listings = Agent::find($id)->listings;
-        $reviews = Agent::find($id)->reviews;
+        $listings = Agent::find($agent->unique_id)->listings;
+        $reviews = Agent::find($agent->unique_id)->reviews;
 
         $formatted_agent = array_merge($agent->toArray(), [
                             'avatar' => json_decode($agent->avatar),
                         ]);
 
         $formatted_listings = $this->formatListingData($listings);
+        $listings = collect($formatted_listings);
+
+        $rented = $listings->where('status', 'rented');
+        $not_rented = $listings->where('status', 'active'); 
 
         return $this->success("Agent Fetched", [
             'agent' => $formatted_agent,
-            'listing' => $formatted_listings,
+            'listing' => [
+                'rented' => $rented,
+                'not_rented' => $not_rented
+            ],
             'reviews' => $reviews
         ]);
     }
@@ -84,6 +93,7 @@ class AgentController extends Controller
     public function deleteUserAccount(){
         try {
             $agent = auth()->user();
+            $agent = Agent::find($agent->unique_id);
             Auth::logout();
             $agent->delete();
         } catch (Exception $e) {

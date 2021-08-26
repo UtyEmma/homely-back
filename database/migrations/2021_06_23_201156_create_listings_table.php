@@ -40,6 +40,8 @@ class CreateListingsTable extends Migration
             $table->string('latitude')->nullable();
             $table->text('extra_info')->nullable();
             $table->string('valid_till')->nullable();
+            $table->string('reviews')->nullable();
+            $table->boolean('rented');
             $table->json('amenities')->nullable();
             $table->string('rating')->nullable();
             $table->integer('views');

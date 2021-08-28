@@ -89,12 +89,14 @@ class FavouritesController extends Controller{
     public function fetchFavourites(){
         try {
             $user = auth()->user();
-            $favourites = (array) User::find($user->unique_id)->favourites;
+            $favourites = User::find($user->unique_id)->favourites;
             $array = [];
             
-            foreach ($favourites as $key => $favourite){
-                $listing_id = $favourite->listing_id;
-                $array[] = Listing::find($listing_id);
+            if (count($favourites)) {
+                foreach ($favourites as $key => $favourite){
+                    $listing_id = $favourite->listing_id;
+                    $array[] = Listing::find($listing_id);
+                }   
             }
 
             $listings = $this->formatListingData($array);

@@ -28,6 +28,7 @@ class AdminSignupRequest extends FormRequest
             'firstname' => 'required|string',
             'lastname' => 'required|string',
             'password' => 'required',
+            'role' => 'string|required'
         ];
     }
 }

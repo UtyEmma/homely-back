@@ -9,10 +9,11 @@ use App\Models\Review;
 use App\Models\Listing;
 use App\Models\Agent;
 use App\Http\Controllers\Reviews\CompileReviews;
+use App\Http\Libraries\Notifications\NotificationHandler;
 use Illuminate\Support\Facades\Validator;
 
 class ReviewController extends Controller{
-    use CompileReviews;
+    use CompileReviews, NotificationHandler;
 
     public function createReview(Request $request, $listing_id){
         $user = auth()->user();
@@ -36,7 +37,7 @@ class ReviewController extends Controller{
             return $this->error(500, $e->getMessage());
         }
 
-        $agent->no_reviews = $agent->no_reviews + 1;
+        $agent->reviews = $agent->reviews + 1;
         $agent->rating = $this->calculateRatings($agent->unique_id, 'agent_id');
         $agent->save(); 
 
@@ -46,9 +47,17 @@ class ReviewController extends Controller{
         $listings_reviews = Listing::find($listing_id)->reviews;
         $reviews = $this->compileReviewsData($listings_reviews);
 
+        $data = [
+            'type_id' => $unique_id,
+            'publisher_id' => $user->unique_id,
+            'receiver_id' => $agent->unique_id,
+            'message' => 'Your Property has a new Review from '.$user->firstname
+        ];
+        
+        $this->makeNotification('review', $data);
+
         return $this->success('Your Review has been Submitted', $reviews);
     }
-
 
     public function fetchAgentReviews(){
         try{
@@ -68,7 +77,8 @@ class ReviewController extends Controller{
     
     public function fetchListingReviews($listing_id){
         try { 
-            $listings_reviews = Listing::find($listing_id)->reviews;
+            $listings_reviews = Review::where('listing_id', $listing_id)->where('status', true)->get(); 
+
             $reviews = $this->compileReviewsData($listings_reviews);
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());

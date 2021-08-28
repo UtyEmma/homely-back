@@ -1,6 +1,6 @@
 <?php
 
-namespace App\HTTP\Libraries\Token;
+namespace App\Http\Libraries\Token;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;

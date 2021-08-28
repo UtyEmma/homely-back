@@ -13,9 +13,9 @@
     <link rel="stylesheet" href="{{asset('vendors/iconly/bold.css')}}">    
     <link rel="stylesheet" href="{{asset('vendors/simple-datatables/style.css')}}">
     <link rel="stylesheet" href="{{asset('css/pages/chat.css')}}">
-    <!-- <link rel="stylesheet" href="{{asset('css/pages/auth.css')}}">  -->
-    <!-- <link rel="stylesheet" href="{{asset('css/pages/dripicons.css')}}"> -->
-    <!-- <link rel="stylesheet" href="{{asset('css/pages/email.css')}}"> -->
+    {{-- <!-- <link rel="stylesheet" href="{{asset('css/pages/auth.css')}}">  -->
+    <!-- <link rel="stylesheet" href="{{asset('css/pages/dripicons.css')}}"> --> --}}
+    <link rel="stylesheet" href="{{asset('css/pages/email.css')}}">
 
     <link rel="stylesheet" href="{{asset('css/widgets/chat.css')}}">
      <!-- <link rel="stylesheet" href="{{asset('css/widgets/todo.css')}}"> -->

@@ -75,7 +75,7 @@ Route::prefix('tenant')->middleware('role:tenant')->group(function(){
     Route::get('resend/{user}', [AuthUserController::class, 'resendVerificationLink']);
 
     Route::middleware('verified.email:tenant')->group(function(){
-        Route::post('logout', [AuthUserController::class, 'logout']);
+        Route::get('logout', [AuthUserController::class, 'logout']);
         Route::post('update', [UserController::class, 'update']);
         Route::get('auth_user', [UserController::class, 'getLoggedInUser']);
         Route::get('user/{user}', [UserController::class, 'show']);

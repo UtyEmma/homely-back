@@ -34,7 +34,7 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Wishlist::class, 'user_id', 'unique_id');
     }
 
-    public function favourties(){
+    public function favourites(){
         return $this->hasMany(Favourite::class, 'user_id', 'unique_id');
     }
 

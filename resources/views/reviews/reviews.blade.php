@@ -20,8 +20,8 @@
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
-                            <!-- <li class="breadcrumb-item active" aria-current="page">DataTable</li> -->
+                            <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Reviews</li>
                         </ol>
                     </nav>
                 </div>
@@ -42,6 +42,7 @@
                                 <th>Listing</th>
                                 <th>Message</th>
                                 <th>Rating</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -52,8 +53,9 @@
                                 <td>{{++$i}}</td>
                                 <td>{{$review->publisher_name}}</td>
                                 <td>{{$review->listing_title}}</td>
-                                <td>{{ $review->rating }}</td>
-                                <td>{{$review->review}}</td>
+                                <td>{{ $review->review }}</td>
+                                <td>{{$review->rating}}/5</td>
+                                <td><span class="badge {{$review->status ? 'bg-primary' : 'bg-warning'}}">{{$review->status ? 'Active' : 'Suspended'}}</span></td>
                                 <td>
                                   <a href="reviews/block/{{$review->unique_id}}" class="btn btn-primary">{{ $review->status ? 'Block' : 'Unblock' }}</a>
                                   <a href="reviews/delete/{{$review->unique_id}}" class="btn btn-secondary">Delete</a>

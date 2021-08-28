@@ -82,6 +82,7 @@ Route::middleware('auth')->group(function(){
         Route::get('/{ticket_id}', [SupportController::class, 'singleTicket']);
         Route::get('/resolve', [SupportController::class, 'markTicketAsResolved']);
         Route::get('/delete', [SupportController::class, 'deleteTicket']);
+        Route::post('/chat/{id}', [SupportController::class, 'sendMessage'] );
     });
 
     Route::prefix('reviews')->group(function(){

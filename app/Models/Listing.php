@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Review;
+use App\Models\Agent;
 use Laravel\Scout\Searchable;
 
 class Listing extends Model
@@ -19,16 +20,22 @@ class Listing extends Model
     protected $keyType = 'string';
     public $incrementing = false;
 
+    public $attributes = [
+        'status' => 'active',
+        'views' => 0,
+        'rented' => 1,
+        'reviews' => 0
+    ];
+
     public function agent(){
         return $this->belongsTo(Agent::class, 'agent_id', 'unique_id');
     }
 
     public function reviews(){
-        return $this->hasMany(Review::class, 'listing_id', 'unique_id');
+        return $this->hasMany(Review::class, 'listing_id');
     }
 
-    public function toSearchableArray()
-    {
+    public function toSearchableArray(){
         $array = $this->toArray();
         $index_data = [
             'unique_id' => $array['unique_id'],
@@ -38,14 +45,5 @@ class Listing extends Model
         ];
         return $index_data;
     }
-
-
-    public $attributes = [
-        'status' => 'active',
-        'views' => 0,
-        'rented' => 1,
-        'reviews' => 0
-    ];
-
 
 }

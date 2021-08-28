@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Listings;
 
 use App\Http\Controllers\Controller;
+use App\Http\Libraries\Notifications\NotificationHandler;
 use App\Http\Requests\Listings\CreateListingRequest;
 use App\Models\Agent;
 use App\Models\Listing;
@@ -11,7 +12,7 @@ use Illuminate\Http\Request;
 
 class ListingController extends Controller
 {
-    use CompileListings;
+    use CompileListings, NotificationHandler;
 
     public function createListing(CreateListingRequest $request){
         try {
@@ -33,6 +34,7 @@ class ListingController extends Controller
                                             'initial_fees' => $inital_fees 
                                         ]));
 
+            
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage()." :--- ".$e->getLine());
         }
@@ -42,6 +44,15 @@ class ListingController extends Controller
         $agent->save();
 
         $listing = Listing::find($listing_id);
+
+        $data = [
+            'type_id' => $listing_id,
+            'message' => 'Your Listing has been submitted and is being reviewed',
+            'publisher_id' => $agent->unique_id,
+            'receiver_id' => $agent->unique_id,
+        ];
+
+        $this->makeNotification('listing', $listing);
 
         return $this->success($request->title." has been added to your Listings", [
             'listing' => array_merge($listing->toArray(), ['images' => json_decode($listing->images)]) 

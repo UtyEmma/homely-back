@@ -6,11 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Chat;
 use Illuminate\Http\Request;
 use App\Models\Support;
+use Illuminate\Support\Facades\DB;
 
 class SupportController extends Controller
 {
     public function fetchTickets(){
-        $tickets = $this->compileTicketsData();        
+        $tickets = $this->compileTicketsData();    
         return $this->view('support.tickets', 200, [
             'tickets' => $tickets
         ]);
@@ -19,11 +20,12 @@ class SupportController extends Controller
     public function compileTicketsData(){
         $tickets = Support::all();
         $array = [];
+        $i = 0;
         foreach ($tickets as $key => $ticket) {
-            $array[]['ticket'] = $ticket;
-            $array[]['agent'] = Support::find($ticket->unique_id)->agent;
+            $array[$i]['ticket'] = Support::find($ticket->unique_id);
+            $array[$i]['agent'] = Support::find($ticket->unique_id)->agent;
+            $i++;
         }
-
         return $array;
     }
 
@@ -53,10 +55,11 @@ class SupportController extends Controller
 
     public function sendMessage(Request $request, $id){
         if (!$ticket = Support::find($id)) { return $this->redirectBack('error', 'Ticket Does Not Exist');}
+
         $unique_id = $this->createUniqueToken('chats', 'unique_id');
-        
+
         $create_chat = Chat::create([
-            'unqiue_id' => $unique_id,
+            'unique_id' => $unique_id,
             'agent_id' => $ticket->agent_id,
             'message' => $request->message,
             'issue_id' => $id,
@@ -66,6 +69,6 @@ class SupportController extends Controller
         if (!$create_chat) {
             return $this->redirectBack("error", "Your Reply has Not been Sent");
         }
-        return $this->redirectBack("message", "Your Reply has been Sent");
+        return $this->redirectBack("success", "Your Reply has been Sent");
     }
 }

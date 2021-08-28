@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Validator;
 class AuthController extends Controller
 {
     public function login (AdminLoginRequest $request){
-        if (!auth('web')->attempt($request->validated())) {
+        if (!Auth::attempt($request->validated())) {
                return redirect()->back()->with('message', "Incorrect Email or Password");
         }
         
@@ -41,7 +41,7 @@ class AuthController extends Controller
 
     public function logout(){
         // auth()->logout();
-        Auth::guard('web')->logout();
+        Auth::logout();
         return redirect('login');
     }
 

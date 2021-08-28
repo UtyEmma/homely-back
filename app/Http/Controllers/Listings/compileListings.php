@@ -45,10 +45,9 @@ trait CompileListings{
         $city ? $by_city = Listing::where('city', $user->city)->where('status', 'active')->get() : $by_city = [];
 
         $related_listings = array_merge($by_state, $by_city);
-        count($related_listings) < $index && $listings = array_merge($related_listings, Listing::all()->toArray());
+        count($related_listings) < $index ? $listings = array_merge($related_listings, Listing::where('status', 'active')->get()->toArray()) : $listings = $related_listings;
 
         return $listings;
-        
     }
 
     private function formatListingData($listings){
@@ -76,7 +75,7 @@ trait CompileListings{
             foreach ($categories as $key => $category) {      
                 $title = $category->category_title;
                              
-                $category_listings = Listing::where('type', $title)->orderBy('views', 'desc')->limit(9)->get();
+                $category_listings = Listing::where('type', $title)->where('status', 'active')->orderBy('views', 'desc')->limit(9)->get();
                 $formatted_listings = $this->formatListingData($category_listings);
 
                 if (count($category_listings) > 0 && $i < 7) {

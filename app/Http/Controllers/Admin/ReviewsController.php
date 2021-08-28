@@ -20,15 +20,16 @@ class ReviewsController extends Controller
     }
 
     public function blockReviews($id){
-        if (!$review = Review::find($id)) { return $this->redirectBack('message', 'Review Does Not Exist');}
+        if (!$review = Review::find($id)) { return $this->redirectBack('error', 'Review Does Not Exist');}
         $review->status = !$review->status;
         $review->save();
-        return $this->redirectBack('message', 'Wishlist Blocked');
+        $message = $review->status ? 'Unblocked' : 'Blocked';
+        return $this->redirectBack('success', 'Review '.$message);
     }
     
     public function deleteReviews($id){
-        if (!$review = Review::find($id)) { return $this->redirectBack('message', 'Review Does Not Exist');}
+        if (!$review = Review::find($id)) { return $this->redirectBack('error', 'Review Does Not Exist');}
         $review->delete();
-        return $this->redirectBack('message', 'Review Deleted Successfully');
+        return $this->redirectBack('success', 'Review Deleted Successfully');
     }
 }

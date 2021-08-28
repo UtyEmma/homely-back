@@ -34,26 +34,33 @@
                 </div>
                 <div class="card-body">
                     <div class="row h-100">
-                    @if (isset($wishlists) && count($wishlists) > 0)
+                        <table class="table table-striped" id="table1">
+                        @if (isset($wishlists) && count($wishlists) > 0)
+                        <thead>
+                            <tr>
+                                <th>Index</th>
+                                <th>Publisher</th>
+                                <th>Property Type</th>
+                                <th>City</th>
+                                <th>Area</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php $i = 0; @endphp
                         @foreach ($wishlists as $wishlist)
-                            <div class="col-xl-4 col-md-6 col-sm-12">
-                                <div class="card shadow collapse-icon accordion-icon-rotate">
-                                    <div class="card-content">
-                                        <div class="card-body">
-                                            <h4 class="card-title">{{$wishlist->category}}</h4>
-                                            <p class="card-text">
-                                                {{$wishlist->desc}}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="card-footer d-flex justify-content-between">
-                                        <button class="btn btn-light-primary">View Details</button>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                        </div>
-                    @else
+                            <tr>
+                                <td>{{++$i}}</td>
+                                <td>{{$wishlist->category}}</td>
+                                <td>{{$wishlist->category}}</td>
+                                <td>{{$wishlist->city}}, {{$wishlist->state}}</td>
+                                <td>{{$wishlist->area}}</td>
+                                <td><a href="/wishlist/{{$wishlist->unique_id}}" class="btn btn-link">View Wishlist</a></td>
+                            </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                        @else
                         <div class="card shadow-none">
                             <div class="card-body">
                                 <div class="empty-state" data-height="400">
@@ -69,7 +76,7 @@
                                 </div>
                             </div>
                         </div>            
-                    @endif
+                        @endif
                 </div>
                     </div>
         </section>

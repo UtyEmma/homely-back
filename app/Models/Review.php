@@ -7,8 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Agent;
 use App\Models\User;
 
-class Review extends Model
-{
+class Review extends Model{
     use HasFactory;
 
     protected $fillable = ['unique_id', 'listing_id', 'reviewer_id', 'agent_id', 'review', 'rating'];

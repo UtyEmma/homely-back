@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Reviews;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Libraries\Functions\DateFunctions;
 use App\Models\Review;
 use Exception;
@@ -16,7 +15,7 @@ trait CompileReviews{
         $i = 0;
         $user = auth('tenant')->user();
 
-        if (count($reviews) > 0) {
+        if ($reviews && count($reviews) > 0) {
             foreach ($reviews as $key => $review) {
                 $owned_by_user = false;
                 if($publisher = User::find($review->reviewer_id)){

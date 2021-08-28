@@ -23,7 +23,7 @@ class Listing extends Model
     public $attributes = [
         'status' => 'active',
         'views' => 0,
-        'rented' => 1,
+        'rented' => false,
         'reviews' => 0
     ];
 

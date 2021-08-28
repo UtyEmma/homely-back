@@ -9,6 +9,7 @@ use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\WishList\WishlistController;
 use App\Http\Controllers\Details\DetailController;
 use App\Http\Controllers\Listings\Favourites\FavouritesController;
+use App\Http\Controllers\Notification\NotificationController;
 use App\Http\Controllers\Reviews\ReviewController;
 use App\Http\Controllers\Search\SearchController;
 use App\Http\Controllers\Support\ChatController;
@@ -63,6 +64,10 @@ Route::prefix('agent')->middleware('role:agent')->group(function(){
 
         Route::prefix('wishlists')->group(function(){
             Route::get('/', [AgentController::class, 'fetchAgentWishlists']);
+        });
+
+        Route::prefix('notifications')->group(function(){
+            Route::get('/', [NotificationController::class, 'fetchNotifications']);
         });
 
     });

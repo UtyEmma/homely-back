@@ -30,7 +30,7 @@ trait DateFunctions
 
     protected function getDateInterval($date){
         $dt = Carbon::parse($date)->diffForHumans(Carbon::now());
-        return $dt;
+        return str_replace("before","ago", $dt);
     }
 
 }

@@ -47,12 +47,12 @@ class ListingController extends Controller
 
         $data = [
             'type_id' => $listing_id,
-            'message' => 'Your Listing has been submitted and is being reviewed',
+            'message' => 'Your Property has been submitted and is being reviewed',
             'publisher_id' => $agent->unique_id,
             'receiver_id' => $agent->unique_id,
         ];
 
-        $this->makeNotification('listing', $listing);
+        $this->makeNotification('listing', $data);
 
         return $this->success($request->title." has been added to your Listings", [
             'listing' => array_merge($listing->toArray(), ['images' => json_decode($listing->images)]) 
@@ -163,7 +163,7 @@ class ListingController extends Controller
             'features' => $features,
             'details' => json_decode($listing->details),
             'images' => json_decode($listing->images),
-            'period' => str_replace("before","ago", $this->getDateInterval($listing->created_at))
+            'period' => $this->getDateInterval($listing->created_at)
         ]);
 
         $agent = Agent::find($listing->agent_id);

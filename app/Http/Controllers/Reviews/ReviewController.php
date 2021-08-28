@@ -26,6 +26,9 @@ class ReviewController extends Controller{
             $unique_id = $this->createUniqueToken('reviews', 'unique_id');
             $agent = Listing::find($listing_id)->agent;
 
+            // $agent_id = Listing::select('agent_id')->where($listing_id)->first();
+            // $agent = Agent::find($agent_id);
+
             Review::create(array_merge($request->all(), [
                 'reviewer_id' => $user->unique_id,
                 'listing_id' => $listing_id,
@@ -37,7 +40,7 @@ class ReviewController extends Controller{
             return $this->error(500, $e->getMessage());
         }
 
-        $agent->reviews = $agent->reviews + 1;
+        $agent->no_reviews = $agent->no_reviews + 1;
         $agent->rating = $this->calculateRatings($agent->unique_id, 'agent_id');
         $agent->save(); 
 
@@ -51,9 +54,9 @@ class ReviewController extends Controller{
             'type_id' => $unique_id,
             'publisher_id' => $user->unique_id,
             'receiver_id' => $agent->unique_id,
-            'message' => 'Your Property has a new Review from '.$user->firstname
+            'message' => 'You have received a new review'
         ];
-        
+
         $this->makeNotification('review', $data);
 
         return $this->success('Your Review has been Submitted', $reviews);

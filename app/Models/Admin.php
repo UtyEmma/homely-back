@@ -17,6 +17,7 @@ class Admin extends Authenticatable
     public $incrementing = false;
 
     protected $attributes = [
-        'status' => true
+        'status' => true,
+        'isLoggedIn' => false
     ];
 }

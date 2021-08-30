@@ -1,5 +1,8 @@
 @include('layouts.header')
 
+@php
+    $auth = auth()->user();
+@endphp
 
 @include('layouts.sidebar')
 
@@ -46,9 +49,18 @@
                         </thead>
                         <tbody>
                         @foreach ($listings as $listing)
+                            @php
+                                $slug = $listing->slug;
+                                $id = $auth->unique_id;
+                                $url = "http://localhost:3000/listings/$slug?auth=admin&id=$id";
+                            @endphp
+
+                            
                             <tr>
                                 <td>{{$listing->index}}</td>
-                                <td>{{$listing->title}}</td>
+                                <td>
+                                    <a href="{{$url}}" target="_blank">{{$listing->title}}</a>
+                                </td>
                                 <td><img alt="{{$listing->title}}" src="{{$listing->images[0]}}" width="35"></td>
                                 <td>
                                   <div class="badge badge-shadow {{ $listing->status ? 'bg-success' : 'bg-danger' }}">
@@ -85,6 +97,10 @@
         </section>
     </div>
 
-
+    <script>
+        function openPage(target){
+            return window.location.href = "http://"+target 
+        }
+    </script>
 
 @include('layouts.footer')

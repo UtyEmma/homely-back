@@ -17,9 +17,8 @@ class ListingController extends Controller
     public function createListing(CreateListingRequest $request){
         try {
             $agent = auth()->user();
-            $files = []; 
 
-            $request->hasFile('images') && $files = $this->handleFiles($request->file('images'));
+            $files = $request->hasFile('images') ? $this->handleFiles($request->file('images')) : [];
             $inital_fees = $request->rent + $request->extra_fees;
     
             $listing_id = $this->createUniqueToken('listings', 'unique_id');
@@ -34,7 +33,6 @@ class ListingController extends Controller
                                             'initial_fees' => $inital_fees 
                                         ]));
 
-            
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage()." :--- ".$e->getLine());
         }
@@ -90,7 +88,6 @@ class ListingController extends Controller
 
     public function agentRemoveListing($listing_id){
         $agent = auth()->user();
-        $array = [];
         $i = 0;
         $listing = Listing::find($listing_id);
         $listing->status == 'inactive' ? $listing->status = 'active' : $listing->status = 'inactive';
@@ -138,7 +135,7 @@ class ListingController extends Controller
 
     public function deleteListing($listing_id){
         try { 
-            $listing = Listing::find($listing_id);
+            $listing = Listing::find($listing_id) ?: throw new Exception("Listing Not Found", 404);
             $listing->delete();
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
@@ -148,15 +145,11 @@ class ListingController extends Controller
 
     public function getSingleListing($slug){
         try {
-            $listing = Listing::where('slug', $slug)->first();
-            if (!$listing) {
-                throw new Exception("The Requested Listing Does Not Exist", 500);
-            } 
+            $listing = Listing::where('slug', $slug)->first() ?: throw new Exception("The Requested Listing Does Not Exist", 500); 
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
-
-        $details = $this->formatListingDetails((array) json_decode($listing->details), "Amenities");
+        // $details = $this->formatListingDetails((array) json_decode($listing->details), "Amenities");
         $features = $this->formatListingDetails((array) json_decode($listing->features), "Feature");
 
         $single_listing = array_merge($listing->toArray(), [
@@ -174,24 +167,13 @@ class ListingController extends Controller
         ]);
     }
 
-    public function formatListingDetails($details, $model){
-        $array = [];
-        $model = app("App\\Models\\$model");
-        if (count($details) > 0) {
-            foreach ($details as $key => $value) {
-                $array[] = [$model->where('slug', $key)->first(), 'value' => $value];
-            }
-        } 
-        return $array;
-    }
-
     public function updateListing(Request $request, $listing_id){
-        
+
     }
 
     public function setListingAsRented($listing_id){
         try {
-            if (!$listing = Listing::find($listing_id)) { throw new Exception("Listing Not Found", 404); }
+            $listing = Listing::find($listing_id) ?: throw new Exception("Listing Not Found", 404);
             $listing->rented = true;
             $listing->status = 'rented';
             $listing->save();
@@ -203,4 +185,21 @@ class ListingController extends Controller
             'listing' => $listing
         ]);
     }
+
+    public function suspendListing($listing_id){
+        try {
+            $listing = Listing::find($listing_id) ?: throw new Exception("Listing Not Found", 404);
+            $listing->status = $listing->status === 'suspended' ? 'active' : 'suspended';
+            $listing->save();
+        } catch (Exception $e) {
+            return $this->error(500, $e->getMessage());
+        }
+        
+        return $this->success("Listing ".$listing->status, [
+            'listing' => $this->formatListingData([$listing])
+        ]);
+    }
+
+
+
 }

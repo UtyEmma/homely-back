@@ -6,7 +6,6 @@ use App\Models\Listing;
 use App\Models\User;
 use App\Models\Agent;
 use App\Models\Category;
-use App\Http\Libraries\Functions\StringFunctions;
 
 trait CompileListings{
 
@@ -92,6 +91,18 @@ trait CompileListings{
 
         }
 
+        return $array;
+    }
+
+
+    private $model;
+
+    public function formatListingDetails($details, $model){
+        $this->model = app("App\\Models\\$model");
+        $array = count($details) > 0 
+                ? $array = array_map(fn($key, $value) => [$this->model->where('slug', $key)->first(), 'value' => $value], 
+                                array_keys($details), array_values($details)) : [];
+        
         return $array;
     }
 }

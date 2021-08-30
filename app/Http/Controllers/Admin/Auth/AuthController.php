@@ -18,9 +18,13 @@ class AuthController extends Controller
         if (!Auth::attempt($request->validated())) {
                return redirect()->back()->with('message', "Incorrect Email or Password");
         }
-        
 
-        return redirect('/');
+        $id = Auth::id();
+        $admin = Admin::find($id);
+        $admin->isLoggedIn = true;
+        $admin->save();
+
+        return redirect('/')->with('success', 'Login Successful');
     }
 
     public function signup(AdminSignupRequest $request){
@@ -39,9 +43,18 @@ class AuthController extends Controller
         return redirect('login')->with('message', 'Admin Registration Successful');
     }
 
-    public function logout(){
-        // auth()->logout();
+    public function logout(Request $request){
+        $id = Auth::id();
+
+        $admin = Admin::find($id);
+        $admin->isLoggedIn = false;
+        $admin->save();
+        
         Auth::logout();
+        
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
         return redirect('login');
     }
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Agent\AgentController;
 use App\Http\Controllers\Agent\AuthAgentController;
 use App\Http\Controllers\Auth\AuthUserController;
@@ -102,7 +103,19 @@ Route::prefix('tenant')->middleware('role:tenant')->group(function(){
             Route::get('/', [FavouritesController::class, 'fetchFavourites']);
         });
     });
+});
 
+Route::get('admin/verify/{id}', [AdminController::class, 'verifyAdmin']);
+
+Route::prefix('admin')->middleware('admin')->group(function(){
+    Route::prefix('listing')->group(function(){
+        Route::get('suspend/{id}', [ListingController::class, 'suspendListing']);
+        Route::get('delete/{id}', [ListingController::class, 'deleteListing']);
+    });
+    Route::prefix('agent')->group(function(){
+        Route::get('suspend/{id}', [AgentController::class, 'suspendAgent']);
+        Route::get('delete/{id}', [AgentController::class, 'deleteAgent']);
+    });
 });
 
 Route::prefix('tenant')->group(function(){

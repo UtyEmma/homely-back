@@ -15,6 +15,10 @@ class CreateViewsTable extends Migration
     {
         Schema::create('views', function (Blueprint $table) {
             $table->id();
+            $table->string('unique_id')->unique();
+            $table->string('type');
+            $table->string('type_id');
+            $table->string('user_id');
             $table->timestamps();
         });
     }

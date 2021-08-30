@@ -13,13 +13,17 @@ class NotificationController extends Controller{
 
     public function fetchNotifications(){
         $user = auth()->user();
-        $all = Notification::where('receiver_id', $user->unique_id)->limit(3)->get();
+        $all = Notification::where('receiver_id', $user->unique_id)->orderByDesc('created_at')->limit(3)->get();
+        $count = count(Notification::where('receiver_id', $user->unique_id)->where('read', false)->get());
 
         $compiled_notifications = $this->compileNotifications($all);
 
         $notifications = $this->formatNotifications($compiled_notifications);
         
-        return $this->success('Notifications Fetched', $notifications);
+        return $this->success('Notifications Fetched', [
+            'notifications' => $notifications,
+            'no_of_notifications' => $count
+        ]);
     }
 
     public function formatNotifications($notifications) {

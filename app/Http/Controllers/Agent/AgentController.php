@@ -48,6 +48,9 @@ class AgentController extends Controller
         return $this->success("Logged In User Loaded", $this->agent());
     }
 
+    private $rented = [];
+    private $active = [];
+
     public function single($username){
         try {
             $agent = Agent::where('username', $username)->first() ? Agent::where('username', $username)->first() : throw new Exception("User Not Found", 404);
@@ -64,15 +67,28 @@ class AgentController extends Controller
 
         $formatted_listings = $this->formatListingData($listings);
         $listings = collect($formatted_listings);
+            
 
-        $rented = $listings->where('status', 'rented');
-        $not_rented = $listings->where('status', 'active'); 
+        $listings->filter(function($listing, $key){
+            if ($listing['status'] === 'rented') {
+                array_push($this->rented, $listing);
+            }
+        });
+
+        $listings->filter(function($listing, $key){
+            if ($listing['status'] === 'active') {
+                array_push($this->active, $listing);
+            }
+        });
+
+        // $rented = $listings->where('status', 'rented');
+        // $active = $listings->where('status', 'active');
 
         return $this->success("Agent Fetched", [
             'agent' => $formatted_agent,
             'listing' => [
-                'rented' => $rented,
-                'not_rented' => $not_rented
+                'rented' => $this->rented,
+                'active' => $this->active
             ],
             'reviews' => $reviews
         ]);

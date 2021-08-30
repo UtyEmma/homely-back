@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Notification;
 use App\Models\Listing;
 use App\Models\Notification;
 use App\Models\Review;
+use App\Models\Support;
 
 trait CompileNotifications {
 
@@ -32,8 +33,8 @@ trait CompileNotifications {
         return $notification;
     }
 
-    public function formatSupportNotification(){
-
+    public function formatSupportNotification($notification){
+        return $notification;
     }
 
     public function formatReviewNotification($notification){

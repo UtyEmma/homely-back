@@ -9,18 +9,14 @@ use Exception;
 trait NotificationHandler {
     use Token;
 
-    public function makeNotification($type, $data, string $message = "" ){
-        $this->user = auth()->user();     
+    public function makeNotification($type, $data){     
         switch ($type) {
             case 'listing':
-                return $this->handleListing($data, $type, $message);
-                break;
+                return $this->handleListing($data, $type);
             case 'support':
                 return $this->handleSupport($data, $type);
-                break;
             case 'review':
                 return $this->handleReviews($data, $type);
-                break;
             case 'chat':
                 return $this->handleChat($data, $type);
                 break;

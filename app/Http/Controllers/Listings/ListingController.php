@@ -168,7 +168,9 @@ class ListingController extends Controller
     }
 
     public function updateListing(Request $request, $listing_id){
-
+        return $this->success("Update Successful", [
+            'response' => $request->all()
+        ]);
     }
 
     public function setListingAsRented($listing_id){

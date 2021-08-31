@@ -8,47 +8,42 @@ use Illuminate\Support\Facades\Storage;
 
 trait FileHandler{
 
-    public function handleFiles($file){
+    public function handleFiles($file, $update = false, $old_files = []){
         !is_array($file) ? $newFile = [$file] : $newFile = $file;
-        $files = $this->upload($newFile);
+        $files = $update ? $this->update($file, $old_files) : $this->upload($newFile);
         !is_array($files) ? $files = json_encode([$file]) : $files = json_encode($files);
         return $files;
     }
 
     public function upload($files){
-        !is_array($files) && throw new Exception("No files selected");
+        is_array($files) ?: throw new Exception("No files selected");
 
         for($i=0; $i < count($files); $i++) {
             $file = $files[$i];
-            !file_exists($file) && throw new Exception("No files Selected");
-            $url = Cloudinary::uploadFile($file->getRealPath())->getSecurePath();
-            !$url && throw new Exception("File Could Not Be Saved");
+            file_exists($file) ?: throw new Exception("No files Selected");
+            $url = Cloudinary::uploadFile($file->getRealPath())->getSecurePath() ?: throw new Exception("File Could Not Be Saved");
+            // $url ?: throw new Exception("File Could Not Be Saved");
             $file_array[$i] = $url;
         }
-
         return $file_array;
     }
     
-    public function replace($files, $type, $oldFiles, $hasFile){
-        if ($oldFiles) {
-            foreach ($oldFiles as $value) {
-                Storage::delete($value->path);
-            }   
-        }
-        
-        if ($hasFile) {
-            $uploaded_files = $this->upload($files, $type);
-            return $uploaded_files;
-        }
-
-        return null;
-    }
-
-    public function delete($files){
-        if ($files) {
-            foreach ($files as $value) {
-                Storage::delete($value->path);
+    public function update($files, $old_files){   
+        if($old_files){
+            foreach (json_decode($old_files) as $key => $file) {
+                $this->deleteFile($file);
             }
         }
+        return $this->upload($files);
+    }
+
+    private function delete($file){
+        $cloudinary_id = $this->extractFileId($file);
+        Cloudinary::delete($cloudinary_id);
+    }
+
+    private function extractFileId($file){
+        $ext = pathinfo($file, PATHINFO_EXTENSION);
+        return basename($file, $ext);
     }
 }

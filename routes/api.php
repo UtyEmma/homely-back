@@ -42,6 +42,7 @@ Route::prefix('agent')->middleware('role:agent')->group(function(){
         Route::prefix('listing')->group(function(){
             Route::post('create', [ListingController::class, 'createListing']);
             Route::get('agents-listings', [ListingController::class, 'getAgentsListings']);
+            Route::post('update/{listing_id}', [ListingController::class, 'updateListing']);
             Route::get('delete/{listing_id}', [ListingController::class, 'deleteListing']);
             Route::get('remove/{listing_id}', [ListingController::class, 'agentRemoveListing']);
             Route::get('rented/{listing_id}', [ListingController::class, 'setListingAsRented']);

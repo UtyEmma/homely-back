@@ -24,7 +24,7 @@ class CreateAmenityRequest extends FormRequest
     public function rules()
     {
         return [
-            'amenity_title' => ['required', 'string']
+            'amenity_title' => ['required', 'string', 'unique:amenities,amenity_title']
         ];
     }
 }

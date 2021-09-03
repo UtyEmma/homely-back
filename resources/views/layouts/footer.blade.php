@@ -25,6 +25,17 @@
     </script>
     <script src="{{asset('js/main.js')}}"></script>
 
+    @if($errors->any())
+        <script>
+            toastr.options = {
+                "closeButton" : true,
+                "progressBar" : true,
+                "positionClass": "toast-top-center",
+            }
+      		toastr.error("Invalid Input Data");
+        </script>    
+    @endif
+    
     @if(Session::has('success'))
         <script>
             toastr.options = {
@@ -66,7 +77,7 @@
             "positionClass": "toast-top-center",
         }
           toastr.error("{{ session('warning') }}", "Error");
-    </script>    
+    </script>   
 @endif
 </body>
 

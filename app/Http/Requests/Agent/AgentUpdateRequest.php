@@ -32,13 +32,12 @@ class AgentUpdateRequest extends FormRequest
             'location' => 'string',
             'phone_number' => 'numeric|digits:11',
             'whatsapp_no' => 'numeric|digits:11',
-            'username' => 'unique:agents,username',
             'state' => 'string',
             'city' => 'string',
             'website' => 'url',
-            'twitter' => 'url',
-            'facebook' => 'url',
-            'instagram' => 'url',
+            'twitter' => 'string',
+            'facebook' => 'string',
+            'instagram' => 'string',
             'bio' => 'string',
             'title' => 'string'
         ];

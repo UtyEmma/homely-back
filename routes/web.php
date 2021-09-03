@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\SupportController;
 use App\Http\Controllers\Admin\TenantController;
 use App\Http\Controllers\Admin\WishlistController;
 use App\Models\Admin;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,6 +25,37 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::prefix('action')->group(function(){
+    Route::get('default-admin', function(){
+        Artisan::call('seed:admin');
+        return redirect('login')->with('success', "Default Admin Created Please Login");
+    });
+
+    Route::get('/config-clear', function() {
+        Artisan::call('config:clear');
+        return '<code>Configurations cleared</code>';
+    });
+    
+    Route::get('/cache-clear', function() {
+        Artisan::call('cache:clear');
+        return '<code>Cache cleared</code>';
+    });
+
+    Route::get('/config-cache', function() {
+        Artisan::call('config:Cache');
+        return '<code>Configurations cache cleared</code>';
+    });
+
+    Route::get('/migrate', function() {
+        Artisan::call('migrate');
+        return '<code>Database Migrated</code>';
+    });
+
+    Route::get('/clear-db', function() {
+        Artisan::call('migrate:fresh');
+        return '<code>Database cleared Successfully</code>';
+    });
+});
 
 Route::get('login', [AppController::class, 'login'])->name('login');
 Route::get('register', [AppController::class, 'signup']);

@@ -4,7 +4,6 @@ namespace App\Http\Libraries\Files;
 
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Exception;
-use Illuminate\Support\Facades\Storage;
 
 trait FileHandler{
 
@@ -15,7 +14,7 @@ trait FileHandler{
         return $files;
     }
 
-    public function upload($files){
+    private function upload($files){
         is_array($files) ?: throw new Exception("No files selected");
 
         for($i=0; $i < count($files); $i++) {
@@ -28,7 +27,7 @@ trait FileHandler{
         return $file_array;
     }
     
-    public function update($files, $old_files){   
+    public function replace($files, $old_files){   
         if($old_files){
             foreach (json_decode($old_files) as $key => $file) {
                 $this->deleteFile($file);
@@ -37,9 +36,9 @@ trait FileHandler{
         return $this->upload($files);
     }
 
-    private function delete($file){
+    private function deleteFile($file){
         $cloudinary_id = $this->extractFileId($file);
-        Cloudinary::delete($cloudinary_id);
+        Cloudinary::destroy($cloudinary_id);
     }
 
     private function extractFileId($file){

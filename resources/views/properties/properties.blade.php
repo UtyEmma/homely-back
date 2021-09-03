@@ -55,23 +55,23 @@
                                                 <td class="text-bold-500">{{$category->category_title}}</td>
                                                 <td>{{$category->category_desc}}</td>
                                                 <td class="text-bold-500">
-                                                    <div class="badge badge-shadow {{ $category->status ? 'bg-success' : 'bg-danger' }}">
-                                                        {{ $category->status ? 'Active' : 'Inactive' }}
+                                                    <div class="badge badge-shadow {{ $category->status ? 'bg-success' : 'bg-warning' }}">
+                                                        {{ $category->status ? 'Active' : 'Suspended' }}
                                                     </div>
                                                 </td>
-                                                <td class="dropdown">
-                                                    <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        <i class="bi bi-three-dots"></i>
-                                                    </button>
-                                                    <div class="dropdown-menu dropup action-dropdown" aria-labelledby="dropdownMenuButton">
-                                                        <a class="dropdown-item"  >Edit</a>
-                                                        <a class="dropdown-item" href="categories/suspend/{{$category->unique_id}}">
-                                                        {{ $category->status ? 'Suspend' : 'Restore' }}
-                                                        </a>
-                                                        <a class="dropdown-item" href="#">Delete</a>
+                                                <td >
+                                                    <div class="dropdown">
+                                                        <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            <i class="bi bi-three-dots"></i>
+                                                        </button>
+                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                            <a class="dropdown-item" >Edit</a>
+                                                            <a class="dropdown-item" href="categories/suspend/{{$category->unique_id}}">
+                                                                {{ $category->status ? 'Suspend' : 'Restore' }}
+                                                            </a>
+                                                            <a class="dropdown-item" href="#">Delete</a>
+                                                        </div>
                                                     </div>
-                                                    </div>
-                                                </div>
                                                 </td>
                                             </tr>
                                         @endforeach

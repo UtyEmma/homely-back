@@ -19,10 +19,10 @@ class DetailController extends Controller
                 'unique_id' => $unique_id
             ]));
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return redirect()->back()->with('error', $e->getMessage());
         }
             
-        return redirect()->back()->with(['message', 'Feature Created']);
+        return redirect()->back()->with('success', 'Feature Created');
     }
     
     public function createAmenities(CreateAmenityRequest $request){
@@ -33,10 +33,10 @@ class DetailController extends Controller
                 'unique_id' => $unique_id
             ]));
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return redirect()->back()->with('error', $e->getMessage());
         }
             
-        return redirect()->back()->with(['message', 'Amenity Created']);
+        return redirect()->back()->with('success', 'Amenity Created');
     }
 
     public function getDetails (){

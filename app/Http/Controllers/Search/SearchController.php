@@ -8,6 +8,8 @@ use App\Models\Listing;
 use App\Http\Controllers\Listings\CompileListings;
 use Exception;
 
+use function PHPUnit\Framework\returnSelf;
+
 class SearchController extends Controller{
     use CompileListings;
 
@@ -29,12 +31,22 @@ class SearchController extends Controller{
                 return $q->where('city', $city); 
             });
 
-            $query->when($request->price, function($q, $income){ 
-                return $q->where('rent', $income); 
+            $query->when($request->minprice, function($q, $minprice){ 
+                return $q->where('rent', '>=' ,$minprice); 
             });
 
-            $query->when($request->bedrooms, function($q, $bedrooms){ 
-                return $q->where('no_bedrooms', $bedrooms); 
+            $query->when($request->maxprice, function($q, $maxprice){ 
+                return $q->where('rent', '<=' ,$maxprice); 
+            });
+
+            $query->when($request->bedrooms, function($q, $bedrooms){
+                switch ($bedrooms) {
+                    case '6':
+                        return $q->where('no_bedrooms', '>=', $bedrooms );
+                    default:
+                    return $q->where('no_bedrooms', $bedrooms);
+                        break;
+                } 
             });
 
             $query->when($request->bathrooms, function($q, $bathrooms){ 
@@ -42,7 +54,6 @@ class SearchController extends Controller{
             });
 
             $listings = $this->formatListingData($query);
-        
         }catch(Exception $e){
             return $this->error(500, $e->getMessage());
         }

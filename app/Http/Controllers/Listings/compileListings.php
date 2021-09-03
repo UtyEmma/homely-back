@@ -21,9 +21,35 @@ trait CompileListings{
         $query->when($request->query('state'), function($q, $state){ return $q->where('state', $state); });
         $query->when($request->query('city'), function($q, $lga){ return $q->where('city', $lga); });
         $query->when($request->query('type'), function($q, $category){ return $q->where('type', $category); });
-        $query->when($request->query('price'), function($q, $income){ return $q->where('rent', $income); });
+        $query->when($request->query('price'), function($q, $income){ 
+            switch ($income) {
+                case '0':
+                    return $q->where('rent', "<=", 200000);
+                case '1':
+                    return $q->where('rent', ">=", 200000)->where('rent', "<=", 400000);
+                case '2':
+                    return $q->where('rent', ">=", 400000)->where('rent', "<=", 800000);
+                case '3':
+                    return $q->where('rent', ">=", 800000)->where('rent', "<=", 2000000);
+                case '4':
+                    return $q->where('rent', ">=", 2000000);
+                default:
+                    break;
+            }
+        });
 
+        $query->when($request->query('rooms'), function($q, $rooms){ 
+            switch ($rooms) {
+                case '10':
+                    return $q->where('no_bedrooms', '>=', $rooms );
+                default:
+                return $q->where('no_bedrooms', $rooms);
+                    break;
+            }
+        });
+        
         $listing = $query->get();
+
         return $listing;
     }
 

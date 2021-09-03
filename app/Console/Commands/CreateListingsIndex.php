@@ -19,7 +19,7 @@ class CreateListingsIndex extends Command
      *
      * @var string
      */
-    protected $description = 'GEt LAravel Index';
+    protected $description = 'GEt Laravel Index';
 
     /**
      * Create a new command instance.

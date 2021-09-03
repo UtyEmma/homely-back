@@ -106,10 +106,7 @@ class ListingController extends Controller
     public function fetchListings(Request $request){
         try {
             $user = auth()->user();
-
-            count($request->query()) < 1 
-                    ? $listings = $this->compileListings() 
-                        : $listings = $this->compileListingWithQuery($request);
+            $listings  = count($request->query()) < 1 ?  $this->compileListings() : $this->compileListingWithQuery($request);
 
             $featured_listings = $this->compileFeaturedListings($user);
 
@@ -145,7 +142,7 @@ class ListingController extends Controller
 
     public function getSingleListing($slug){
         try {
-            $listing = Listing::where('slug', $slug)->first() ?: throw new Exception("The Requested Listing Does Not Exist", 500); 
+            if(!$listing = Listing::where('slug', $slug)->first()) {throw new Exception("The Requested Listing Does Not Exist", 500);} 
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
@@ -167,6 +164,7 @@ class ListingController extends Controller
         ]);
     }
 
+    
     public function updateListing(Request $request, $listing_id){
         return $this->success("Update Successful", [
             'response' => $request->all()
@@ -175,7 +173,7 @@ class ListingController extends Controller
 
     public function setListingAsRented($listing_id){
         try {
-            $listing = Listing::find($listing_id) ?: throw new Exception("Listing Not Found", 404);
+            if(!$listing = Listing::find($listing_id)){ throw new Exception("Listing Not Found", 404); }
             $listing->rented = true;
             $listing->status = 'rented';
             $listing->save();
@@ -184,7 +182,10 @@ class ListingController extends Controller
         }
 
         return $this->success("Listing Set as Rented", [
-            'listing' => $listing
+            'listing' => array_merge($listing->toArray(), [
+                                    'images' => json_decode($listing->images),
+                                    'created_at' => $this->getDateInterval($listing->created_at)
+                                ])
         ]);
     }
 

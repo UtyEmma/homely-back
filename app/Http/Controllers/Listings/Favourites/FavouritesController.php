@@ -21,7 +21,7 @@ class FavouritesController extends Controller{
             }
 
             if (Favourite::where('listing_id', $listing_id)->where('user_id', $user->unique_id)->first()) {
-                throw new Exception("This property is already added to your Favourites", 400);
+                return $this->removeFromFavourites($listing_id);
             }
 
             $unique_id = $this->createUniqueToken('favourites', 'unique_id');
@@ -36,7 +36,7 @@ class FavouritesController extends Controller{
             $user->no_favourites = $user->no_favourites + 1;
             $user->save();
 
-            $favourites = (array) User::find($user->unique_id)->favourites;
+            $favourites = User::find($user->unique_id)->favourites;
             $array = [];
             
             foreach ($favourites as $key => $favourite){
@@ -59,7 +59,7 @@ class FavouritesController extends Controller{
         try {
             $user = auth()->user();
             if (!$favourite = Favourite::where('listing_id', $listing_id)->where('user_id', $user->unique_id)->first()) {
-                throw new Exception("This property is not added to your Favourites", 400);
+                return $this->addToFavourites($listing_id);
             }
             $favourite->delete();
 
@@ -67,7 +67,7 @@ class FavouritesController extends Controller{
             $user->no_favourites = $user->no_favourites + 1;
             $user->save();
 
-            $favourites = (array) User::find($user->unique_id)->favourites;
+            $favourites = User::find($user->unique_id)->favourites;
             $array = [];
             
             foreach ($favourites as $key => $favourite){
@@ -88,18 +88,7 @@ class FavouritesController extends Controller{
 
     public function fetchFavourites(){
         try {
-            $user = auth()->user();
-            $favourites = User::find($user->unique_id)->favourites;
-            $array = [];
-            
-            if (count($favourites)) {
-                foreach ($favourites as $key => $favourite){
-                    $listing_id = $favourite->listing_id;
-                    $array[] = Listing::find($listing_id);
-                }   
-            }
-
-            $listings = $this->formatListingData($array);
+           $listings = $this->allFavourites();
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
@@ -107,5 +96,20 @@ class FavouritesController extends Controller{
         return $this->success("Favourites Fetched", [
             'listings' => $listings
         ]);
+    }
+
+    public function allFavourites(){
+        $user = auth()->user();
+        $favourites = User::find($user->unique_id)->favourites;
+        $array = [];
+        
+        if (count($favourites)) {
+            foreach ($favourites as $key => $favourite){
+                $listing_id = $favourite->listing_id;
+                $array[] = Listing::find($listing_id);
+            }   
+        }
+
+        return $this->formatListingData($array, $user);
     }
 }

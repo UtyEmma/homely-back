@@ -16,6 +16,7 @@ class SearchController extends Controller{
     public function searchListings(Request $request){
         try{
             $listings = Listing::search($request->keyword)->where('status','active')->get();
+            $user = auth()->user();
 
             $query = collect($listings);
 
@@ -53,7 +54,7 @@ class SearchController extends Controller{
                 return $q->where('no_bathrooms', $bathrooms); 
             });
 
-            $listings = $this->formatListingData($query);
+            $listings = $this->formatListingData($query, $user);
         }catch(Exception $e){
             return $this->error(500, $e->getMessage());
         }

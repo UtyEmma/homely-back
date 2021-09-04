@@ -6,12 +6,14 @@ use App\Models\Listing;
 use App\Models\User;
 use App\Models\Agent;
 use App\Models\Category;
+use App\Models\Favourite;
+use Illuminate\Support\Facades\Auth;
 
 trait CompileListings{
 
-    protected function compileListings(){
+    protected function compileListings($user){
         $all = Listing::where('status', 'active')->get();
-        $listings = $this->formatListingData($all);
+        $listings = $this->formatListingData($all, $user);
         return $listings;
     }
 
@@ -57,7 +59,7 @@ trait CompileListings{
     protected function compileFeaturedListings($user){
         $user ? $user = User::find($user->unique_id) : $user = null;
         $related_listings = $this->fetchUserRelatedListings($user, 3);   
-        return $this->formatListingData($related_listings);
+        return $this->formatListingData($related_listings, $user);
     }
 
     private function fetchUserRelatedListings ($user, $index) {
@@ -75,16 +77,24 @@ trait CompileListings{
         return $listings;
     }
 
-    private function formatListingData($listings){
+    public function formatListingData($listings, $user = null){
         $array = [];
         
         if (count($listings) > 0) {
             foreach($listings as $listing) {
                 $listing = Listing::find($listing['unique_id']);
 
+                $is_Favourite = false;
+
+                if ($user) {
+                    $is_Favourite = Favourite::where('user_id', $user->unique_id)->where('listing_id', $listing['unique_id'])->first();   
+                }
+
                 $array[] = array_merge($listing->toArray(), [
                                 'images' => json_decode($listing->images),
                                 'created_at' => $this->parseTimestamp($listing->created_at)->date,
+                                'isFavourite' => $is_Favourite ? true : false,
+                                'user' => $user
                             ]);
             }
         }
@@ -92,7 +102,7 @@ trait CompileListings{
         return $array;
     }
 
-    private function compilePopularListings(){
+    private function compilePopularListings($user){
         $array = [];
         $categories = Category::all();
         $i = 0;
@@ -101,7 +111,7 @@ trait CompileListings{
                 $title = $category->category_title;
                              
                 $category_listings = Listing::where('type', $title)->where('status', 'active')->orderBy('views', 'desc')->limit(9)->get();
-                $formatted_listings = $this->formatListingData($category_listings);
+                $formatted_listings = $this->formatListingData($category_listings, $user);
 
                 if (count($category_listings) > 0 && $i < 7) {
                     $slug = $this->createDelimitedString($title, ' ', '_');

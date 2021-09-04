@@ -69,8 +69,10 @@ class AgentController extends Controller
         $formatted_agent = array_merge($agent->toArray(), [
                             'avatar' => json_decode($agent->avatar),
                         ]);
-
-        $formatted_listings = $this->formatListingData($listings);
+                        
+        auth()->shouldUse('tenant');
+        $user = auth()->user();
+        $formatted_listings = $this->formatListingData($listings, $user);
         $listings = collect($formatted_listings);
             
 

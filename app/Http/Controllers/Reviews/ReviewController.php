@@ -62,6 +62,8 @@ class ReviewController extends Controller{
         return $this->success('Your Review has been Submitted', $reviews);
     }
 
+
+
     public function fetchAgentReviews(){
         try{
             $agent = auth()->user();

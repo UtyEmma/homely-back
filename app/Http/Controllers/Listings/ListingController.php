@@ -95,7 +95,7 @@ class ListingController extends Controller
 
         $listings = Agent::find($agent->unique_id)->listings;
 
-        $array = $this->formatListingData($listings);
+        $array = $this->formatListingData($listings, $agent);
 
         return $this->success('Property Removed Successfully', [
             'listings' => $array,
@@ -105,8 +105,9 @@ class ListingController extends Controller
 
     public function fetchListings(Request $request){
         try {
+            auth()->shouldUse('tenant');
             $user = auth()->user();
-            $listings  = count($request->query()) < 1 ?  $this->compileListings() : $this->compileListingWithQuery($request);
+            $listings  = count($request->query()) < 1 ?  $this->compileListings($user) : $this->compileListingWithQuery($request);
 
             $featured_listings = $this->compileFeaturedListings($user);
 
@@ -122,7 +123,8 @@ class ListingController extends Controller
 
     public function fetchPopularListings(){
         try {
-            $listings = $this->compilePopularListings();
+            $user = auth()->user();
+            $listings = $this->compilePopularListings($user);
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
@@ -191,6 +193,7 @@ class ListingController extends Controller
 
     public function suspendListing($listing_id){
         try {
+            $user = auth()->user();
             $listing = Listing::find($listing_id) ?: throw new Exception("Listing Not Found", 404);
             $listing->status = $listing->status === 'suspended' ? 'active' : 'suspended';
             $listing->save();
@@ -199,7 +202,7 @@ class ListingController extends Controller
         }
         
         return $this->success("Listing ".$listing->status, [
-            'listing' => $this->formatListingData([$listing])
+            'listing' => $this->formatListingData([$listing], $user)
         ]);
     }
 

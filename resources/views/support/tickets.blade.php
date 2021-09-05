@@ -4,11 +4,7 @@
 @include('layouts.sidebar')
 
 <div id="main">
-    <header class="mb-3">
-        <a href="#" class="burger-btn d-block d-xl-none">
-            <i class="bi bi-justify fs-3"></i>
-        </a>
-    </header>
+    @include('layouts.nav')
 
     <div class="page-heading email-application">
         <div class="page-title">
@@ -20,7 +16,8 @@
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+                            <li class="breadcrumb-item current"><span>Support</span></li>
                         </ol>
                     </nav>
                 </div>
@@ -39,25 +36,27 @@
                         <!-- sidebar close icon -->
                         <div class="email-app-menu">
                             <div class="sidebar-menu-list ps my-5">
+                                <div class="mb-5">
+                                    <h4>Support Tickets</h4>
+                                </div>
                                 <!-- sidebar menu  -->
                                 <div class="list-group list-group-messages">
-                                    <a href="#" class="list-group-item pt-0 active" id="inbox-menu">
-                                        <div class="fonticon-wrap d-inline me-3">
-                                            <i class="bi bi-alarm"></i>
+                                    <a href="/support" class="list-group-item d-flex align-items-center {{$status === 'all' ? 'active' : ''}}">
+                                        <div class="me-4 d-flex align-items-center">
+                                            <i class="bi bi-grid"></i>
                                         </div>
                                         All
-                                        <span
-                                            class="badge badge-light-primary badge-pill badge-round float-right mt-50">5</span>
+                                        <span class="badge badge-light-primary badge-pill badge-round text-primary float-right mt-50 ms-4">5</span>
                                     </a>
-                                    <a href="#" class="list-group-item">
-                                        <div class="fonticon-wrap d-inline me-3">
-                                            <i class="bi bi-alarm"></i>
+                                    <a href="/support/pending" class="list-group-item d-flex align-items-center {{$status === 'pending' ? 'active' : ''}}">
+                                        <div class="me-3 d-flex align-items-center">
+                                            <i class="bi bi-chat-dots"></i>
                                         </div>
                                         Pending
                                     </a>
-                                    <a href="#" class="list-group-item">
-                                        <div class="fonticon-wrap d-inline me-3">
-                                            <i class="bi bi-alarm"></i>
+                                    <a href="/support/resolved" class="list-group-item d-flex align-items-center {{$status === 'resolved' ? 'active' : ''}}">
+                                        <div class="fonticon-wrap d-inline me-3 d-flex align-items-center">
+                                            <i class="bi bi-check-all"></i>
                                         </div> 
                                         Resolved
                                     </a>
@@ -155,10 +154,7 @@
                                                 </svg>
                                             </button>
                                             <button class="btn btn-icon email-pagination-next d-none d-sm-block">
-                                                <svg class="bi" width="1.5em" height="1.5em" fill="currentColor">
-                                                    <use
-                                                        xlink:href="assets/vendors/bootstrap-icons/bootstrap-icons.svg#chevron-right" />
-                                                </svg>
+                                                <i class="bi bi-chevron-right"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -182,19 +178,19 @@
                                                     <div class="media-body">
                                                         <div class="user-details">
                                                             <div class="mail-items">
-                                                                <a href="/support/{{$ticket['ticket']->unique_id}}">
+                                                                <a href="/support/ticket/{{$ticket['ticket']->unique_id}}">
                                                                     <span class="list-group-item-text text-truncate mb-0">{{$ticket['ticket']->title}}</span>
                                                                 </a>
                                                             </div>
                                                             <div class="mail-meta-item">
-                                                                <span class="float-right">
-                                                                    <span class="mail-date">21 Mar</span>
-                                                                </span>
+                                                                <div class="badge bg-primary fw-normal {{$ticket['ticket']->status === 'pending' ? 'bg-warning' : 'bg-success'}}">
+                                                                    {{$ticket['ticket']->status}}
+                                                                </div>
                                                             </div>
                                                         </div>
                                                         <div class="mail-message">
                                                             <p class="list-group-item-text mb-0 truncate">
-                                                                {{-- Created on -  --}}
+                                                                <span class="fw-bold">Created on -</span> {{$ticket['ticket']->created_at->date}} | <span class="fw-bold">Agent -</span>
                                                                 {{$ticket['agent']->firstname}} {{$ticket['agent']->lastname}}
                                                             </p>
                                                             <div class="mail-meta-item">
@@ -206,133 +202,21 @@
                                                     </div>
                                                 </li>
                                                 @endforeach
-
+                                            @else
+                                                <!-- no result when nothing to show on list -->
+                                                <div class="card card-body">
+                                                    <h2>No Items Found</h2>
+                                                </div>
                                             @endif
                                         </ul>
                                         <!-- email user list end -->
     
-                                        <!-- no result when nothing to show on list -->
-                                        <div class="no-results">
-                                            <i class="bx bx-error-circle font-large-2"></i>
-                                            <h5>No Items Found</h5>
-                                        </div>
-                                        <div class="ps__rail-x" style="left: 0px; bottom: 0px;">
-                                            <div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div>
-                                        </div>
-                                        <div class="ps__rail-y" style="top: 0px; height: 733px; right: 0px;">
-                                            <div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 567px;"></div>
-                                        </div>
+                                        
                                     </div>
                                 </div>
                             </div>
                             <!--/ Email list Area -->
     
-                            <!-- Detailed Email View -->
-                            <div class="email-app-details">
-                                <!-- email detail view header -->
-                                <div class="email-detail-header">
-                                    <div class="email-header-left d-flex align-items-center mb-1">
-                                        <span class="go-back me-3">
-                                            <span class="fonticon-wrap d-inline">
-                                                <i class="fas fa-chevron-left"></i>
-                                            </span>
-                                        </span>
-                                        <h5 class="email-detail-title font-weight-normal mb-0">
-                                            Advertising Internet Online
-                                            <span class="badge badge-light-danger badge-pill ms-1">PRODUCT</span>
-                                        </h5>
-                                    </div>
-                                    <div class="email-header-right mb-1 ml-2 pl-1">
-                                        <ul class="list-inline m-0">
-                                            <li class="list-inline-item">
-                                                <button class="btn btn-icon action-icon">
-                                                    <span class="fonticon-wrap">
-                                                        <i class="fas fa-trash"></i>
-                                                    </span>
-                                                </button>
-                                            </li>
-                                            <li class="list-inline-item">
-                                                <button class="btn btn-icon action-icon">
-                                                    <span class="fonticon-wrap">
-                                                        <svg class="bi" width="1.5em" height="1.5em" fill="currentColor">
-                                                            <use
-                                                                xlink:href="assets/vendors/bootstrap-icons/bootstrap-icons.svg#envelope" />
-                                                        </svg>
-                                                    </span>
-                                                </button>
-                                            </li>
-                                            <li class="list-inline-item">
-                                                <div class="dropdown">
-                                                    <button class="btn btn-icon dropdown-toggle action-icon"
-                                                        id="open-mail-menu" data-toggle="dropdown" aria-haspopup="true"
-                                                        aria-expanded="false">
-                                                        <span class="fonticon-wrap">
-                                                            <i class="fas fa-folder"></i>
-                                                        </span>
-                                                    </button>
-                                                    <div class="dropdown-menu dropdown-menu-right"
-                                                        aria-labelledby="open-mail-menu">
-                                                        <a class="dropdown-item" href="#"><i class="bx bx-edit"></i>
-                                                            Draft</a>
-                                                        <a class="dropdown-item" href="#"><i class="bx bx-info-circle"></i>
-                                                            Spam</a>
-                                                        <a class="dropdown-item" href="#"><i class="bx bx-trash"></i>
-                                                            Trash</a>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="list-inline-item">
-                                                <div class="dropdown">
-                                                    <button class="btn btn-icon dropdown-toggle action-icon"
-                                                        id="open-mail-tag" data-toggle="dropdown" aria-haspopup="true"
-                                                        aria-expanded="false">
-                                                        <span class="fonticon-wrap">
-                                                            <i class="fas fa-tag"></i>
-                                                        </span>
-                                                    </button>
-                                                    <div class="dropdown-menu dropdown-menu-right"
-                                                        aria-labelledby="open-mail-tag">
-                                                        <a href="#" class="dropdown-item align-items-center">
-                                                            <span class="bullet bullet-success bullet-sm"></span>
-                                                            Product
-                                                        </a>
-                                                        <a href="#" class="dropdown-item align-items-center">
-                                                            <span class="bullet bullet-primary bullet-sm"></span>
-                                                            Work
-                                                        </a>
-                                                        <a href="#" class="dropdown-item align-items-center">
-                                                            <span class="bullet bullet-warning bullet-sm"></span>
-                                                            Misc
-                                                        </a>
-                                                        <a href="#" class="dropdown-item align-items-center">
-                                                            <span class="bullet bullet-danger bullet-sm"></span>
-                                                            Family
-                                                        </a>
-                                                        <a href="#" class="dropdown-item align-items-center">
-                                                            <span class="bullet bullet-info bullet-sm"></span>
-                                                            Design
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="list-inline-item">
-                                                <span class="no-of-list d-none d-sm-block ms-1">1-10 of 653</span>
-                                            </li>
-                                            <li class="list-inline-item">
-                                                <button class="btn btn-icon email-pagination-prev action-icon">
-                                                    <i class="bx bx-chevron-left"></i>
-                                                </button>
-                                            </li>
-                                            <li class="list-inline-item">
-                                                <button class="btn btn-icon email-pagination-next action-icon">
-                                                    <i class="bx bx-chevron-right"></i>
-                                                </button>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--/ Detailed Email View -->
                         </div>
                     </div>
                 </div>

@@ -53,4 +53,27 @@ class DetailController extends Controller
             return $this->error(500, $e->getMessage());
         }
     }
+
+    public function updateAmenity (Request $request, $id) {
+        if (!$amenity = Amenities::find($id)) { return redirect()->back()->with('error', 'Amenity not Found'); }
+        $amenity->amenity_title = $request->amenity_title;
+        $amenity->save();
+        return redirect()->back()->with('success', 'Amenity Updated');
+    }
+
+    public function deleteAmenity ($id) {
+        if (!$amenity = Amenities::find($id)) { return redirect()->back()->with('error', 'Amenity not Found'); }
+        $amenity->delete();
+        return redirect()->back()->with('success', 'Amenity Deleted');
+    }
+
+    public function suspendAmenity ($id) {
+        if (!$amenity = Amenities::find($id)) { return redirect()->back()->with('error', 'Amenity not Found'); }
+        $amenity->status = !$amenity->status;
+        $amenity->save();
+
+        $message = $amenity->status ? 'Restored' : 'Suspended';
+ 
+        return redirect()->back()->with('success', "Amenity $message");
+    }
 }

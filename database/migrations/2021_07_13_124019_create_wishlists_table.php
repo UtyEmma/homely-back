@@ -26,6 +26,7 @@ class CreateWishlistsTable extends Migration
             $table->string('state');
             $table->string('city');
             $table->string('area');
+            $table->boolean('status');
             $table->longText('additional');
             $table->timestamps();
         });

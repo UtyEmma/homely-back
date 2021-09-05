@@ -7,12 +7,8 @@
 @include('layouts.sidebar')
 
 <div id="main">
-    <header class="mb-3">
-        <a href="#" class="burger-btn d-block d-xl-none">
-            <i class="bi bi-justify fs-3"></i>
-        </a>
-    </header>
-
+    @include('layouts.nav')
+    
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -23,8 +19,8 @@
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
-                            <!-- <li class="breadcrumb-item active" aria-current="page">DataTable</li> -->
+                            <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Properties</li>
                         </ol>
                     </nav>
                 </div>
@@ -43,6 +39,7 @@
                                 <th>Index</th>
                                 <th>Title</th>
                                 <th>Image</th>
+                                <th>Reviews</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -63,13 +60,21 @@
                                 </td>
                                 <td><img alt="{{$listing->title}}" src="{{$listing->images[0]}}" width="35"></td>
                                 <td>
+                                    <a href="/reviews/{{$listing->unique_id}}" class="d-flex align-items-center">{{$listing->reviews}} Review{{$listing->reviews !== 1 ? 's' : '' }} <i class="bi bi-box-arrow-in-up-right ms-1"></i></a>
+                                </td>
+                                <td>
                                   <div class="badge badge-shadow {{ $listing->status ? 'bg-success' : 'bg-danger' }}">
                                     {{ $listing->status ? 'active' : 'suspended' }}
                                   </div>
                                 </td>
                                 <td>
-                                  <a href="listings/suspend/{{$listing->unique_id}}" class="btn btn-primary">{{ $listing->status ? 'Block' : 'Unblock' }}</a>
-                                  <a href="listings/delete/{{$listing->unique_id}}" class="btn btn-secondary">Delete</a>
+                                  <a href="listings/suspend/{{$listing->unique_id}}" class="btn btn-sm btn-primary">{{ $listing->status ? 'Block' : 'Unblock' }}</a>
+                                  <a href="listings/delete/{{$listing->unique_id}}" class="btn btn-sm btn-danger">
+                                    Delete
+                                </a>
+                                  <a href="{{$url}}" target="_blank" class="btn btn-primary btn-sm" title="Preview">
+                                    View
+                                </a>
                                 </td>
                             </tr>
                             @endforeach

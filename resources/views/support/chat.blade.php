@@ -21,7 +21,8 @@
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
-                            <li class="breadcrumb-item"><a href="/support">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="/support">Support</a></li>
+                            <li class="breadcrumb-item current"><span href="/support">Ticket</span></li>
                         </ol>
                     </nav>
                 </div>
@@ -33,12 +34,28 @@
                 <section class="section">
                         <div class="row">
                             <div class="col-md-4">
-                                <div class="card ">
-                                    <div class="card-header bg-light py-2">
-                                        <h4>Ticket Info</h4>
+                                <a class="fs-6 btn btn-link d-flex align-items-center my-2" href="/support"><i class="bi bi-chevron-bar-left me-2"></i> Back To Support</a>
+                                <div class="card bg-light-primary">
+                                    <div class="card-header bg-light-primary pt-3 pb-0">
+                                        <h4 class="fw-bolder mb-0">Ticket Info</h4>
+                                        <hr/>
                                     </div>
                                     <div class="card-body">
+                                        <p class="mb-0"><span class="fw-bold">Ticket ID: </span style="font-size: 12px"> {{$ticket->unique_id}}</p>
+                                        <div class="badge fw-normal {{$ticket->status === 'pending' ? 'bg-warning' : 'bg-success'}}">
+                                            {{$ticket->status}}
+                                        </div>
 
+                                        <div class="col-12 bg-white mt-3 rounded-3 p-2">
+                                            <p>
+                                                <span class="fw-bolder d-block">Title</span>
+                                                {{$ticket->title}}
+                                            </p>
+                                        </div>
+
+                                        <div class="col-12 bg-white mt-3 rounded-3 p-2">
+                                            <a href="/support/resolve/{{$ticket->unique_id}}" class="btn btn-success btn-sm">Mark As Resolved</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -53,7 +70,7 @@
                                             </div>
                                             <div class="name flex-grow-1">
                                                 <h6 class="mb-0">{{$agent->firstname}} {{$agent->lastname}}</h6>
-                                                <span class="badge bg-primary text-xs">{{$ticket->status}}</span>
+                                                <span class="badge bg-primary text-xs fw-normal {{$ticket->status === 'pending' ? 'bg-warning' : 'bg-success'}}">{{$ticket->status}}</span>
                                             </div>
                                             <button class="btn btn-sm">
                                                 <i data-feather="x"></i>
@@ -61,7 +78,7 @@
                                         </div>
                                     </div>
                                     <div class="card-body pt-4 bg-grey">
-                                        <div class="chat-content">
+                                        <div class="chat-content py-3" style="height: 60vh;">
                                             @foreach ($chats as $chat )
                                                 <div class="chat {{$chat->sender === 'agent' ? 'chat-left' : "" }}">
                                                     <div class="chat-body">
@@ -72,12 +89,18 @@
                                     </div>
                                     <div class="card-footer bg-light">
                                         <div class="message-form d-flex flex-direction-column align-items-center">
-                                            <a href="http://" class="black"><i data-feather="smile"></i></a>
-                                            <div class="">
+                                            <div class="col-12">
                                                 <form action="/support/chat/{{$ticket->unique_id}}" method="post">
                                                     @csrf
-                                                    <textarea type="text" class="form-control border-0" name="message" placeholder="Type your message.."></textarea>
-                                                    <button type="submit" class="btn btn-link">Send</button>
+                                                    <div class="row">
+                                                        <div class="col-10">
+                                                            <textarea type="text" class="form-control border-0" rows="1" name="message" placeholder="Type your message.."></textarea>
+                                                        </div>
+
+                                                        <div class="col-2">
+                                                            <button type="submit" class="btn btn-primary">Send</button>
+                                                        </div>
+                                                    </div>
                                                 </form>
                                             </div>
                                         </div>

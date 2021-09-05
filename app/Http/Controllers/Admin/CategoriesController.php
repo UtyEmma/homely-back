@@ -51,4 +51,14 @@ class CategoriesController extends Controller
         return redirect()->back()->with('success', "Category Suspended");
     }
 
+
+    public function updateCategory (CreateCategoryRequest $request, $id) {
+        if (!$category = Category::find($id)) { return redirect()->back()->with('error', 'Category not Found'); }
+        $category->category_desc = $request->category_desc;
+        $category->category_title = $request->category_title;
+        $category->save();
+
+        return redirect()->back()->with('success', 'Category Updated');
+    }
+
 }

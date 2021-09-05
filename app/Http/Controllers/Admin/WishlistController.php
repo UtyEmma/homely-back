@@ -11,20 +11,21 @@ class WishlistController extends Controller
     public function fetchWishlists(){
         $wishlists = Wishlist::all();
         return $this->view('wishlists.wishlists', 200, [
-            'wishlists' => $wishlists
+            'wishlists' => $wishlists,
+            'page' => 'wishlists'
         ]);
     }
 
     public function blockWishlists($id){
-        if (!$wishlist = Wishlist::find($id)) { return $this->redirectBack('message', 'Wishlist Does Not Exist');}
+        if (!$wishlist = Wishlist::find($id)) { return $this->redirectBack('error', 'Wishlist Does Not Exist');}
         $wishlist->status = !$wishlist->status;
         $wishlist->save();
-        return $this->redirectBack('message', 'Wishlist Blocked');
+        return $this->redirectBack('success', 'Wishlist Blocked');
     }
     
     public function deleteWishlists($id){
-        if (!$wishlist = Wishlist::find($id)) { return $this->redirectBack('message', 'Wishlist Does Not Exist');}
+        if (!$wishlist = Wishlist::find($id)) { return $this->redirectBack('error', 'Wishlist Does Not Exist');}
         $wishlist->delete();
-        return $this->redirectBack('message', 'Wishlist Deleted Successfully');
+        return $this->redirectBack('success', 'Wishlist Deleted Successfully');
     }
 }

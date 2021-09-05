@@ -4,18 +4,14 @@
 @include('layouts.sidebar')
 
 <div id="main">
-    <header class="mb-3">
-        <a href="#" class="burger-btn d-block d-xl-none">
-            <i class="bi bi-justify fs-3"></i>
-        </a>
-    </header>
+    @include('layouts.nav')
 
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
                 <div class="col-12 col-md-6 order-md-1 order-last">
                     <h3>Reviews</h3>
-                    <p class="text-subtitle text-muted">Current Listings</p>
+                    <p class="text-subtitle text-muted">All Reviews</p>
                 </div>
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
@@ -30,11 +26,11 @@
         <section class="section">
             <div class="card">
                 <div class="card-header">
-                    Filter
+                    Reviews
                 </div>
                 <div class="card-body">
-                    <table class="table table-striped" id="table1">
                     @if (isset($reviews) && count($reviews) > 0)
+                    <table class="table table-striped" id="table1">
                         <thead>
                             <tr>
                                 <th>Index</th>
@@ -49,10 +45,15 @@
                         <tbody>
                             {{$i = 0}}
                         @foreach ($reviews as $review)
+                            @php
+                                $slug = $listing->slug;
+                                $id = $auth->unique_id;
+                                $url = "http://localhost:3000/listings/$slug?auth=admin&id=$id";
+                            @endphp
                             <tr>
                                 <td>{{++$i}}</td>
-                                <td>{{$review->publisher_name}}</td>
-                                <td>{{$review->listing_title}}</td>
+                                <td><a href="/tenants/{{$review->reviewer_id}}">{{$review->publisher_name}}</a></td>
+                                <td><a href="{{$url}}">{{$review->listing_title}}</a></td>
                                 <td>{{ $review->review }}</td>
                                 <td>{{$review->rating}}/5</td>
                                 <td><span class="badge {{$review->status ? 'bg-primary' : 'bg-warning'}}">{{$review->status ? 'Active' : 'Suspended'}}</span></td>
@@ -66,23 +67,21 @@
                         </table>
                         @else
                         <div class="card shadow-none">
-                            <div class="card-body">
+                            <div class="card-body text-center">
                                 <div class="empty-state" data-height="400">
                                 <div class="empty-state-icon">
                                     <i class="fas fa-question"></i>
                                 </div>
-                                <h2>We couldn't find any data</h2>
-                                <p class="lead">
-                                    Sorry we can't find any data, to get rid of this message, make at least 1 entry.
-                                </p>
-                                <a href="#" class="btn btn-primary mt-4">Create new One</a>
-                                <a href="#" class="mt-4 bb">Need Help?</a>
+                                    <h2>No Reviews Available</h2>
+                                    <p class="lead">
+                                        No Tenant has made a review
+                                    </p>
                                 </div>
                             </div>
                         </div>            
                         @endif
                 </div>
-                    </div>
+            </div>
         </section>
     </div>
 

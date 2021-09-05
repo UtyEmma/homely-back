@@ -18,6 +18,10 @@ class Wishlist extends Model
     protected $keyType = 'string';
     public $incrementing = false;
 
+    protected $attributes = [
+        'status' => true
+    ];
+
     public function user(){
         $this->belongsTo(User::class, 'unique_id', 'user_id');
     }

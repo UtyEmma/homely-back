@@ -1,16 +1,15 @@
 @include('layouts.header')
 
+@php
+    $auth = auth()->user();
+@endphp
 
 
 @include('layouts.sidebar')
 
 
 <div id="main">
-    <header class="mb-3">
-        <a href="#" class="burger-btn d-block d-xl-none">
-            <i class="bi bi-justify fs-3"></i>
-        </a>
-    </header>
+    @include('layouts.nav')
 
     <div class="page-heading">
         <div class="page-title">
@@ -50,20 +49,29 @@
                         </thead>
                         <tbody>
                         @foreach ($agents as $agent)
+                            @php
+                                $slug = $agent->username;
+                                $id = $auth->unique_id;
+                                $url = "http://localhost:3000/$slug?auth=admin&id=$id";
+                            @endphp
                             <tr>
                                 <td>1</td>
-                                <td><a href="agents/{{$agent->unique_id}}">{{$agent->firstname}} {{$agent->lastname}}</a></td>
-                                <td>{{$agent->location}}</td>
+                                <td><a href="{{$url}}" target="_blank">{{$agent->firstname}} {{$agent->lastname}} </a></td>
+                                <td>{{$agent->city}}, {{$agent->state}}</td>
                                 <td class="text-center">{{$agent->no_of_listings}}</td>
                                 <td>
+                                    <div class="badge badge-shadow {{ $agent->verified ? 'bg-info' : 'bg-dark' }}">{{ $agent->verified ? 'true' : 'false' }}</div>
                                 </td>
                                 <td>
                                   <div class="badge badge-shadow {{ $agent->status ? 'bg-success' : 'bg-warning' }}">{{ $agent->status ? 'active' : 'suspended' }}</div>
                                 </td>
                                 <td>
-                                  <a href="agents/suspend/{{$agent->unique_id}}" class="btn btn-primary">{{ $agent->status ? 'Block' : 'Unblock' }}</a>
-                                  <a href="agents/delete/{{$agent->unique_id}}" class="btn btn-primary">Delete</a>
-                              </td>
+                                    <a href="agents/suspend/{{$agent->unique_id}}" class="btn btn-primary btn-sm">{{ $agent->status ? 'Block' : 'Unblock' }}</a>
+                                    <a href="agents/delete/{{$agent->unique_id}}" class="btn btn-danger btn-sm">Delete</a>
+                                    <a href="{{$url}}" target="_blank" class="btn btn-primary btn-sm" title="Preview">
+                                        View
+                                    </a>
+                                </td>
                             </tr>
                             @endforeach
                         @else

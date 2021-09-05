@@ -59,17 +59,33 @@
                                                         {{ $category->status ? 'Active' : 'Suspended' }}
                                                     </div>
                                                 </td>
-                                                <td >
+                                                <td class="d-flex align-items-center">
+                                                    <div class="dropdown">
+                                                        <button class="btn" type="button" id="dropdown{{$category->unique_id}}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            <i class="bi bi-pencil"></i>
+                                                        </button>
+                                                        <div class="dropdown-menu dropdown-menu-right p-4" aria-labelledby="dropdown{{$category->unique_id}}" >
+                                                            <div class="dropdown-item">
+                                                                <p class="mb-2">Edit Category</p>
+                                                                <form action="/categories/edit/{{$category->unique_id}}" method="post" >
+                                                                    @csrf
+                                                                    <input type="text" name="category_title" value="{{$category->category_title}}" class="form-control mb-2" />
+                                                                    <textarea name="category_desc" class="form-control">{{$category->category_desc}}</textarea>
+                                                                    <button type="submit" class="btn btn-primary mt-2">Update</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
                                                     <div class="dropdown">
                                                         <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                             <i class="bi bi-three-dots"></i>
                                                         </button>
-                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                            <a class="dropdown-item" >Edit</a>
-                                                            <a class="dropdown-item" href="categories/suspend/{{$category->unique_id}}">
+                                                        <div class="dropdown-menu  dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                                            <a class="dropdown-item" href="/categories/suspend/{{$category->unique_id}}">
                                                                 {{ $category->status ? 'Suspend' : 'Restore' }}
                                                             </a>
-                                                            <a class="dropdown-item" href="#">Delete</a>
+                                                            <a class="dropdown-item" href="/categories/delete/{{$category->unique_id}}">Delete</a>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -115,18 +131,18 @@
                             <p><span class="badge alert-primary">{{count($amenities)}} </span> Amenities Listed</p>  
                         </div>
 
-                        <div class="col-6">  
-                            <form action="amenities/create-amenities" method="post">
+                        <div class="col-md-6">  
+                            <form action="/amenities/create-amenities" method="post">
                                 @csrf
                                 <div class="col-12">
-                                    <div class="row gx-1 bg-white">
+                                    <div class="row gx-md-1 bg-white">
                                         <div class="form-group">
                                             <div class="row">
                                                 <div class="col-8">
                                                     <input type="text" name="amenity_title" class="form-control" placeholder="New Amenity">
                                                 </div>
                                                 <div class="col-4">
-                                                    <button type="submit" class="btn btn-primary btn-block">Add Amenity</button>
+                                                    <button type="submit" class="btn btn-primary btn-block">Add</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -140,7 +156,7 @@
                     @if($amenities && count($amenities) > 0)
                         <div class="row gx-2 gy-1">
                             @foreach($amenities as $amenity)
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <div class="bg-light p-2 pb-0 pt-3 rounded d-flex justify-content-between align-content-center">
                                         <div class="d-flex">
                                             <div style="width: 8px; height: 8px;" class="p-1 mt-2 me-2 rounded-circle {{$amenity->status ? 'bg-success' : 'bg-warning' }}"></div>
@@ -148,8 +164,19 @@
                                         </div>
 
                                         <div class="d-flex">
-                                            <a href="/edit/{{$amenity->unique_id}}"><i class="bi bi-pencil"></i></a>
-                                            <a href="/delete/{{$amenity->unique_id}}" class="ms-2"><i class="bi bi-trash"></i></a>
+                                            <a class="border-0" type="button" id="dropdown{{$amenity->unique_id}}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-left p-4" aria-labelledby="dropdown{{$amenity->unique_id}}">
+                                                <p class="mb-2">Edit Item</p>
+                                                <form action="/amenities/edit/{{$amenity->unique_id}}" method="post" >
+                                                    @csrf
+                                                    <input type="text" name="amenity_title" value="{{$amenity->amenity_title}}" class="form-control" />
+                                                    <button type="submit" class="btn btn-primary mt-2">Update</button>
+                                                </form>
+                                            </div>
+                                            <a href="/amenities/suspend/{{$amenity->unique_id}}" class="ms-3"><i class="bi {{$amenity->status ? 'bi-eye-slash' : 'bi-eye'}}"></i></a>
+                                            <a href="/amenities/delete/{{$amenity->unique_id}}" class="ms-3"><i class="bi bi-trash"></i></a>
                                         </div>
                                     </div>
                                 </div>

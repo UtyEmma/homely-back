@@ -15,7 +15,8 @@ class ReviewsController extends Controller
         $reviews = Review::all();
         $data = json_decode(json_encode($this->matchReviewToListing($reviews)));
         return $this->view('reviews.reviews', 200, [
-            'reviews' => $data
+            'reviews' => $data,
+            'page' => 'reviews',
         ]);
     }
 

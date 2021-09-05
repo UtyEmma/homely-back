@@ -9,7 +9,10 @@ use App\Models\Category;
 use App\Models\Feature;
 use App\Models\Amenities;
 use App\Models\Listing;
+use App\Models\Review;
+use App\Models\Support;
 use App\Models\User;
+use App\Models\Views;
 use Illuminate\Http\Request;
 
 class AppController extends Controller
@@ -24,19 +27,42 @@ class AppController extends Controller
     }
 
     public function dashboard(){
+        $pending = Support::where('status', 'pending')->limit(4)->get();
+        $tickets = $this->compileTicketsData($pending);
         return view('index', [
             'admin' => auth()->user(),
+            'page' => 'dashboard',
             'no_tenants' => count(User::all()),
             'no_listings' => count(Listing::all()),
-            'no_agents' => count(Agent::all())
+            'no_agents' => count(Agent::all()),
+            'reviews' => count(Review::all()),
+            'categories' => count(Category::all()),
+            'amenities' => count(Amenities::all()),
+            'views' => count(Views::all()),
+            'tickets' => $tickets
         ]);
+    }
+
+    public function compileTicketsData($tickets){
+        $array = [];
+        $i = 0;
+        if (count($tickets)) {
+            foreach ($tickets as $key => $ticket) {
+                $item = array_merge($ticket->toArray(), ['created_at' => $this->parseTimestamp($ticket->created_at)]);
+                $array[$i]['ticket'] = json_decode(json_encode($item));
+                $array[$i]['agent'] = Support::find($ticket->unique_id)->agent;
+                $i++;
+            }   
+        }
+        return $array;
     }
 
     public function tenants(){
         $tenants = User::all();
         return view('tenants.tenants', [
             'admin' => auth()->user(),
-            'tenants' => $tenants
+            'tenants' => $tenants,
+            'page' => 'tenants',
         ]);
     }
 
@@ -44,7 +70,8 @@ class AppController extends Controller
         $agents = Agent::all();
         return view('agents.agents', [
             'admin' => auth()->user(),
-            'agents' => $agents
+            'agents' => $agents,
+            'page' => 'agents',
         ]);
     }
 
@@ -63,7 +90,8 @@ class AppController extends Controller
 
         return view('listings.listings', [
             'admin' => auth()->user(),
-            'listings' => json_decode(json_encode($array))
+            'listings' => json_decode(json_encode($array)),
+            'page' => 'listings',
         ]);
     }
 
@@ -71,12 +99,16 @@ class AppController extends Controller
         $categories = Category::all();
         return view('categories.categories', [
             'admin' => auth()->user(),
-            'categories' => $categories
+            'categories' => $categories,
+            'page' => 'categories',
         ]);
     }
 
     public function profile(){
-        return view('profile', ['admin' => auth('web')->user()]);
+        return view('profile', [
+            'admin' => auth('web')->user(),
+            'page' => 'profile',
+        ]);
     }
 
     
@@ -88,14 +120,16 @@ class AppController extends Controller
             'admin' => auth('web')->user(),
             'categories' => $categories,
             'amenities' => $amenities,
-            'features' => $features
+            'features' => $features,
+            'page' => 'properties',
         ]);
     }
 
     public function admins(){
         $admins = Admin::all();
         return view('admins.admins', [
-            'admins' => $admins
+            'admins' => $admins,
+            'page' => 'admins',
         ]);
     }
 }

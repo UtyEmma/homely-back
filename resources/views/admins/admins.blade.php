@@ -30,9 +30,10 @@
                         <h4 class="card-title">Admins Table</h4>
                         
                         @if ($auth->role === 'Super Administrator')
-                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#success">
-                            <i class="ml-2 bi bi-person fs-4"></i> Create Admin
-                            </button>
+                            <a type="button" class="btn btn-md d-flex align-items-center justify-content-center btn-success font-bold mt-3" data-bs-toggle="modal" data-bs-target="#create-admin">
+                                <i class="me-2 bi bi-person"></i>
+                                <span>Register Admin</span> 
+                            </a>
                         @endif
                     </div>
                     <div class="card-content">
@@ -109,7 +110,7 @@
         </div>
     </section>
 
-    <div class="modal fade text-left" id="success" tabindex="-1" role="dialog" aria-labelledby="myModalLabel110" aria-hidden="true">
+    <div class="modal fade text-left" id="create-admin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel110" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable"
           role="document">
           <div class="modal-content">
@@ -218,7 +219,7 @@
                 <span class="d-none d-sm-block">Accept</span>
             </button>
         </div>
-        </div>
+    </div>
       </div>
   </div>
 </div>

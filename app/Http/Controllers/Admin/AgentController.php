@@ -16,7 +16,7 @@ class AgentController extends Controller
                 'admin' => auth()->user()
             ]);
         }else{
-            return redirect()->back()->with('message', 'Agent Does not Exist!!!');
+            return redirect()->back()->with('error', 'Agent Does not Exist!!!');
         }
     }
 
@@ -27,9 +27,9 @@ class AgentController extends Controller
     public function deleteAgent($id){
         if ($agent = Agent::find($id)) {
             $agent->delete();
-            return redirect()->back()->with('message', "Agent Deleted");
+            return redirect()->back()->with('success', "Agent Deleted");
         }else{
-            return redirect()->back()->with('message', "Agent does not Exist");
+            return redirect()->back()->with('error', "Agent does not Exist");
         }
     }
 
@@ -37,19 +37,20 @@ class AgentController extends Controller
         if ($agent = Agent::find($id)) {
             $agent->status = !$agent->status;
             $agent->save();
-            return redirect()->back()->with('message', "Agent Suspended");
+            $message = $agent->status ? "Unsuspended" : "Suspended";
+            return redirect()->back()->with('success', "Agent $message");
         }else{
-            return redirect()->back()->with('message', "Agent does not Exist");
+            return redirect()->back()->with('error', "Agent does not Exist");
         }
     }
 
     public function verifyAgent($id){
-        if (Agent::exists($id)) {
+        if ($agent = Agent::find($id)) {
             $agent->verified = !$agent->verified;
             $agent->save();
             return redirect()->back()->with('message', Agent::find($id)->verified ? "Agent Verified" : "Agent Unverified");
         }else{
-            return redirect()->back()->with('message', "Agent does not exist");
+            return redirect()->back()->with('$error', "Agent does not exist");
         }
     }
 

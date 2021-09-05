@@ -97,6 +97,7 @@ Route::middleware('auth')->group(function(){
         Route::post('create', [CategoriesController::class, 'createCategory']);
         Route::get('delete/{id}', [CategoriesController::class, 'deleteCategory']);
         Route::get('suspend/{id}', [CategoriesController::class, 'suspendCategory']);
+        Route::post('edit/{id}', [CategoriesController::class, 'updateCategory']);
     });
 
     Route::prefix('features')->group(function(){
@@ -106,15 +107,19 @@ Route::middleware('auth')->group(function(){
 
     Route::prefix('amenities')->group(function(){
         Route::post('create-amenities', [DetailController::class, 'createAmenities']);
-        Route::get('delete/{id}', [DetailController::class, 'deleteAmenities']);
+        Route::get('delete/{id}', [DetailController::class, 'deleteAmenity']);
+        Route::post('edit/{id}', [DetailController::class, 'updateAmenity']);
+        Route::get('suspend/{id}', [DetailController::class, 'suspendAmenity']);
     });
 
     Route::prefix('support')->group(function(){
         Route::get('/', [SupportController::class, 'fetchTickets']);
-        Route::get('/{ticket_id}', [SupportController::class, 'singleTicket']);
-        Route::get('/resolve', [SupportController::class, 'markTicketAsResolved']);
+        Route::get('ticket/{ticket_id}', [SupportController::class, 'singleTicket']);
+        Route::get('/resolve/{ticket_id}', [SupportController::class, 'markTicketAsResolved']);
         Route::get('/delete', [SupportController::class, 'deleteTicket']);
         Route::post('/chat/{id}', [SupportController::class, 'sendMessage'] );
+        Route::get('/pending', [SupportController::class, 'pendingTickets']);
+        Route::get('/resolved', [SupportController::class, 'resolvedTickets']);
     });
 
     Route::prefix('reviews')->group(function(){

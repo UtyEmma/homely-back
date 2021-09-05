@@ -13,22 +13,51 @@ class SupportController extends Controller{
     use NotificationHandler;
 
     public function fetchTickets(){
-        $tickets = $this->compileTicketsData();    
+        $all = Support::all();
+        $tickets = $this->compileTicketsData($all);    
         return $this->view('support.tickets', 200, [
-            'tickets' => $tickets
+            'tickets' => $tickets,
+            'page' => 'support',
+            'status' => 'all'
         ]);
     }
 
-    public function compileTicketsData(){
-        $tickets = Support::all();
+    public function compileTicketsData($tickets){
         $array = [];
         $i = 0;
-        foreach ($tickets as $key => $ticket) {
-            $array[$i]['ticket'] = Support::find($ticket->unique_id);
-            $array[$i]['agent'] = Support::find($ticket->unique_id)->agent;
-            $i++;
+        if (count($tickets)) {
+            foreach ($tickets as $key => $ticket) {
+                $item = array_merge($ticket->toArray(), ['created_at' => $this->parseTimestamp($ticket->created_at)]);
+                $array[$i]['ticket'] = json_decode(json_encode($item));
+                $array[$i]['agent'] = Support::find($ticket->unique_id)->agent;
+                $i++;
+            }   
         }
         return $array;
+    }
+
+    public function resolvedTickets(){
+        $resolved = Support::where('status', 'resolved')->get();
+        
+        $tickets = $this->compileTicketsData($resolved);
+
+        return $this->view('support.tickets', 200, [
+            'tickets' => $tickets,
+            'page' => 'support',
+            'status' => 'resolved'
+        ]);;
+    }
+    
+    
+    public function pendingTickets(){
+        $pending = Support::where('status', 'pending')->get();
+        $tickets = $this->compileTicketsData($pending);
+
+        return $this->view('support.tickets', 200, [
+            'tickets' => $tickets,
+            'page' => 'support',
+            'status' => 'pending'
+        ]);;
     }
 
     public function markTicketAsResolved($id){
@@ -52,7 +81,8 @@ class SupportController extends Controller{
         return $this->view('support.chat', 200, [
             'ticket' => $ticket,
             'chats' => $chats,
-            'agent' => $agent
+            'agent' => $agent,
+            'page' => 'support'
         ]);
     }
 

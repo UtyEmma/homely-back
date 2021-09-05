@@ -18,7 +18,7 @@ class AgentController extends Controller
 
     private function isAgent($id) {
         if(!$agent = Agent::find($id)){throw new Exception("The Requested Agent does not Exist", 404);}
-        return;
+        return $agent;
     }
     
     public function update(AgentUpdateRequest $request){
@@ -56,7 +56,7 @@ class AgentController extends Controller
     private $rented = [];
     private $active = [];
 
-    public function single($username){
+    public function single($username, $message=""){
         try {
             $agent = Agent::where('username', $username)->first() ? Agent::where('username', $username)->first() : throw new Exception("User Not Found", 404);
         } catch (Exception $e) {
@@ -72,6 +72,7 @@ class AgentController extends Controller
                         
         auth()->shouldUse('tenant');
         $user = auth()->user();
+
         $formatted_listings = $this->formatListingData($listings, $user);
         $listings = collect($formatted_listings);
             
@@ -88,10 +89,7 @@ class AgentController extends Controller
             }
         });
 
-        // $rented = $listings->where('status', 'rented');
-        // $active = $listings->where('status', 'active');
-
-        return $this->success("Agent Fetched", [
+        return $this->success($message, [
             'agent' => $formatted_agent,
             'listing' => [
                 'rented' => $this->rented,
@@ -135,4 +133,59 @@ class AgentController extends Controller
 
         return $this->success("Wishlists Fetched", $wishlists);
     }
+
+    public function adminSuspendAgent($agent_id){
+        try {
+            if(!$agent = Agent::find($agent_id)){ throw new Exception("Listing Not Found", 404); }
+
+            $user = Agent::find($agent->agent_id);
+            $agent->status = $agent->status === 'suspended' ? 'active' : 'suspended';
+            $agent->save();
+        
+        } catch (Exception $e) {
+            return $this->error(500, $e->getMessage());
+        }
+        
+        return $this->single($agent->username, "Agent $agent->status");
+    }
+
+    public function adminVerifyAgent($agent_id){
+        try {
+            if(!$agent = Agent::find($agent_id)){ throw new Exception("Listing Not Found", 404); }
+            $agent->verified = !$agent->verified;
+            $agent->save();
+        
+        } catch (Exception $e) {
+            return $this->error(500, $e->getMessage());
+        }
+        
+        return $this->single($agent->username, "Agent Verified");
+    }
+
+    public function adminDeleteAgent($agent_id){
+        try {
+            if(!$agent = Agent::find($agent_id)){ throw new Exception("Agent Not Found", 404); }
+            $agent->delete();
+        
+        } catch (Exception $e) {
+            return $this->error(500, $e->getMessage());
+        }
+        
+        return $this->success("Agent Deleted");
+    }
+
+    public function setStatusToUnavailable(){
+        try {
+            $user = auth()->user();
+            $agent = Agent::find($user->agent_id);
+            $agent->status = $agent->status === 'active' ? 'unavailable' : 'active';
+            $agent->save();
+        } catch (Exception $e) {
+            return $this->error(500, $e->getMessage());
+        }
+
+        return $this->single($agent->username, "Agent Status Set To Unavailable");
+    }
+
+    
 }

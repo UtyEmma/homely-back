@@ -63,10 +63,10 @@
                                     <div class="badge badge-shadow {{ $agent->verified ? 'bg-info' : 'bg-dark' }}">{{ $agent->verified ? 'true' : 'false' }}</div>
                                 </td>
                                 <td>
-                                  <div class="badge badge-shadow {{ $agent->status ? 'bg-success' : 'bg-warning' }}">{{ $agent->status ? 'active' : 'suspended' }}</div>
+                                  <div class="badge badge-shadow {{ $agent->status === 'active' ? 'bg-success' : 'bg-warning' }}">{{ $agent->status }}</div>
                                 </td>
                                 <td>
-                                    <a href="agents/suspend/{{$agent->unique_id}}" class="btn btn-primary btn-sm">{{ $agent->status ? 'Block' : 'Unblock' }}</a>
+                                    <a href="agents/suspend/{{$agent->unique_id}}" class="btn btn-primary btn-sm">{{ $agent->status === 'active' ? 'Block' : 'Unblock' }}</a>
                                     <a href="agents/delete/{{$agent->unique_id}}" class="btn btn-danger btn-sm">Delete</a>
                                     <a href="{{$url}}" target="_blank" class="btn btn-primary btn-sm" title="Preview">
                                         View

@@ -38,6 +38,7 @@ Route::prefix('agent')->middleware('role:agent')->group(function(){
         Route::post('update', [AgentController::class, 'update']);
         Route::get('auth_user', [AgentController::class, 'getLoggedInUser']);
         Route::get('user/{user}', [AgentController::class, 'single']);
+        Route::get('unanvailable', [AgentController::class, 'setStatusToUnavailable']);
 
         Route::prefix('listing')->group(function(){
             Route::post('create', [ListingController::class, 'createListing']);
@@ -110,12 +111,13 @@ Route::get('admin/verify/{id}', [AdminController::class, 'verifyAdmin']);
 
 Route::prefix('admin')->middleware('admin')->group(function(){
     Route::prefix('listing')->group(function(){
-        Route::get('suspend/{id}', [ListingController::class, 'suspendListing']);
-        Route::get('delete/{id}', [ListingController::class, 'deleteListing']);
+        Route::get('suspend/{id}', [ListingController::class, 'adminSuspendListing']);
+        Route::get('delete/{id}', [ListingController::class, 'adminDeleteListing']);
     });
     Route::prefix('agent')->group(function(){
-        Route::get('suspend/{id}', [AgentController::class, 'suspendAgent']);
-        Route::get('delete/{id}', [AgentController::class, 'deleteAgent']);
+        Route::get('suspend/{id}', [AgentController::class, 'adminSuspendAgent']);
+        Route::get('delete/{id}', [AgentController::class, 'adminDeleteAgent']);
+        Route::get('verify/{id}', [AgentController::class, 'adminVerifyAgent']);
     });
 });
 

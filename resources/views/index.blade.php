@@ -66,8 +66,6 @@
                                             <h6 class="font-extrabold mb-0">
                                                 {{$no_listings}}
                                             </h6>
-    
-                                            <a href="/listings" class="fw-bold text-decoration-underline" style="font-size: 14px;">View</a>
                                         </div>
                                     </div>
                                 </div>
@@ -260,7 +258,9 @@
                         @endphp
                         <div class="px-4">
                             <a href="{{$url}}" target="_blank" class='btn btn-block btn-md d-flex align-items-center justify-content-center btn-outline-primary font-bold mt-3'>Visit Bayof <i class="ms-2 bi bi-box-arrow-in-up-right"></i></a>
-                            <a data-bs-toggle="modal" data-bs-target="#create-admin" type="button" class='btn btn-block btn-md d-flex align-items-center justify-content-center btn-outline-success font-bold mt-3'>Register Admin <i class="ms-2 bi bi-person-badge"></i></a>
+                            @if ($admin->role === 'Super Administrator')
+                                <a data-bs-toggle="modal" data-bs-target="#create-admin" type="button" class='btn btn-block btn-md d-flex align-items-center justify-content-center btn-outline-success font-bold mt-3'>Register Admin <i class="ms-2 bi bi-person-badge"></i></a>
+                            @endif
                             <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModalCenter" class='btn btn-block btn-md d-flex align-items-center justify-content-center btn-outline-primary font-bold mt-3'>Create Category <i class="ms-2 bi bi-collection"></i></button>
                             <button type="button" data-bs-toggle="modal" data-bs-target="#createamenity" class='btn btn-block btn-md d-flex align-items-center justify-content-center btn-outline-warning font-bold mt-3'>Create Amenity<i class="ms-2 bi bi-inbox"></i></button>
                         </div>

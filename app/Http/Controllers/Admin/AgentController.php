@@ -35,10 +35,9 @@ class AgentController extends Controller
 
     public function suspendAgent($id){
         if ($agent = Agent::find($id)) {
-            $agent->status = !$agent->status;
+            $agent->status = $agent->status === 'active' ? 'suspended' : 'active';
             $agent->save();
-            $message = $agent->status ? "Unsuspended" : "Suspended";
-            return redirect()->back()->with('success', "Agent $message");
+            return redirect()->back()->with('success', "Agent $agent->status");
         }else{
             return redirect()->back()->with('error', "Agent does not Exist");
         }

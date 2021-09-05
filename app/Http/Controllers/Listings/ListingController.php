@@ -7,6 +7,7 @@ use App\Http\Libraries\Notifications\NotificationHandler;
 use App\Http\Requests\Listings\CreateListingRequest;
 use App\Models\Agent;
 use App\Models\Listing;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -142,7 +143,7 @@ class ListingController extends Controller
         return $this->success("Listing Deleted");   
     }
 
-    public function getSingleListing($slug){
+    public function getSingleListing($slug, $message = ""){
         try {
             if(!$listing = Listing::where('slug', $slug)->first()) {throw new Exception("The Requested Listing Does Not Exist", 500);} 
         } catch (Exception $e) {
@@ -160,7 +161,7 @@ class ListingController extends Controller
 
         $agent = Agent::find($listing->agent_id);
 
-        return $this->success("Listing Loaded", [
+        return $this->success($message, [
             'listing' => $single_listing,
             'agent' => array_merge($agent->toArray(), ['avatar' => json_decode($agent->avatar)])
         ]);
@@ -168,9 +169,28 @@ class ListingController extends Controller
 
     
     public function updateListing(Request $request, $listing_id){
-        return $this->success("Update Successful", [
-            'response' => $request->all()
-        ]);
+        try {
+            $agent = auth()->user();
+
+            $files = $request->hasFile('images') ? $this->handleFiles($request->file('images')) : [];
+            $inital_fees = $request->rent + $request->extra_fees;
+    
+            $slug = $this->createDelimitedString($request->title, ' ', '-');
+
+            Listing::find($listing_id)->update(array_merge($request->all(), [
+                                            'agent_id' => $agent->unique_id,
+                                            'amenities' => json_encode($request->amenities),
+                                            'images' => $files,
+                                            'slug' => strtolower($slug),
+                                            'initial_fees' => $inital_fees ]));
+
+        } catch (Exception $e) {
+            return $this->error(500, $e->getMessage()." :--- ".$e->getLine());
+        }
+
+        $listing = Listing::find($listing_id);
+
+        return $this->getSingleListing($slug, "Your Property has been updated successfully");
     }
 
     public function setListingAsRented($listing_id){
@@ -204,6 +224,36 @@ class ListingController extends Controller
         return $this->success("Listing ".$listing->status, [
             'listing' => $this->formatListingData([$listing], $user)
         ]);
+    }
+
+    public function adminSuspendListing($listing_id){
+        try {
+            if(!$listing = Listing::find($listing_id)){ throw new Exception("Listing Not Found", 404); }
+
+            if ($listing->status === 'rented') {
+                return $this->error(400, "This Property has been set as Rented");
+            }
+
+            $listing->status = $listing->status === 'suspended' ? 'active' : 'suspended';
+            $listing->save(); 
+        
+        } catch (Exception $e) {
+            return $this->error(500, $e->getMessage());
+        }
+        
+        return $this->getSingleListing($listing->slug, "Listing $listing->status");
+    }
+
+    public function adminDeleteListing($listing_id){
+        try {
+            if(!$listing = Listing::find($listing_id)){ throw new Exception("Listing Not Found", 404); }
+            $listing->delete();
+        
+        } catch (Exception $e) {
+            return $this->error(500, $e->getMessage());
+        }
+        
+        return $this->success("Listing Deleted");
     }
 
 

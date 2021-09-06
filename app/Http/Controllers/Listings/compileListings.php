@@ -50,6 +50,19 @@ trait CompileListings{
             }
         });
         
+        $query->when($request->query('sortby'), function ($q, $sortby){
+            switch ($sortby) {
+                case 'views':
+                    return $q->orderBy('views', 'desc');
+                case 'minprice':
+                    return $q->orderBy('rent');
+                case 'maxprice':
+                    return $q->orderBy('rent', 'desc');
+                default:
+                    return $q->latest();
+            }
+        });
+
         $listing = $query->get();
 
         return $listing;

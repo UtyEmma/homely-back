@@ -3,18 +3,21 @@
 namespace App\Http\Controllers\Agent;
 
 use App\Http\Controllers\Controller;
+use App\Http\Libraries\Password\ResetPassword;
 use App\Http\Requests\Agent\AgentLoginRequest;
 use App\Http\Requests\Agent\SignupAgentRequest;
+use App\Http\Requests\Auth\Passwords\ResetPasswordRequest;
 use App\Models\Agent;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Tymon\JWTAuth\JWTGuard;
 
-class AuthAgentController extends Controller
-{
+class AuthAgentController extends Controller{
+    
+    use ResetPassword;
+
     public function login(AgentLoginRequest $request){
         auth()->shouldUse('agent');
 
@@ -24,7 +27,9 @@ class AuthAgentController extends Controller
 
         $user = auth()->user();
 
-        $agent = array_merge($user->toArray(), [
+        $agent = Agent::find($user->unique_id);
+
+        $agent = array_merge($agent->toArray(), [
             'avatar' => json_decode($user->avatar)
         ]);
         
@@ -52,10 +57,38 @@ class AuthAgentController extends Controller
     }
 
 
-    public function remember (){
+    public function forgotPassword(Request $request){
+        try {
+            if (!$user = Agent::where('email', $request->email)->first()) {
+                return $this->error(404, "Email Address Does Not Exist");
+            }
+            $this->sendResetLink($user);
+        } catch (Exception $e) {
+            return $this->error("Password Reset could not be completed", 500);
+        }
 
+        return $this->success("Password Reset Token Sent! Please Check your Email");
     }
 
+    public function resetPassword(ResetPasswordRequest $request){
+        try {
+            $user = Agent::where('email', $request->email)->where('password_reset', $request->token)->first();
+            if (!$user) {
+                throw new Exception("Invalid Password Reset Details", 403);
+            }
+            
+            $user->password = Hash::make($request->password);
+            $user->save();
+
+        } catch (Exception $e) {
+            return $this->error(401, $e->getMessage());
+        }
+
+        $user->password_reset = null;
+        $user->save();
+        
+        return $this->success("Your Password Has been reset");
+    }
 
     public function resendVerificationLink(Agent $agent){
         return $this->verify($agent, 'agent', true);
@@ -63,7 +96,7 @@ class AuthAgentController extends Controller
 
     
     public function logout(){
-        auth()->logout();
+        Auth::logout();
         return $this->success();
     }
 }

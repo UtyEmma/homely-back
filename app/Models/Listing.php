@@ -36,14 +36,13 @@ class Listing extends Model
     }
 
     public function toSearchableArray(){
-        $array = $this->toArray();
-        $index_data = [
-            'unique_id' => $array['unique_id'],
-            'title' => $array['title'],
-            'description' => $array['description'],
-            'type' => $array['type']
+        $index = [
+            'unique_id' => $this->unique_id,
+            'title' => $this->title,
+            'description' => $this->description,
+            'type' => $this->type
         ];
-        return $index_data;
+        return $index;
     }
 
 }

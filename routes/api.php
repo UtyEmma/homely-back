@@ -81,7 +81,9 @@ Route::prefix('agent')->middleware('role:agent')->group(function(){
 Route::prefix('tenant')->middleware('role:tenant')->group(function(){
     
     Route::get('resend/{user}', [AuthUserController::class, 'resendVerificationLink']);
-
+    Route::post('forgot-password', [AuthUserController::class, 'forgotPassword']);
+    Route::post('reset-password', [AuthUserController::class, 'resetPassword']);
+    
     Route::middleware('verified.email:tenant')->group(function(){
         Route::get('logout', [AuthUserController::class, 'logout']);
         Route::post('update', [UserController::class, 'update']);
@@ -124,8 +126,6 @@ Route::prefix('admin')->middleware('admin')->group(function(){
 Route::prefix('tenant')->group(function(){
     Route::post('login', [AuthUserController::class, 'login'])->middleware('role:tenant');
     Route::post('signup', [AuthUserController::class, 'signup']);
-    Route::post('forgot-password', [AuthUserController::class, 'forgotPassword']);
-    Route::post('reset-password', [AuthUserController::class, 'resetPassword']);
 });
 
 Route::prefix('agent')->group(function(){

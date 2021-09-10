@@ -39,10 +39,14 @@ class DetailController extends Controller
     public function fetchCategories(){
         try {
             $categories = Category::all();
+            $array = [];
+
+            if (count($categories) > 0) { $array = $categories; }
+
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
 
-        return $this->success("Categories Retrived", $categories);
+        return $this->success("Categories Retrived", $array);
     }
 }

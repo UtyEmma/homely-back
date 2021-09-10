@@ -27,6 +27,7 @@ class AgentUpdateRequest extends FormRequest
             'email' => 'required|string|email',
             'firstname' => 'required|string',
             'lastname' => 'required|string',
+            'username' => 'string',
             'avatar' => 'file',
             'email' => 'required|email|string',
             'location' => 'string',

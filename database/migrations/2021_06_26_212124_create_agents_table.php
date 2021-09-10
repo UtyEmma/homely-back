@@ -19,7 +19,7 @@ class CreateAgentsTable extends Migration
             $table->string('email')->unique();
             $table->string('firstname');
             $table->string('lastname');
-            $table->string('username')->unique();
+            $table->string('username')->nullable()->unique();
             $table->string('password')->nullable();
             $table->string('avatar')->nullable();
             $table->string('twitter')->nullable();

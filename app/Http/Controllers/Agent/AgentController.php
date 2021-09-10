@@ -30,14 +30,12 @@ class AgentController extends Controller
                             $files = $this->handleFiles($request->file('avatar'))
                             : $files = null;
 
-            Agent::find($agent->unique_id)->update(
-                        array_merge($request->validated(), [
-                            'twitter' => 'https://twitter.com/'.$request->twitter,
-                            'facebook' => 'https://facebook.com/'.$request->twitter,
-                            'instagram' => 'https://instagram.com/'.$request->twitter,
-                            'avatar' => $files
-                        ])
-                    ); 
+            Agent::find($agent->unique_id)->update(array_merge($request->validated(), [
+                                            'twitter' => $request->twitter,
+                                            'facebook' => $request->twitter,
+                                            'instagram' => $request->twitter,
+                                            'avatar' => $files ])
+                                    ); 
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }

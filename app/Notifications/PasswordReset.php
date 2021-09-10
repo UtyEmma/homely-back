@@ -3,7 +3,6 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -45,7 +44,7 @@ class PasswordReset extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)->view(
-            'passwords.resetPassword', [
+            'emails.passwords.resetPassword', [
                 'username' => $this->username,
                 'token' => $this->token
             ]

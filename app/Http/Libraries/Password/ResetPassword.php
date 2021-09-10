@@ -3,10 +3,10 @@
 namespace App\Http\Libraries\Password;
 
 use App\Models\Agent;
-use App\Models\Notification;
 use App\Models\User;
 use App\Notifications\PasswordReset;
 use Exception;
+use Illuminate\Support\Facades\Notification;
 
 trait ResetPassword {
 
@@ -26,7 +26,7 @@ trait ResetPassword {
         try {
             Notification::send($user, new PasswordReset($token, $username));
         } catch (Exception $e) {
-            throw new Exception("Password Emails could not be Sent!!!", 500);
+            throw new Exception($e->getMessage(), 500);
         }
         return true;
     }

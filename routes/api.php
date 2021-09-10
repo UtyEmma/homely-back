@@ -11,6 +11,7 @@ use App\Http\Controllers\WishList\WishlistController;
 use App\Http\Controllers\Details\DetailController;
 use App\Http\Controllers\Listings\Favourites\FavouritesController;
 use App\Http\Controllers\Notification\NotificationController;
+use App\Http\Controllers\Password\PasswordController;
 use App\Http\Controllers\Reviews\ReviewController;
 use App\Http\Controllers\Search\SearchController;
 use App\Http\Controllers\Support\ChatController;
@@ -156,6 +157,11 @@ Route::prefix('reviews')->group(function(){
 
 Route::prefix('social')->group(function(){
     Route::post('auth', [SocialAuthController::class, 'handleAuth']);
+});
+
+Route::prefix('auth')->group(function(){
+    Route::post('reset-password', [PasswordController::class, 'resetPassword']);
+    Route::post('recover-password', [PasswordController::class, 'recoverPassword']);
 });
 
 

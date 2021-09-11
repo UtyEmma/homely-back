@@ -33,4 +33,10 @@ trait DateFunctions
         return str_replace("before","ago", $dt);
     }
 
+    protected function timeDiffInHours($first, $second){
+        $first = Date::create($first);
+        $second = Date::create($second);
+        return $first->diffInHours($second);
+    }
+
 }

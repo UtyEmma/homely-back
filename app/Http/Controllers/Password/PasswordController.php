@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Password;
 
 use App\Http\Controllers\Controller;
+use App\Http\Libraries\Functions\DateFunctions;
 use App\Http\Libraries\Password\ResetPassword;
 use App\Http\Requests\Auth\Passwords\RecoverPasswordRequest;
 use App\Http\Requests\Auth\Passwords\ResetPasswordRequest;
@@ -10,10 +11,11 @@ use App\Models\Agent;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Hash;
 
 class PasswordController extends Controller{
-    use ResetPassword;
+    use ResetPassword, DateFunctions;
 
     public function recoverPassword(RecoverPasswordRequest $request){
         try {
@@ -36,7 +38,7 @@ class PasswordController extends Controller{
             return $this->error(500, $e->getMessage());
         }
 
-        return true;
+        return $this->success("Password Reset Token Sent!!!", ['status' => true]);
     }
 
 
@@ -54,10 +56,12 @@ class PasswordController extends Controller{
                 throw new Exception("Invalid Password Reset Details", 400);
             }
 
-            //Check for the last time the model was modified inorder to check for token expiry
-            // if (!$user->updated_at ) {
-                # code...
-            // }
+            // Check for the last time the model was modified inorder to check for token expiry
+            $tokenLifetime = $this->timeDiffInHours($user->updated_at, Date::now());
+
+            if ($tokenLifetime > 24) {
+                throw new Exception("Password Reset Token has Expired!!!", 400);
+            }
             
             $user->password = Hash::make($request->password);
             $user->password_reset = null;

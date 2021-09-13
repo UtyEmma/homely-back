@@ -33,7 +33,7 @@
                       @if(session('response'))
                           <div class="alert alert-success">{{session('response')}}</div>
                       @endif
-  
+
                       <form action="/register" method="POST" class="mt-4">
                           @csrf
                           <div class="row">
@@ -105,7 +105,7 @@
                           </div>
                       </form>
                   </div>
-              </div>      
+              </div>
           </div>
           <div class="modal-footer">
               <button type="button"
@@ -114,7 +114,7 @@
                   <i class="bx bx-x d-block d-sm-none"></i>
                   <span class="d-none d-sm-block">Close</span>
               </button>
-  
+
               <button type="button" class="btn btn-success ml-1"
                   data-bs-dismiss="modal">
                   <i class="bx bx-check d-block d-sm-none"></i>
@@ -122,7 +122,7 @@
               </button>
           </div>
       </div>
-      
+
     <script src="{{asset('vendors/perfect-scrollbar/perfect-scrollbar.min.js')}}"></script>
     <script src="{{asset('js/bootstrap.bundle.min.js')}}"></script>
 
@@ -144,9 +144,9 @@
                 "positionClass": "toast-top-center",
             }
       		toastr.error("Invalid Input Data");
-        </script>    
+        </script>
     @endif
-    
+
     @if(Session::has('success'))
         <script>
             toastr.options = {
@@ -155,7 +155,7 @@
                 "positionClass": "toast-top-center",
             }
   	    	toastr.success("{{ session('success') }}", "Success");
-        </script>    
+        </script>
     @endif
 
     @if(Session::has('message'))
@@ -166,7 +166,7 @@
                 "positionClass": "toast-top-center",
             }
       		toastr.info("{{ session('message') }}", "Message");
-        </script>    
+        </script>
     @endif
 
     @if(Session::has('error'))
@@ -177,19 +177,19 @@
                 "positionClass": "toast-top-center",
             }
       		toastr.error("{{ session('error') }}", "Error");
-        </script>    
+        </script>
     @endif
 
     @if(Session::has('warning'))
-    <script>
-        toastr.options = {
-            "closeButton" : true,
-            "progressBar" : true,
-            "positionClass": "toast-top-center",
-        }
-          toastr.error("{{ session('warning') }}", "Error");
-    </script>   
-@endif
+        <script>
+            toastr.options = {
+                "closeButton" : true,
+                "progressBar" : true,
+                "positionClass": "toast-top-center",
+            }
+            toastr.error("{{ session('warning') }}", "Error");
+        </script>
+    @endif
 </body>
 
 </html>

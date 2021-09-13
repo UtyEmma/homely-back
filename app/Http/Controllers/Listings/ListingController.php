@@ -9,7 +9,6 @@ use App\Models\Agent;
 use App\Models\Listing;
 use Exception;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Listings\CompileListings;
 
 class ListingController extends Controller{
 

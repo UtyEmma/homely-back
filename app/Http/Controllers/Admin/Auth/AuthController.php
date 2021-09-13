@@ -16,7 +16,7 @@ class AuthController extends Controller
 {
     public function login (AdminLoginRequest $request){
         if (!Auth::attempt($request->validated())) {
-               return redirect()->back()->with('message', "Incorrect Email or Password");
+               return redirect()->back()->with('error', "Incorrect Email or Password");
         }
 
         $id = Auth::id();
@@ -32,7 +32,7 @@ class AuthController extends Controller
         try {
             $unique_id = $this->createUniqueToken('admins', 'unique_id');
             $h_password = Hash::make($request->password);
-    
+
             Admin::create(array_merge($request->validated(), [
                 'unique_id' => $unique_id, 'password' => $h_password
             ]));
@@ -49,9 +49,9 @@ class AuthController extends Controller
         $admin = Admin::find($id);
         $admin->isLoggedIn = false;
         $admin->save();
-        
+
         Auth::logout();
-        
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 

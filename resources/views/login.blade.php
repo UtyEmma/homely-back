@@ -55,6 +55,61 @@
         </div>
 
     </div>
+
+    @if($errors->any())
+        <script>
+            toastr.options = {
+                "closeButton" : true,
+                "progressBar" : true,
+                "positionClass": "toast-top-center",
+            }
+      		toastr.error("Invalid Input Data");
+        </script>
+    @endif
+
+    @if(Session::has('success'))
+        <script>
+            toastr.options = {
+                "closeButton" : true,
+                "progressBar" : true,
+                "positionClass": "toast-top-center",
+            }
+  	    	toastr.success("{{ session('success') }}", "Success");
+        </script>
+    @endif
+
+    @if(Session::has('message'))
+        <script>
+            toastr.options = {
+                "closeButton" : true,
+                "progressBar" : true,
+                "positionClass": "toast-top-center",
+            }
+      		toastr.info("{{ session('message') }}", "Message");
+        </script>
+    @endif
+
+    @if(Session::has('error'))
+        <script>
+            toastr.options = {
+                "closeButton" : true,
+                "progressBar" : true,
+                "positionClass": "toast-top-center",
+            }
+      		toastr.error("{{ session('error') }}", "Error");
+        </script>
+    @endif
+
+    @if(Session::has('warning'))
+        <script>
+            toastr.options = {
+                "closeButton" : true,
+                "progressBar" : true,
+                "positionClass": "toast-top-center",
+            }
+            toastr.error("{{ session('warning') }}", "Error");
+        </script>
+    @endif
 </body>
 
 </html>

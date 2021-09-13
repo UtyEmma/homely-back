@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Wishlist;
+namespace App\Http\Controllers\WishList;
 
 use App\Models\Wishlist;
 use App\Models\Agent;
@@ -14,8 +14,8 @@ trait CompileWishlist {
 
         $query->where('city', $agent->city);
         $query->where('state', $agent->state);
-        
+
         return $query->get();
     }
-    
+
 }

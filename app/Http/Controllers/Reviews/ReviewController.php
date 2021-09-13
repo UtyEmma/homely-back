@@ -13,6 +13,7 @@ use App\Http\Libraries\Notifications\NotificationHandler;
 use Illuminate\Support\Facades\Validator;
 
 class ReviewController extends Controller{
+
     use CompileReviews, NotificationHandler;
 
     public function createReview(Request $request, $listing_id){
@@ -42,7 +43,7 @@ class ReviewController extends Controller{
 
         $agent->no_reviews = $agent->no_reviews + 1;
         $agent->rating = $this->calculateRatings($agent->unique_id, 'agent_id');
-        $agent->save(); 
+        $agent->save();
 
         $listing = Listing::find($listing_id);
         $listing->rating = $this->calculateRatings($listing_id, 'listing_id');
@@ -68,7 +69,7 @@ class ReviewController extends Controller{
         try{
             $agent = auth()->user();
             $agents_reviews = Agent::find($agent->unique_id)->reviews;
-            $reviews = $this->compileReviewsData($agents_reviews); 
+            $reviews = $this->compileReviewsData($agents_reviews);
         }catch(Exception $e) {
             return $this->error(500, $e->getMessage());
         }
@@ -79,10 +80,10 @@ class ReviewController extends Controller{
         ]);
     }
 
-    
+
     public function fetchListingReviews($listing_id){
-        try { 
-            $listings_reviews = Review::where('listing_id', $listing_id)->where('status', true)->get(); 
+        try {
+            $listings_reviews = Review::where('listing_id', $listing_id)->where('status', true)->get();
 
             $reviews = $this->compileReviewsData($listings_reviews);
         } catch (Exception $e) {
@@ -116,7 +117,7 @@ class ReviewController extends Controller{
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
-        
+
         $review = Review::find($request->unique_id);
         return $this->success("Your Review has been updated", [
             'review' => $review
@@ -132,10 +133,10 @@ class ReviewController extends Controller{
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }
-        
+
         $review = Review::find($review_id);
         return $this->success("Your Review has been Deleted");
     }
 
-    
+
 }

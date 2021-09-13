@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Http\Controllers\Wishlist;
+namespace App\Http\Controllers\WishList;
 
-use App\Models\Wishlist;
 use App\Models\Agent;
 use App\Models\User;
 use App\Notifications\SendWishlistToAgent;
@@ -10,7 +9,7 @@ use Exception;
 use Illuminate\Support\Facades\Notification;
 
 trait WishlistNotificationHandler{
-    
+
     protected function sendWishlistToAgents($wishlist) {
         $agents = $this->compileAgents($wishlist);
 
@@ -33,12 +32,12 @@ trait WishlistNotificationHandler{
     }
 
     private function sendNotification ($agent, $wishlist){
-        $details = $this->notificationDetails($wishlist); 
+        $details = $this->notificationDetails($wishlist);
         try {
             Notification::send($agent, new SendWishlistToAgent($details));
         } catch (Exception $e) {
             return throw new Exception($e->getMessage(), 500);
-        } 
+        }
         return true;
     }
 
@@ -53,6 +52,6 @@ trait WishlistNotificationHandler{
         return $details;
     }
 
-    
+
 
 }

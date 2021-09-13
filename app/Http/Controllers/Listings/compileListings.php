@@ -4,10 +4,8 @@ namespace App\Http\Controllers\Listings;
 
 use App\Models\Listing;
 use App\Models\User;
-use App\Models\Agent;
 use App\Models\Category;
 use App\Models\Favourite;
-use Illuminate\Support\Facades\Auth;
 
 trait CompileListings{
 

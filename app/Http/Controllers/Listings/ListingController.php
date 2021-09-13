@@ -6,14 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Libraries\Notifications\NotificationHandler;
 use App\Http\Requests\Listings\CreateListingRequest;
 use App\Models\Agent;
-use App\Http\Controllers\Listings\CompileListings;
 use App\Models\Listing;
-use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Listings\CompileListings;
 
-class ListingController extends Controller
-{
+class ListingController extends Controller{
+
     use CompileListings, NotificationHandler;
 
     public function createListing(CreateListingRequest $request){

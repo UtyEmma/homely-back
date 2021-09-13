@@ -8,13 +8,13 @@ use Exception;
 use App\Models\Review;
 use App\Models\Listing;
 use App\Models\Agent;
-use App\Http\Controllers\Reviews\CompileReviews;
+use App\Http\Controllers\Reviews\CompileReview;
 use App\Http\Libraries\Notifications\NotificationHandler;
 use Illuminate\Support\Facades\Validator;
 
 class ReviewController extends Controller{
 
-    use CompileReviews, NotificationHandler;
+    use CompileReview, NotificationHandler;
 
     public function createReview(Request $request, $listing_id){
         $user = auth()->user();

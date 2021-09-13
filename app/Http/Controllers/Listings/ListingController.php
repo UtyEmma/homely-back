@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 
 class ListingController extends Controller{
 
-    use CompileListings, NotificationHandler;
+    use CompileListing, NotificationHandler;
 
     public function createListing(CreateListingRequest $request){
         try {

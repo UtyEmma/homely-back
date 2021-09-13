@@ -7,7 +7,7 @@ use App\Models\User;
 use App\Models\Category;
 use App\Models\Favourite;
 
-trait CompileListings{
+trait CompileListing{
 
     protected function compileListings($user){
         $all = Listing::where('status', 'active')->get();

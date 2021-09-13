@@ -7,7 +7,7 @@ use App\Http\Libraries\Functions\DateFunctions;
 use App\Models\Review;
 use Exception;
 
-trait CompileReviews{
+trait CompileReview{
     use DateFunctions;
 
     protected function compileReviewsData($reviews){
@@ -21,7 +21,7 @@ trait CompileReviews{
                 if($publisher = User::find($review->reviewer_id)){
                     if ($user && $review->reviewer_id === $user->unique_id) {
                         $owned_by_user = true;
-                    }   
+                    }
 
                     $array[$i]['review'] = array_merge($review->toArray(), [
                         'owned_by_user' => $owned_by_user,
@@ -29,7 +29,7 @@ trait CompileReviews{
                     ]);
                     $array[$i]['publisher'] =  $publisher;
                 }
-                
+
                 $i++;
             }
         }
@@ -57,7 +57,7 @@ trait CompileReviews{
                         'listing_title' => $listing->title,
                         'listing_slug' => $listing->slug,
                         'publisher_name' => $publisher->firstname." ".$publisher->lastname
-                    ]);   
+                    ]);
                 }
             }
         }
@@ -66,7 +66,7 @@ trait CompileReviews{
 
     protected function checkIfReviewBelongstoCurrentUser ($review_id) {
         if (!Review::find($review_id)) { throw new Exception("Sorry! The Review does not exist!", 404); }
-        if (!$review = Review::find($review_id)->publisher) { 
+        if (!$review = Review::find($review_id)->publisher) {
             throw new Exception("The review does not belong to the current user", 400);
         }
     }

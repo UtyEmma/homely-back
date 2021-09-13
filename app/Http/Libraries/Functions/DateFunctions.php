@@ -34,9 +34,12 @@ trait DateFunctions
     }
 
     protected function timeDiffInHours($first, $second){
-        $first = Date::create($first);
+        $first = Date::createFromFormat('Y-m-d H:i:s', $first);
         $second = Date::create($second);
-        return $first->diffInHours($second);
+        // return $first->diffInHours($second);
+        return [
+            'dt' => $first."   _-----_  ".$second
+        ];
     }
 
 }

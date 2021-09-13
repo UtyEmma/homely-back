@@ -41,7 +41,7 @@ class AuthUserController extends Controller{
                                         ['unique_id' => $user_id,
                                         'password' => $h_password]));
 
-            $this->verify(User::find($user_id), 'user', false);
+            $this->verify(User::find($user_id), 'tenant', false);
             
         } catch (Exception $e) {
            return $this->error(500, $e->getMessage()."::".$e->getLine());
@@ -50,41 +50,14 @@ class AuthUserController extends Controller{
         return $this->success("Sign Up Successful! Verification Email Sent");
     }
 
-
-    public function forgotPassword(Request $request){
-        try {
-            if (!$user = User::where('email', $request->email)->first()) {
-                return $this->error(404, "Email Address Does Not Exist");
-            }
-            $this->sendResetLink($user);
-        } catch (Exception $e) {
-            return $this->error("Password Reset could not be completed", 500);
-        }
-        return $this->success("Password Reset Token Sent! Please Check your Email");
-    }
-
-    public function resetPassword(ResetPasswordRequest $request){
-        try {
-            $user = User::where('email', $request->email)->where('password_reset', $request->token)->first();
-            if (!$user) {
-                throw new Exception("Invalid Password Reset Details", 403);
-            }
-            
-            $user->password = Hash::make($request->password);
-            $user->save();
-
-        } catch (Exception $e) {
-            return $this->error(401, $e->getMessage());
-        }
-
-        $user->password_reset = null;
-        $user->save();
-        return $this->success("User Password Has been updated");
-    }
-
-
     public function resendVerificationLink(User $user){
         return $this->verify($user, 'user', true);
+    }
+
+    public function getLoggedInUser () {
+        return $this->success("", [
+            'user' => auth()->user()
+        ]);
     }
 
 

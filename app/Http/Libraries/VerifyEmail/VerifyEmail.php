@@ -57,7 +57,7 @@ trait VerifyEmail {
         $details = [
             'greeting' => "Hi ".$user->first_name,
             'body' => "Click the button below to verify your email",
-            'link' => "https://localhost:8000/email/verify/".$verification_id,
+            'link' => env('FRONTEND_URL')."/email/verify/".$verification_id,
             'thanks' => 'Copy this token your app to reset your password'
         ]; 
         

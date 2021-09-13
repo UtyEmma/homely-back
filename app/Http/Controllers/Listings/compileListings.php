@@ -19,11 +19,11 @@ trait CompileListings{
 
     protected function compileListingWithQuery($request){
         $query = Listing::query();
-        
+
         $query->when($request->query('state'), function($q, $state){ return $q->where('state', $state); });
         $query->when($request->query('city'), function($q, $lga){ return $q->where('city', $lga); });
         $query->when($request->query('type'), function($q, $category){ return $q->where('type', $category); });
-        $query->when($request->query('price'), function($q, $income){ 
+        $query->when($request->query('price'), function($q, $income){
             switch ($income) {
                 case '0':
                     return $q->where('rent', "<=", 200000);
@@ -40,7 +40,7 @@ trait CompileListings{
             }
         });
 
-        $query->when($request->query('rooms'), function($q, $rooms){ 
+        $query->when($request->query('rooms'), function($q, $rooms){
             switch ($rooms) {
                 case '10':
                     return $q->where('no_bedrooms', '>=', $rooms );
@@ -49,7 +49,7 @@ trait CompileListings{
                     break;
             }
         });
-        
+
         $query->when($request->query('sortby'), function ($q, $sortby){
             switch ($sortby) {
                 case 'views':
@@ -71,14 +71,14 @@ trait CompileListings{
     /** Featured Listings */
     protected function compileFeaturedListings($user){
         $user ? $user = User::find($user->unique_id) : $user = null;
-        $related_listings = $this->fetchUserRelatedListings($user, 3);   
+        $related_listings = $this->fetchUserRelatedListings($user, 3);
         return $this->formatListingData($related_listings, $user);
     }
 
     private function fetchUserRelatedListings ($user, $index) {
         $listings = [];
 
-        $user && $user->state ? $state = $user->state : $state =  null; 
+        $user && $user->state ? $state = $user->state : $state =  null;
         $user && $user->city ? $city = $user->city : $city = null;
 
         $state ? $by_state = Listing::where('state', $user->state)->where('status', 'active')->get() : $by_state = [];
@@ -92,7 +92,7 @@ trait CompileListings{
 
     public function formatListingData($listings, $user = null){
         $array = [];
-        
+
         if (count($listings) > 0) {
             foreach($listings as $listing) {
                 $listing = Listing::find($listing['unique_id']);
@@ -100,7 +100,7 @@ trait CompileListings{
                 $is_Favourite = false;
 
                 if ($user) {
-                    $is_Favourite = Favourite::where('user_id', $user->unique_id)->where('listing_id', $listing['unique_id'])->first();   
+                    $is_Favourite = Favourite::where('user_id', $user->unique_id)->where('listing_id', $listing['unique_id'])->first();
                 }
 
                 $array[] = array_merge($listing->toArray(), [
@@ -111,7 +111,7 @@ trait CompileListings{
                             ]);
             }
         }
-        
+
         return $array;
     }
 
@@ -120,23 +120,23 @@ trait CompileListings{
         $categories = Category::all();
         $i = 0;
         if (count($categories) > 0) {
-            foreach ($categories as $key => $category) {      
+            foreach ($categories as $key => $category) {
                 $title = $category->category_title;
-                             
+
                 $category_listings = Listing::where('type', $title)->where('status', 'active')->orderBy('views', 'desc')->limit(9)->get();
                 $formatted_listings = $this->formatListingData($category_listings, $user);
 
                 if (count($category_listings) > 0 && $i < 7) {
                     $slug = $this->createDelimitedString($title, ' ', '_');
-    
+
                     $array[$i]['listings'] = $formatted_listings;
                     $array[$i]['category'] = [
                         'title' => $category->category_title,
                         'slug' => strtolower($slug)
-                    ];   
+                    ];
                     $i++;
                 }
-            }   
+            }
 
         }
 
@@ -148,10 +148,10 @@ trait CompileListings{
 
     public function formatListingDetails($details, $model){
         $this->model = app("App\\Models\\$model");
-        $array = count($details) > 0 
-                ? $array = array_map(fn($key, $value) => [$this->model->where('slug', $key)->first(), 'value' => $value], 
+        $array = count($details) > 0
+                ? $array = array_map(fn($key, $value) => [$this->model->where('slug', $key)->first(), 'value' => $value],
                                 array_keys($details), array_values($details)) : [];
-        
+
         return $array;
     }
 }

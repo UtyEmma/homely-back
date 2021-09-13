@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\Auth\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Agent\AgentController;
 use App\Http\Controllers\Agent\AuthAgentController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\Listings\ListingController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\WishList\WishlistController;
 use App\Http\Controllers\Details\DetailController;
+use App\Http\Controllers\Email\VerificationController;
 use App\Http\Controllers\Listings\Favourites\FavouritesController;
 use App\Http\Controllers\Notification\NotificationController;
 use App\Http\Controllers\Password\PasswordController;
@@ -28,16 +30,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
 Route::prefix('agent')->middleware('role:agent')->group(function(){
     
     Route::get('resend/{agent}', [AuthAgentController::class, 'resendVerificationLink']);
     Route::get('logout', [AuthAgentController::class, 'logout']);
-
+    Route::post('forgot-password', [AuthUserController::class, 'forgotPassword']);
+    Route::post('reset-password', [AuthUserController::class, 'resetPassword']);
+    Route::get('/user', [AuthUserController::class, 'getLoggedInUser']);
+    
     Route::middleware('verified.email:agent')->group(function(){
         
         Route::post('update', [AgentController::class, 'update']);
-        Route::get('auth_user', [AgentController::class, 'getLoggedInUser']);
         Route::get('user/{user}', [AgentController::class, 'single']);
         Route::get('unanvailable', [AgentController::class, 'setStatusToUnavailable']);
 
@@ -82,8 +85,7 @@ Route::prefix('agent')->middleware('role:agent')->group(function(){
 Route::prefix('tenant')->middleware('role:tenant')->group(function(){
     
     Route::get('resend/{user}', [AuthUserController::class, 'resendVerificationLink']);
-    Route::post('forgot-password', [AuthUserController::class, 'forgotPassword']);
-    Route::post('reset-password', [AuthUserController::class, 'resetPassword']);
+    Route::post('/user', [AuthUserController::class, 'getLoggedInUser']);
     
     Route::middleware('verified.email:tenant')->group(function(){
         Route::get('logout', [AuthUserController::class, 'logout']);
@@ -111,6 +113,7 @@ Route::prefix('tenant')->middleware('role:tenant')->group(function(){
 });
 
 Route::get('admin/verify/{id}', [AdminController::class, 'verifyAdmin']);
+Route::get('email/verify/{code}', [VerificationController::class, 'verify_email']);
 
 Route::prefix('admin')->middleware('admin')->group(function(){
     Route::prefix('listing')->group(function(){

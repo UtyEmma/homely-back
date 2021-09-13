@@ -47,10 +47,6 @@ class AgentController extends Controller
         return $this->success("Agent Profile Updated!!!", ['agent' => $agent]);
     }
 
-    public function getLoggedInUser(){
-        return $this->success("Logged In User Loaded", $this->agent());
-    }
-
     private $rented = [];
     private $active = [];
 

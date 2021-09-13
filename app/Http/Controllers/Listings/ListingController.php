@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Libraries\Notifications\NotificationHandler;
 use App\Http\Requests\Listings\CreateListingRequest;
 use App\Models\Agent;
+use App\Http\Controllers\Listings\CompileListings;
 use App\Models\Listing;
 use App\Models\User;
 use Exception;
@@ -21,7 +22,7 @@ class ListingController extends Controller
 
             $files = $request->hasFile('images') ? $this->handleFiles($request->file('images')) : [];
             $inital_fees = $request->rent + $request->extra_fees;
-    
+
             $listing_id = $this->createUniqueToken('listings', 'unique_id');
             $slug = $this->createDelimitedString($request->title, ' ', '-');
 
@@ -31,7 +32,7 @@ class ListingController extends Controller
                                             'amenities' => json_encode($request->amenities),
                                             'images' => $files,
                                             'slug' => strtolower($slug),
-                                            'initial_fees' => $inital_fees 
+                                            'initial_fees' => $inital_fees
                                         ]));
 
         } catch (Exception $e) {
@@ -54,7 +55,7 @@ class ListingController extends Controller
         $this->makeNotification('listing', $data);
 
         return $this->success($request->title." has been added to your Listings", [
-            'listing' => array_merge($listing->toArray(), ['images' => json_decode($listing->images)]) 
+            'listing' => array_merge($listing->toArray(), ['images' => json_decode($listing->images)])
         ]);
     }
 
@@ -65,7 +66,7 @@ class ListingController extends Controller
             $array = [];
             $listings = Agent::find($agent->unique_id)->listings;
             $i = 0;
-            
+
             if (count($listings) > 0) {
                 foreach ($listings as $listing) {
                     $array[$i] = array_merge($listing->toArray(), [
@@ -134,18 +135,18 @@ class ListingController extends Controller
     }
 
     public function deleteListing($listing_id){
-        try { 
+        try {
             $listing = Listing::find($listing_id) ?: throw new Exception("Listing Not Found", 404);
             $listing->delete();
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
-        return $this->success("Listing Deleted");   
+        return $this->success("Listing Deleted");
     }
 
     public function getSingleListing($slug, $message = ""){
         try {
-            if(!$listing = Listing::where('slug', $slug)->first()) {throw new Exception("The Requested Listing Does Not Exist", 500);} 
+            if(!$listing = Listing::where('slug', $slug)->first()) {throw new Exception("The Requested Listing Does Not Exist", 500);}
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
@@ -167,14 +168,14 @@ class ListingController extends Controller
         ]);
     }
 
-    
+
     public function updateListing(Request $request, $listing_id){
         try {
             $agent = auth()->user();
 
             $files = $request->hasFile('images') ? $this->handleFiles($request->file('images')) : [];
             $inital_fees = $request->rent + $request->extra_fees;
-    
+
             $slug = $this->createDelimitedString($request->title, ' ', '-');
 
             Listing::find($listing_id)->update(array_merge($request->all(), [
@@ -220,7 +221,7 @@ class ListingController extends Controller
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
-        
+
         return $this->success("Listing ".$listing->status, [
             'listing' => $this->formatListingData([$listing], $user)
         ]);
@@ -235,12 +236,12 @@ class ListingController extends Controller
             }
 
             $listing->status = $listing->status === 'suspended' ? 'active' : 'suspended';
-            $listing->save(); 
-        
+            $listing->save();
+
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
-        
+
         return $this->getSingleListing($listing->slug, "Listing $listing->status");
     }
 
@@ -248,11 +249,11 @@ class ListingController extends Controller
         try {
             if(!$listing = Listing::find($listing_id)){ throw new Exception("Listing Not Found", 404); }
             $listing->delete();
-        
+
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
-        
+
         return $this->success("Listing Deleted");
     }
 

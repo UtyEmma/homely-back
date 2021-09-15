@@ -31,15 +31,15 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('agent')->middleware('role:agent')->group(function(){
-    
+
     Route::get('resend/{agent}', [AuthAgentController::class, 'resendVerificationLink']);
     Route::get('logout', [AuthAgentController::class, 'logout']);
     Route::post('forgot-password', [AuthUserController::class, 'forgotPassword']);
     Route::post('reset-password', [AuthUserController::class, 'resetPassword']);
     Route::get('/user', [AuthUserController::class, 'getLoggedInUser']);
-    
+
     Route::middleware('verified.email:agent')->group(function(){
-        
+
         Route::post('update', [AgentController::class, 'update']);
         Route::get('user/{user}', [AgentController::class, 'single']);
         Route::get('unanvailable', [AgentController::class, 'setStatusToUnavailable']);
@@ -78,15 +78,15 @@ Route::prefix('agent')->middleware('role:agent')->group(function(){
         });
 
     });
-    
+
 });
 
 
 Route::prefix('tenant')->middleware('role:tenant')->group(function(){
-    
+
     Route::get('resend/{user}', [AuthUserController::class, 'resendVerificationLink']);
-    Route::post('/user', [AuthUserController::class, 'getLoggedInUser']);
-    
+    Route::get('/user', [AuthUserController::class, 'getLoggedInUser']);
+
     Route::middleware('verified.email:tenant')->group(function(){
         Route::get('logout', [AuthUserController::class, 'logout']);
         Route::post('update', [UserController::class, 'update']);
@@ -113,7 +113,6 @@ Route::prefix('tenant')->middleware('role:tenant')->group(function(){
 });
 
 Route::get('admin/verify/{id}', [AdminController::class, 'verifyAdmin']);
-Route::get('email/verify/{code}', [VerificationController::class, 'verify_email']);
 
 Route::prefix('admin')->middleware('admin')->group(function(){
     Route::prefix('listing')->group(function(){
@@ -144,7 +143,7 @@ Route::prefix('agent')->group(function(){
 Route::prefix('listings')->middleware('role')->group(function(){
     Route::get('/', [ListingController::class, 'fetchListings']);
     Route::get('/popular', [ListingController::class, 'fetchPopularListings']);
-    Route::get('/{slug}', [ListingController::class, 'getSingleListing']);
+    Route::get('/{username}/{slug}', [ListingController::class, 'getSingleListing']);
     Route::post('/search', [SearchController::class, 'searchListings']);
     Route::post('/update-views/{listing_id}', [ListingController::class, 'updateListingViews']);
 });
@@ -165,6 +164,7 @@ Route::prefix('social')->group(function(){
 Route::prefix('auth')->group(function(){
     Route::post('reset-password', [PasswordController::class, 'resetPassword']);
     Route::post('recover-password', [PasswordController::class, 'recoverPassword']);
+    Route::get('email/verify/{code}', [VerificationController::class, 'verify_email']);
 });
 
 

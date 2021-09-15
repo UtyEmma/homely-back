@@ -35,7 +35,7 @@ Route::prefix('action')->group(function(){
         Artisan::call('config:clear');
         return '<code>Configurations cleared</code>';
     });
-    
+
     Route::get('/cache-clear', function() {
         Artisan::call('cache:clear');
         return '<code>Cache cleared</code>';
@@ -58,20 +58,17 @@ Route::prefix('action')->group(function(){
 });
 
 Route::get('login', [AppController::class, 'login'])->name('login');
-Route::get('register', [AppController::class, 'signup']);
-
 Route::post('login', [AuthController::class, 'login']);
-Route::post('register', [AuthController::class, 'signup']);
 
 Route::middleware('auth')->group(function(){
-
+    Route::get('register', [AppController::class, 'signup']);
     Route::get('/logout', [AuthController::class, 'logout']);
-
+    Route::post('register', [AuthController::class, 'signup']);
     Route::get('/', [AppController::class, 'dashboard']);
     Route::get('profile', [AppController::class, 'profile']);
     Route::post('update-profile', [AdminController::class, 'update']);
     Route::get('properties', [AppController::class, 'properties']);
-    
+
     Route::prefix('tenants')->group(function(){
         Route::get('/', [AppController::class, 'tenants']);
         Route::get('/{id}', [TenantController::class, 'single']);

@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Listings\Favourites;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Listings\CompileListings;
+use App\Http\Controllers\Listings\CompileListing;
 use App\Models\Favourite;
 use App\Models\Listing;
 use App\Models\User;
@@ -10,7 +10,7 @@ use Exception;
 use Illuminate\Http\Request;
 
 class FavouritesController extends Controller{
-    use CompileListings;
+    use CompileListing;
 
     public function addToFavourites($listing_id){
         try {
@@ -38,7 +38,7 @@ class FavouritesController extends Controller{
 
             $favourites = User::find($user->unique_id)->favourites;
             $array = [];
-            
+
             foreach ($favourites as $key => $favourite){
                 $listing_id = $favourite->listing_id;
                 $array[] = Listing::find($listing_id);
@@ -51,7 +51,8 @@ class FavouritesController extends Controller{
         }
 
         return $this->success("Property added to your favourites", [
-            'status' => true
+            'status' => true,
+            'user' => User::find($user->unique_id)
         ]);
     }
 
@@ -64,12 +65,12 @@ class FavouritesController extends Controller{
             $favourite->delete();
 
             $user = User::find($user->unique_id);
-            $user->no_favourites = $user->no_favourites + 1;
+            $user->no_favourites = $user->no_favourites - 1;
             $user->save();
 
             $favourites = User::find($user->unique_id)->favourites;
             $array = [];
-            
+
             foreach ($favourites as $key => $favourite){
                 $listing_id = $favourite->listing_id;
                 $array[] = Listing::find($listing_id);
@@ -82,7 +83,8 @@ class FavouritesController extends Controller{
         }
         return $this->success("Property has been removed from your Favourites", [
             'listings' => $listings,
-            'status' => false
+            'status' => false,
+            'user' => User::find($user->unique_id)
         ]);
     }
 
@@ -102,12 +104,12 @@ class FavouritesController extends Controller{
         $user = auth()->user();
         $favourites = User::find($user->unique_id)->favourites;
         $array = [];
-        
+
         if (count($favourites)) {
             foreach ($favourites as $key => $favourite){
                 $listing_id = $favourite->listing_id;
                 $array[] = Listing::find($listing_id);
-            }   
+            }
         }
 
         return $this->formatListingData($array, $user);

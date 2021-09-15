@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Listings;
 
+use App\Models\Agent;
 use App\Models\Listing;
 use App\Models\User;
 use App\Models\Category;
@@ -16,6 +17,7 @@ trait CompileListing{
     }
 
     protected function compileListingWithQuery($request){
+
         $query = Listing::query();
 
         $query->when($request->query('state'), function($q, $state){ return $q->where('state', $state); });
@@ -61,9 +63,11 @@ trait CompileListing{
             }
         });
 
-        $listing = $query->get();
+        $query->where('status', '=', 'active');
 
-        return $listing;
+        $listings = $query->get();
+
+        return $this->formatListingData($listings);
     }
 
     /** Featured Listings */
@@ -94,6 +98,7 @@ trait CompileListing{
         if (count($listings) > 0) {
             foreach($listings as $listing) {
                 $listing = Listing::find($listing['unique_id']);
+                $agent = Agent::find($listing['agent_id']);
 
                 $is_Favourite = false;
 
@@ -105,7 +110,7 @@ trait CompileListing{
                                 'images' => json_decode($listing->images),
                                 'created_at' => $this->parseTimestamp($listing->created_at)->date,
                                 'isFavourite' => $is_Favourite ? true : false,
-                                'user' => $user
+                                'agent' => $agent
                             ]);
             }
         }

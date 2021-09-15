@@ -142,9 +142,10 @@ class ListingController extends Controller{
         return $this->success("Listing Deleted");
     }
 
-    public function getSingleListing($slug, $message = ""){
+    public function getSingleListing($username, $slug, $message = ""){
         try {
-            if(!$listing = Listing::where('slug', $slug)->first()) {throw new Exception("The Requested Listing Does Not Exist", 500);}
+            if (!$agent = Agent::where('username', $username)->first()) { throw new Exception("This Agent Does Not Exist", 404); }
+            if(!$listing = Listing::where('slug', $slug)->where('agent_id', $agent->unique_id)->first()) {throw new Exception("The Requested Listing Does Not Exist", 404);}
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
@@ -188,8 +189,9 @@ class ListingController extends Controller{
         }
 
         $listing = Listing::find($listing_id);
+        $agent = Agent::find($listing->agent_id);
 
-        return $this->getSingleListing($slug, "Your Property has been updated successfully");
+        return $this->getSingleListing($agent->username, $slug, "Your Property has been updated successfully");
     }
 
     public function setListingAsRented($listing_id){
@@ -240,7 +242,9 @@ class ListingController extends Controller{
             return $this->error(500, $e->getMessage());
         }
 
-        return $this->getSingleListing($listing->slug, "Listing $listing->status");
+        $agent = Agent::find($listing->agent_id);
+
+        return $this->getSingleListing($agent->username, $listing->slug, "Listing $listing->status");
     }
 
     public function adminDeleteListing($listing_id){

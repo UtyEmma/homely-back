@@ -161,7 +161,7 @@
                                                         <td class="col-1">
                                                             <div class="d-flex align-items-center">
                                                                 <div class="avatar avatar-md">
-                                                                    <img src="{{$ticket['agent']->avatar[0]}}">
+                                                                    {{-- <img src="@php echo json_decode($ticket['agent']->avatar)[0]; @endphp}}"> --}}
                                                                 </div>
                                                             </div>
                                                         </td>

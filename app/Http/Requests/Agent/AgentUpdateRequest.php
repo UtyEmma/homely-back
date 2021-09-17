@@ -27,20 +27,20 @@ class AgentUpdateRequest extends FormRequest
             'email' => 'required|string|email',
             'firstname' => 'required|string',
             'lastname' => 'required|string',
-            'username' => 'string',
-            'avatar' => 'file',
+            'username' => 'nullable|string',
+            'avatar' => 'nullable|file',
             'email' => 'required|email|string',
-            'location' => 'string',
-            'phone_number' => 'numeric|digits:11',
-            'whatsapp_no' => 'numeric|digits:11',
-            'state' => 'string',
-            'city' => 'string',
-            'website' => 'url',
-            'twitter' => 'string',
-            'facebook' => 'string',
-            'instagram' => 'string',
-            'bio' => 'string',
-            'title' => 'string'
+            'location' => 'nullable|string',
+            'phone_number' => 'nullable|numeric|digits:11',
+            'whatsapp_no' => 'nullable|numeric|digits:11',
+            'state' => 'nullable|string',
+            'city' => 'nullable|string',
+            'website' => 'nullable|url',
+            'twitter' => 'nullable|string',
+            'facebook' => 'nullable|string',
+            'instagram' => 'nullable|string',
+            'bio' => 'nullable|string',
+            'title' => 'required|string'
         ];
     }
 }

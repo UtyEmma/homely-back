@@ -32,8 +32,8 @@ class AgentController extends Controller
 
             Agent::find($agent->unique_id)->update(array_merge($request->validated(), [
                                             'twitter' => $request->twitter,
-                                            'facebook' => $request->twitter,
-                                            'instagram' => $request->twitter,
+                                            'facebook' => $request->facebook,
+                                            'instagram' => $request->instagram,
                                             'avatar' => $files ])
                                     );
         } catch (Exception $e) {

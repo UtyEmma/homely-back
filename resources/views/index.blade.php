@@ -155,7 +155,7 @@
                                 <div class="table-responsive">
                                     <table class="table table-hover table-lg">
                                         <tbody>
-                                            @if ($tickets && count($tickets) > 0)
+                                            {{-- @if ($tickets && count($tickets) > 0)
                                                 @foreach ($tickets as $ticket)
                                                     <tr>
                                                         <td class="col-1">
@@ -174,7 +174,7 @@
                                                         </td>
                                                     </tr>
                                                 @endforeach
-                                            @endif
+                                            @endif --}}
                                         </tbody>
                                     </table>
                                 </div>

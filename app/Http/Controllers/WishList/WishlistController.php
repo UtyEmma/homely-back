@@ -45,7 +45,7 @@ class WishlistController extends Controller
         ]);
     }
 
-    public function fetchTenantWishlist(){
+    public function fetchTenantWishlist($message = ""){
         try {
             $tenant = auth()->user();
             $wishlists = Wishlist::where('user_id', $tenant->unique_id)->get();
@@ -53,7 +53,7 @@ class WishlistController extends Controller
             return $this->error(500, $e->getMessage());
         }
 
-        return $this->success("Wishlists Fetched", [
+        return $this->success($message ?: "Wishlists Fetched", [
             'wishlists' => $wishlists,
             'no_of_wishlists' => count($wishlists)
         ]);
@@ -68,12 +68,12 @@ class WishlistController extends Controller
     }
 
     public function fetchAgentWishlist(){
-        
+
         try {
             $agent = auth()->user();
             $wishlist = Wishlist::where('city', $agent->city)->where('status', true)->get();
-            
-            count($wishlist) < 20 && $wishlist = array_merge($wishlist, Wishlist::where('state', $agent->state)->where('status', true)->get());
+
+            count($wishlist) < 10 && $wishlist = array_merge($wishlist, Wishlist::where('state', $agent->state)->where('status', true)->get());
 
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
@@ -85,5 +85,20 @@ class WishlistController extends Controller
 
     }
 
-    
+    public function deleteWishlist($id){
+        try {
+            $user = auth()->user();
+            if (!$wishlist = Wishlist::find($id)) { return $this->error(404, "Wishlist Not Found"); }
+            $tenant = User::find($user->unique_id);
+            $wishlist->delete();
+            $tenant->wishlists - 1;
+            $tenant->save();
+        } catch (Exception $e) {
+            $this->error($e->getCode(), $e->getMessage());
+        }
+
+        return $this->fetchTenantWishlist("Wishlist Deleted");
+    }
+
+
 }

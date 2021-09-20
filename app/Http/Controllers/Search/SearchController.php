@@ -8,40 +8,40 @@ namespace App\Http\Controllers\Search;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Listing;
-use App\Http\Controllers\Listings\CompileListings;
+use App\Http\Controllers\Listings\CompileListing;
 use Exception;
 
 class SearchController extends Controller{
-    use CompileListings;
+    use CompileListing;
 
     public function searchListings(Request $request){
         try{
-            $listings = $request->keyword 
-                            ? Listing::search($request->keyword)->where('status','active')->get() 
-                                : Listing::where('status', 'active')->get();   
-                
+            $listings = $request->keyword
+                            ? Listing::search($request->keyword)->where('status','active')->get()
+                                : Listing::where('status', 'active')->get();
+
             $user = auth()->user();
 
             $query = collect($listings);
 
-            $query->when($request->type, function($q, $type){ 
-                return $q->where('type', $type); 
+            $query->when($request->type, function($q, $type){
+                return $q->where('type', $type);
             });
 
-            $query->when($request->state, function($q, $state){ 
-                return $q->where('state', $state); 
+            $query->when($request->state, function($q, $state){
+                return $q->where('state', $state);
             });
 
-            $query->when($request->city, function($q, $city){ 
-                return $q->where('city', $city); 
+            $query->when($request->city, function($q, $city){
+                return $q->where('city', $city);
             });
 
-            $query->when($request->minprice, function($q, $minprice){ 
-                return $q->where('rent', '>=' ,$minprice); 
+            $query->when($request->minprice, function($q, $minprice){
+                return $q->where('rent', '>=' ,$minprice);
             });
 
-            $query->when($request->maxprice, function($q, $maxprice){ 
-                return $q->where('rent', '<=' ,$maxprice); 
+            $query->when($request->maxprice, function($q, $maxprice){
+                return $q->where('rent', '<=' ,$maxprice);
             });
 
             $query->when($request->bedrooms, function($q, $bedrooms){
@@ -50,10 +50,10 @@ class SearchController extends Controller{
                         return $q->where('no_bedrooms', '>=', $bedrooms );
                     default:
                         return $q->where('no_bedrooms', $bedrooms);
-                } 
+                }
             });
 
-            $query->when($request->bathrooms, function($q, $bathrooms){ 
+            $query->when($request->bathrooms, function($q, $bathrooms){
                 switch ($bathrooms) {
                     case '6':
                         return $q->where('no_bathrooms', '>=', $bathrooms );
@@ -61,7 +61,7 @@ class SearchController extends Controller{
                     return $q->where('no_bathrooms', $bathrooms);
                 }
             });
-            
+
             $listings = $this->formatListingData($query, $user);
 
         }catch(Exception $e){

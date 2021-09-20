@@ -13,7 +13,7 @@ class VerificationController extends Controller
 {
 
     /**
-     * To Actually Perform The Verification
+     * Perform The Email Confirmation with a verification code
      *
      * @param  mixed $code
      * @param  mixed $user_id
@@ -34,9 +34,12 @@ class VerificationController extends Controller
         $user->isVerified = true;
         $user->save();
 
+        $avatar = $user->avatar ? $avatar = json_decode($user->avatar)[0] : $avatar = null;
+
         return $this->success("Verification Successful", [
             'type' => $verification->role,
-            'status' => true
+            'status' => true,
+            'user' => array_merge($user->toArray(), ['avatar' => $avatar])
         ]);
     }
 

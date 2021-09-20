@@ -36,7 +36,7 @@ Route::prefix('agent')->middleware('role:agent')->group(function(){
     Route::get('logout', [AuthAgentController::class, 'logout']);
     Route::post('forgot-password', [AuthUserController::class, 'forgotPassword']);
     Route::post('reset-password', [AuthUserController::class, 'resetPassword']);
-    Route::get('/user', [AuthUserController::class, 'getLoggedInUser']);
+    Route::get('/user', [AuthAgentController::class, 'getLoggedInUser']);
 
     Route::middleware('verified.email:agent')->group(function(){
 
@@ -96,6 +96,8 @@ Route::prefix('tenant')->middleware('role:tenant')->group(function(){
         Route::prefix('wishlist')->group(function(){
             Route::post('create', [WishlistController::class, 'createWishlist']);
             Route::get('get-wishlist', [WishlistController::class, 'fetchTenantWishlist']);
+            Route::get('delete/{id}', [WishlistController::class, 'deleteWishlist']);
+
         });
 
         Route::prefix('reviews')->group(function(){

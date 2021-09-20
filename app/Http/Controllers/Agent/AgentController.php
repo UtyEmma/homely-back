@@ -24,17 +24,14 @@ class AgentController extends Controller
     public function update(AgentUpdateRequest $request){
         try {
             $agent = $this->agent();
-            $files = [];
 
-            $request->hasFile('avatar') ?
-                            $files = $this->handleFiles($request->file('avatar'))
-                            : $files = null;
+            $files = $request->hasFile('avatar') ? $this->handleFiles($request->file('avatar')) : null;
 
             Agent::find($agent->unique_id)->update(array_merge($request->validated(), [
-                                            'twitter' => $request->twitter,
-                                            'facebook' => $request->facebook,
-                                            'instagram' => $request->instagram,
-                                            'avatar' => $files ])
+                                        'twitter' => $request->twitter,
+                                        'facebook' => $request->facebook,
+                                        'instagram' => $request->instagram,
+                                        'avatar' => $files ])
                                     );
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());

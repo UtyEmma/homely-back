@@ -16,10 +16,10 @@ class SocialAuthController extends Controller
 {
     public function handleAuth(SocialAuthRequest $request){
         try {
-            $user_data = array_key_exists('accessToken', $request->data) 
+            $user_data = array_key_exists('accessToken', $request->data)
                 ? $this->authWithToken($request->driver, $request->data['accessToken'])
-                    : $this->tokenlessAuth($request->driver, $request->data);   
-            
+                    : $this->tokenlessAuth($request->driver, $request->data);
+
             if (!$user = $this->checkForExistingUser($user_data, $request->type)) {
                 if($request->type === 'tenant'){
                     $user = $this->createTenant($user_data);
@@ -27,9 +27,7 @@ class SocialAuthController extends Controller
                     $user = $this->createAgent($user_data);
                 }else {
                     throw new Exception("Invalid Authentication Request", 401);
-                }       
-            }elseif (!$this->checkForDriver($user, $request->driver)) {
-                return $this->error(401, "Invalid Authentication Request, Incorrect Driver");   
+                }
             }
 
             auth()->shouldUse($request->type);
@@ -63,7 +61,7 @@ class SocialAuthController extends Controller
 
     private function checkForExistingUser($user, $type){
         if ($type === 'tenant') {
-            return User::where('email', $user['email'])->first();   
+            return User::where('email', $user['email'])->first();
         }elseif ($type === 'agent') {
             return Agent::where('email', $user['email'])->first();
         }

@@ -4,12 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Libraries\Password\ResetPassword;
-use App\Http\Requests\Auth\Passwords\ResetPasswordRequest;
 use App\Http\Requests\Auth\User\LoginRequest;
 use App\Http\Requests\Auth\User\SignupRequest;
 use App\Models\User;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -18,16 +16,18 @@ class AuthUserController extends Controller{
     use ResetPassword;
 
     public function login(LoginRequest $request){
-        if (!$token = JWTAuth::attempt($request->all())) { 
-            return $this->error(401, 'Invalid Email or Password'); 
+
+        if (!$token = JWTAuth::attempt($request->all())) {
+            return $this->error(400, 'Invalid Email or Password');
         }
+
         $user = auth()->user();
         $current_user = User::find($user->unique_id);
 
-        $avatar = $user->avatar ? $avatar = json_decode($current_user->avatar)[0]->url : $avatar = null;
+        $avatar = $user->avatar ? json_decode($current_user->avatar)[0] : null;
 
         return $this->success("Login Successful", [
-            'token' => $token, 
+            'token' => $token,
             'user' => array_merge($current_user->toArray(), ['avatar' => $avatar])
         ]);
     }
@@ -37,12 +37,12 @@ class AuthUserController extends Controller{
             $user_id = $this->createUniqueToken('users', 'unique_id');
             $h_password = Hash::make($request->password);
 
-            User::create(array_merge($request->validated(), 
+            User::create(array_merge($request->validated(),
                                         ['unique_id' => $user_id,
                                         'password' => $h_password]));
 
             $this->verify(User::find($user_id), 'tenant', false);
-            
+
         } catch (Exception $e) {
            return $this->error(500, $e->getMessage()."::".$e->getLine());
         }
@@ -51,12 +51,16 @@ class AuthUserController extends Controller{
     }
 
     public function resendVerificationLink(User $user){
-        return $this->verify($user, 'user', true);
+        return $this->verify($user, 'tenant', true);
     }
 
     public function getLoggedInUser () {
+        $auth = auth()->user();
+        $user = User::find($auth->unique_id);
+        $avatar = $user->avatar ? json_decode($user->avatar)[0] : null;
+
         return $this->success("", [
-            'user' => auth()->user()
+            'user' => array_merge($user->toArray(), ['avatar' => $avatar])
         ]);
     }
 

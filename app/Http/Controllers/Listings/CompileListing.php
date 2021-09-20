@@ -92,6 +92,7 @@ trait CompileListing{
         return $listings;
     }
 
+
     public function formatListingData($listings, $user = null){
         $array = [];
 
@@ -99,7 +100,6 @@ trait CompileListing{
             foreach($listings as $listing) {
                 $listing = Listing::find($listing['unique_id']);
                 $agent = Agent::find($listing['agent_id']);
-
                 $is_Favourite = false;
 
                 if ($user) {
@@ -109,8 +109,9 @@ trait CompileListing{
                 $array[] = array_merge($listing->toArray(), [
                                 'images' => json_decode($listing->images),
                                 'created_at' => $this->parseTimestamp($listing->created_at)->date,
-                                'isFavourite' => $is_Favourite ? true : false,
-                                'agent' => $agent
+                                'isFavourite' => $is_Favourite,
+                                'agent' => $agent,
+                                'period' => $this->getDateInterval($listing->created_at)
                             ]);
             }
         }

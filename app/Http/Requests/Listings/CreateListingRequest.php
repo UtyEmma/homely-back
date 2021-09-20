@@ -26,21 +26,21 @@ class CreateListingRequest extends FormRequest
     public function rules()
     {
         return [
-            'images.*' => ['image','mimes:jpeg,png,gif,webp','max:2048'],
+            'images.*' => ['required', 'image','mimes:jpeg,png,gif,webp','max:2048'],
             'title' => ['required', 'unique:App\Models\Listing,title'],
             'tenure' => ['required', 'string'],
             'rent' => ['required', 'numeric'],
-            'extra_fees' => ['numeric'],
-            'video_links' => ['string', 'url'],
+            'extra_fees' => ['nullable', 'numeric'],
+            'video_links' => ['nullable', 'string', 'url'],
             'state' => ['required', 'string'],
             'city' => ['required', 'string'],
             'address' => ['required', 'string'],
-            'landmark' => ['string'],
+            'landmark' => ['nullable', 'string'],
             'longitude' => ['required'],
             'latitude' => ['required'],
             'no_bedrooms' => ['required', 'numeric'],
             'no_bathrooms' => ['required', 'numeric'],
-            'extra_info' => ['string'],
+            'extra_info' => ['nullable','string'],
         ];
     }
 }

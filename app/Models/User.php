@@ -12,7 +12,7 @@ class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable;
 
-    protected $fillable = [ 'unique_id', 'email', 'password', 'location', 'firstname', 'lastname', 'status', 'auth_driver', 'avatar', 'isVerified'];
+    protected $fillable = [ 'unique_id', 'email', 'phone', 'password', 'location', 'firstname', 'lastname', 'status', 'auth_driver', 'avatar', 'isVerified'];
 
     protected $primaryKey = 'unique_id';
     protected $keyType = 'string';
@@ -24,7 +24,7 @@ class User extends Authenticatable implements JWTSubject
         'wishlists' => 0,
         'no_favourites' => 0
     ];
-    
+
     protected $hidden = [
         'password',
         'remember_token',
@@ -49,7 +49,7 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTIdentifier() {
         return $this->getKey();
     }
-    
+
     public function getJWTCustomClaims() {
         return [];
     }

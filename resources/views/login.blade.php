@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="{{asset('vendors/bootstrap-icons/bootstrap-icons.css')}}">
     <link rel="stylesheet" href="{{asset('css/app.css')}}">
     <link rel="stylesheet" href="{{asset('css/pages/auth.css')}}">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 </head>
 
 <body>
@@ -63,7 +66,7 @@
                 "progressBar" : true,
                 "positionClass": "toast-top-center",
             }
-      		toastr.error("Invalid Input Data");
+            toastr.error("Invalid Input Data");
         </script>
     @endif
 
@@ -74,7 +77,7 @@
                 "progressBar" : true,
                 "positionClass": "toast-top-center",
             }
-  	    	toastr.success("{{ session('success') }}", "Success");
+            toastr.success("{{ session('success') }}", "Success");
         </script>
     @endif
 
@@ -85,7 +88,7 @@
                 "progressBar" : true,
                 "positionClass": "toast-top-center",
             }
-      		toastr.info("{{ session('message') }}", "Message");
+            toastr.info("{{ session('message') }}", "Message");
         </script>
     @endif
 
@@ -96,7 +99,7 @@
                 "progressBar" : true,
                 "positionClass": "toast-top-center",
             }
-      		toastr.error("{{ session('error') }}", "Error");
+            toastr.error("{{ session('error') }}", "Error");
         </script>
     @endif
 

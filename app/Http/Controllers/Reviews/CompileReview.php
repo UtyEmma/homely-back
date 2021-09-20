@@ -27,7 +27,8 @@ trait CompileReview{
                         'owned_by_user' => $owned_by_user,
                         'created_at' => $this->parseTimestamp($review->created_at)
                     ]);
-                    $array[$i]['publisher'] =  $publisher;
+                    $array[$i]['publisher'] =  array_merge($publisher->toArray(), [
+                        'avatar' => $publisher->avatar ? json_decode($publisher->avatar)[0] : null ]);
                 }
 
                 $i++;

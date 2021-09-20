@@ -149,7 +149,7 @@ class ListingController extends Controller{
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
-        // $details = $this->formatListingDetails((array) json_decode($listing->details), "Amenities");
+
         $features = $this->formatListingDetails((array) json_decode($listing->features), "Feature");
 
         $single_listing = array_merge($listing->toArray(), [
@@ -197,17 +197,27 @@ class ListingController extends Controller{
     public function setListingAsRented($listing_id){
         try {
             if(!$listing = Listing::find($listing_id)){ throw new Exception("Listing Not Found", 404); }
-            $listing->rented = true;
-            $listing->status = 'rented';
-            $listing->save();
+
+            if ($listing->rented && $listing->status = 'rented') {
+                $listing->rented = false;
+                $listing->status = 'active';
+                $listing->save();
+            }else{
+                $listing->rented = true;
+                $listing->status = 'rented';
+                $listing->save();
+            }
+
+            $message = $listing->rented ? "Listing Set as Rented" : "Listing Set as Available";
+
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
-        return $this->success("Listing Set as Rented", [
+        return $this->success($message, [
             'listing' => array_merge($listing->toArray(), [
                                     'images' => json_decode($listing->images),
-                                    'created_at' => $this->getDateInterval($listing->created_at)
+                                    'period' => $this->getDateInterval($listing->created_at)
                                 ])
         ]);
     }
@@ -219,7 +229,7 @@ class ListingController extends Controller{
             $listing->status = $listing->status === 'suspended' ? 'active' : 'suspended';
             $listing->save();
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         return $this->success("Listing ".$listing->status, [

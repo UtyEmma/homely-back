@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthAgentController extends Controller{
-    
+
     use ResetPassword;
 
     public function login(AgentLoginRequest $request){
@@ -32,7 +32,7 @@ class AuthAgentController extends Controller{
         $agent = array_merge($agent->toArray(), [
             'avatar' => json_decode($user->avatar)
         ]);
-        
+
         return $this->success('Login Successful', [
             'token' => $token,
             'user' => $agent
@@ -43,17 +43,27 @@ class AuthAgentController extends Controller{
         try {
             $agent_id = $this->createUniqueToken('agents', 'unique_id');
             $h_password = Hash::make($request->password);
-            $create_user = Agent::create(array_merge($request->validated(), 
+            $create_user = Agent::create(array_merge($request->validated(),
                                                     ['unique_id' => $agent_id,
                                                     'password' => $h_password]));
-            
-            $create_user ? $this->verify(Agent::find($agent_id)->first(), 'agent', false) 
+
+            $create_user ? $this->verify(Agent::find($agent_id)->first(), 'agent', false)
                             : throw new Exception("Agent Signup Failed", 500);
         } catch (Exception $e) {
            return $this->error(500, $e->getMessage());
         }
 
         return $this->success("Sign Up Successful");
+    }
+
+    public function getLoggedInUser () {
+        $auth = auth()->user();
+        $user = Agent::find($auth->unique_id);
+        $avatar = $user->avatar ? json_decode($user->avatar)[0] : null;
+
+        return $this->success("", [
+            'user' => array_merge($user->toArray(), ['avatar' => $avatar])
+        ]);
     }
 
 
@@ -76,7 +86,7 @@ class AuthAgentController extends Controller{
             if (!$user) {
                 throw new Exception("Invalid Password Reset Details", 403);
             }
-            
+
             $user->password = Hash::make($request->password);
             $user->save();
 
@@ -86,7 +96,7 @@ class AuthAgentController extends Controller{
 
         $user->password_reset = null;
         $user->save();
-        
+
         return $this->success("Your Password Has been reset");
     }
 
@@ -95,7 +105,7 @@ class AuthAgentController extends Controller{
         return $this->verify($agent, 'agent', true);
     }
 
-    
+
     public function logout(){
         Auth::logout();
         return $this->success();

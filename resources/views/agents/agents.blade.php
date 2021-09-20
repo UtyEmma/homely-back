@@ -60,17 +60,29 @@
                                 <td>{{$agent->city}}, {{$agent->state}}</td>
                                 <td class="text-center">{{$agent->no_of_listings}}</td>
                                 <td>
-                                    <div class="badge badge-shadow {{ $agent->verified ? 'bg-info' : 'bg-dark' }}">{{ $agent->verified ? 'true' : 'false' }}</div>
+                                    <div class="badge badge-shadow {{ $agent->verified ? 'bg-success' : 'bg-dark' }}">{{ $agent->verified ? 'true' : 'false' }}</div>
                                 </td>
                                 <td>
                                   <div class="badge badge-shadow {{ $agent->status === 'active' ? 'bg-success' : 'bg-warning' }}">{{ $agent->status }}</div>
                                 </td>
                                 <td>
-                                    <a href="agents/suspend/{{$agent->unique_id}}" class="btn btn-primary btn-sm">{{ $agent->status === 'active' ? 'Block' : 'Unblock' }}</a>
-                                    <a href="agents/delete/{{$agent->unique_id}}" class="btn btn-danger btn-sm">Delete</a>
-                                    <a href="{{$url}}" target="_blank" class="btn btn-primary btn-sm" title="Preview">
-                                        View
-                                    </a>
+                                    <div class="dropdown" style="z-index: 9999999; position: absolute; margin-top: -10px;">
+                                        <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="bi bi-three-dots"></i>
+                                        </button>
+                                        <div class="dropdown-menu shadow  dropdown-menu-right"  aria-labelledby="dropdownMenuButton">
+                                            <a href="{{$url}}" target="_blank" class="dropdown-item" title="Preview">View</a>
+
+                                            @if (!$agent->isVerified)
+                                                <a href="/agents/confirm-email/{{$agent->unique_id}}" class="dropdown-item" title="Preview">Confirm Email</a>
+                                            @endif
+
+                                            <a href="/agents/verify/{{$agent->unique_id}}"  class="dropdown-item" title="Preview">{{$agent->verified ? "Unverify Agent" : "Verify Agent"}}</a>
+                                            <a href="/agents/suspend/{{$agent->unique_id}}" class="dropdown-item">{{ $agent->status === 'active' ? 'Block' : 'Unblock' }}</a>
+                                            <a onclick="confirm('Are you sure you want to continue?')" href="/agents/delete/{{$agent->unique_id}}" class="dropdown-item">Delete</a>
+                                        </div>
+                                    </div>
+
                                 </td>
                             </tr>
                             @endforeach
@@ -85,11 +97,9 @@
                                 <p class="lead">
                                     Sorry we can't find any data, to get rid of this message, make at least 1 entry.
                                 </p>
-                                <a href="#" class="btn btn-primary mt-4">Create new One</a>
-                                <a href="#" class="mt-4 bb">Need Help?</a>
                                 </div>
                             </div>
-                        </div>            
+                        </div>
                         @endif
                   </tbody>
                 </table>

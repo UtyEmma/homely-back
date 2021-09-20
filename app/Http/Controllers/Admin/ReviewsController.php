@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Reviews\CompileReviews;
+use App\Http\Controllers\Reviews\CompileReview;
 use App\Models\Review;
 use Illuminate\Http\Request;
 
 class ReviewsController extends Controller
 {
-    use CompileReviews;
+    use CompileReview;
 
     public function fetchReviews(){
         $reviews = Review::all();
@@ -27,7 +27,7 @@ class ReviewsController extends Controller
         $message = $review->status ? 'Unblocked' : 'Blocked';
         return $this->redirectBack('success', 'Review '.$message);
     }
-    
+
     public function deleteReviews($id){
         if (!$review = Review::find($id)) { return $this->redirectBack('error', 'Review Does Not Exist');}
         $review->delete();

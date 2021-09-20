@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Reviews;
 
 use App\Models\User;
 use App\Http\Libraries\Functions\DateFunctions;
+use App\Models\Agent;
 use App\Models\Review;
 use Exception;
 
@@ -53,11 +54,13 @@ trait CompileReview{
             foreach ($reviews as $key => $review) {
                 $listing = Review::find($review->unique_id)->listing;
                 $publisher = Review::find($review->unique_id)->publisher;
+                $agent = Agent::find($listing->agent_id);
                 if ($listing) {
                     $array[] = array_merge($review->toArray(), [
                         'listing_title' => $listing->title,
                         'listing_slug' => $listing->slug,
-                        'publisher_name' => $publisher->firstname." ".$publisher->lastname
+                        'publisher_name' => $publisher->firstname." ".$publisher->lastname,
+                        'agent_username' => $agent->username
                     ]);
                 }
             }

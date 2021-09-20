@@ -20,7 +20,7 @@ trait VerifyEmail {
         $verification_id = $this->createVerificationInstance($role);
 
         if($this->sendVerificationEmail($verification_id, $user)){
-            return $resend ? $this->success("Verification Email Sent") 
+            return $resend ? $this->success("Verification Email Sent")
                             : $this->success("A New Verification Email has been Sent");
         };
 
@@ -30,7 +30,7 @@ trait VerifyEmail {
     private function checkVerificationStatus($user){
         if($user->isVerified){
             throw new Exception("Your Email is Verified", 400);
-        } 
+        }
         $this->checkVerificationAttempt($this->id);
     }
 
@@ -59,15 +59,15 @@ trait VerifyEmail {
             'body' => "Click the button below to verify your email",
             'link' => env('FRONTEND_URL')."/email/verify/".$verification_id,
             'thanks' => 'Copy this token your app to reset your password'
-        ]; 
-        
+        ];
+
         try {
             Notification::send($user, new EmailVerification($details));
         } catch (Exception $e) {
             $error = $e->getMessage();
         }
-        
-        return true;           
+
+        return true;
     }
 
 }

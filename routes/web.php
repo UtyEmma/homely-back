@@ -81,6 +81,8 @@ Route::middleware('auth')->group(function(){
         Route::get('/{id}', [AgentController::class, 'single']);
         Route::get('/delete/{id}', [AgentController::class, 'deleteAgent']);
         Route::get('/suspend/{id}', [AgentController::class, 'suspendAgent']);
+        Route::get('/verify/{id}', [AgentController::class, 'verifyAgent']);
+        Route::get('/confirm-email/{id}', [AgentController::class, 'confirmAgentEmail']);
     });
 
     Route::prefix('listings')->group(function(){

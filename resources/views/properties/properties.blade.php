@@ -60,12 +60,12 @@
                                                     </div>
                                                 </td>
                                                 <td class="d-flex align-items-center">
-                                                    <div class="dropdown">
+                                                    <div class="dropdown" >
                                                         <button class="btn" type="button" id="dropdown{{$category->unique_id}}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                             <i class="bi bi-pencil"></i>
                                                         </button>
-                                                        <div class="dropdown-menu dropdown-menu-right p-4" aria-labelledby="dropdown{{$category->unique_id}}" >
-                                                            <div class="dropdown-item">
+                                                        <div class="dropdown-menu shadow dropdown-menu-left" aria-labelledby="dropdown{{$category->unique_id}}" >
+                                                            <div class="dropdown-item ">
                                                                 <p class="mb-2">Edit Category</p>
                                                                 <form action="/categories/edit/{{$category->unique_id}}" method="post" >
                                                                     @csrf
@@ -81,7 +81,7 @@
                                                         <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                             <i class="bi bi-three-dots"></i>
                                                         </button>
-                                                        <div class="dropdown-menu  dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                                        <div class="dropdown-menu shadow  dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                                                             <a class="dropdown-item" href="/categories/suspend/{{$category->unique_id}}">
                                                                 {{ $category->status ? 'Suspend' : 'Restore' }}
                                                             </a>
@@ -111,7 +111,7 @@
                                                     <a href="#" class="mt-4 bb">Need Help?</a>
                                                     </div>
                                                 </div>
-                                            </div>         
+                                            </div>
                                         @endif
                                     </table>
                                 </div>
@@ -128,10 +128,10 @@
                     <div class="row">
                         <div class="col-md-6">
                             <h4 class="card-title">Amenities</h4>
-                            <p><span class="badge alert-primary">{{count($amenities)}} </span> Amenities Listed</p>  
+                            <p><span class="badge alert-primary">{{count($amenities)}} </span> Amenities Listed</p>
                         </div>
 
-                        <div class="col-md-6">  
+                        <div class="col-md-6">
                             <form action="/amenities/create-amenities" method="post">
                                 @csrf
                                 <div class="col-12">
@@ -198,7 +198,7 @@
                             <div class="row">
                                 <div class="col-6">
                                     <h4 class="card-title">Features</h4>
-                                    <p><span class="badge alert-primary">{{count($features)}} </span> Features Listed</p>  
+                                    <p><span class="badge alert-primary">{{count($features)}} </span> Features Listed</p>
                                 </div>
                             </div>
                         </div>
@@ -215,7 +215,7 @@
                             @endif
                         </div>
                         <div class="card-footer col-12">
-                            <div class="col-6">  
+                            <div class="col-6">
                                 <form action="features/create-features" method="post">
                                     @csrf
                                     <div class="col-12">
@@ -234,7 +234,7 @@
                     </div>
                 </div> -->
             </div>
-        
+
     </div>
 
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"

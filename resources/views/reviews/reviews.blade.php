@@ -1,5 +1,8 @@
 @include('layouts.header')
 
+@php
+    $auth = auth()->user();
+@endphp
 
 @include('layouts.sidebar')
 
@@ -46,9 +49,10 @@
                             {{$i = 0}}
                         @foreach ($reviews as $review)
                             @php
-                                $slug = $listing->slug;
+                                $slug = $review->listing_slug;
+                                $username = $review->agent_username;
                                 $id = $auth->unique_id;
-                                $url = "http://localhost:3000/listings/$slug?auth=admin&id=$id";
+                                $url = "http://localhost:3000/$username/$slug?auth=admin&id=$id";
                             @endphp
                             <tr>
                                 <td>{{++$i}}</td>
@@ -78,7 +82,7 @@
                                     </p>
                                 </div>
                             </div>
-                        </div>            
+                        </div>
                         @endif
                 </div>
             </div>

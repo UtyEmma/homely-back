@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Favourite;
+use App\Models\Notification;
+use App\Models\Review;
 use App\Models\User;
 use App\Models\Wishlist;
 use Exception;
@@ -37,6 +40,11 @@ class TenantController extends Controller{
         try {
             $tenant = $this->getTenantData($id);
             $tenant->delete();
+
+            Wishlist::where('user_id', $id)->delete();
+            Review::where('user_id', $id)->delete();
+            Favourite::where('user_id', $id)->delete();
+            Notification::where('receiver_id', $id)->delete();
         } catch (Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }

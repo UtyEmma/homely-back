@@ -3,15 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Favourite;
 use App\Models\Listing;
-use Exception;
-use Illuminate\Http\Request;
+use App\Models\Review;
 
 class ListingsController extends Controller
 {
     public function deleteListing($id){
         if($listing = Listing::find($id)) {
-            $listing->delete(); 
+            Review::where('listing_id', $id)->delete();
+            Favourite::where('listing_id', $id)->delete();
+            $listing->delete();
         }else{
             return redirect()->back()->with('message', 'Listing Does not Exist!!!');
         }
@@ -21,7 +23,7 @@ class ListingsController extends Controller
     public function suspendListing($id){
         if ($listing = Listing::find($id)) {
             $listing->status = !$listing->status;
-            $listing->save(); 
+            $listing->save();
         }else{
             return redirect()->back()->with('message', 'Listing Does not Exist!!!');
         }

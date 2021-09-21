@@ -73,13 +73,12 @@
                                         <div class="dropdown-menu shadow  dropdown-menu-right"  aria-labelledby="dropdownMenuButton">
                                             <a href="{{$url}}" target="_blank" class="dropdown-item" title="Preview">View</a>
 
-                                            @if (!$agent->isVerified)
-                                                <a href="/agents/confirm-email/{{$agent->unique_id}}" class="dropdown-item" title="Preview">Confirm Email</a>
-                                            @endif
 
-                                            <a href="/agents/verify/{{$agent->unique_id}}"  class="dropdown-item" title="Preview">{{$agent->verified ? "Unverify Agent" : "Verify Agent"}}</a>
-                                            <a href="/agents/suspend/{{$agent->unique_id}}" class="dropdown-item">{{ $agent->status === 'active' ? 'Block' : 'Unblock' }}</a>
-                                            <a onclick="confirm('Are you sure you want to continue?')" href="/agents/delete/{{$agent->unique_id}}" class="dropdown-item">Delete</a>
+                                            <a onclick="return confirm('Are you sure you wish to proceed?')" href="/agents/confirm-email/{{$agent->unique_id}}" class="dropdown-item" title="Preview">Confirm Email</a>
+
+                                            <a onclick="return confirm('Are you sure you wish to proceed?')" href="/agents/verify/{{$agent->unique_id}}"  class="dropdown-item" title="Preview">{{$agent->verified ? "Unverify Agent" : "Verify Agent"}}</a>
+                                            <a onclick="return confirm('Are you sure you wish to proceed?')" href="/agents/suspend/{{$agent->unique_id}}" class="dropdown-item">{{ $agent->status === 'active' ? 'Block' : 'Unblock' }}</a>
+                                            <a onclick="return confirm('Are you sure you wish to proceed?')" href="/agents/delete/{{$agent->unique_id}}" class="dropdown-item">Delete</a>
                                         </div>
                                     </div>
 

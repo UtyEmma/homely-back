@@ -57,13 +57,13 @@
                                 </td>
                                 <td>{{$tenant->location}}</td>
                                 <td class="text-center">{{$tenant->wishlists}}</td>
-                                
+
                                 <td>
                                   <div class="badge badge-shadow {{ $tenant->status ? 'bg-success' : 'bg-warning' }}">{{ $tenant->status ? 'active' : 'suspended' }}</div>
                                 </td>
                                 <td>
-                                  <a href="tenants/suspend/{{$tenant->unique_id}}" class="btn btn-sm btn-primary">{{ $tenant->status ? 'Block' : 'Unblock' }}</a>
-                                  <a href="tenants/delete/{{$tenant->unique_id}}" class="btn btn-danger btn-sm">Delete</a>
+                                  <a href="tenants/suspend/{{$tenant->unique_id}}" onclick="return confirm('Are you sure you wish to proceed?')" class="btn btn-sm btn-primary">{{ $tenant->status ? 'Block' : 'Unblock' }}</a>
+                                  <a href="tenants/delete/{{$tenant->unique_id}}" onclick="return confirm('Are you sure you wish to proceed?')" class="btn btn-danger btn-sm">Delete</a>
                                   <a href="tenants/{{$tenant->unique_id}}" class="btn btn-primary btn-sm">View</a>
                               </td>
                             </tr>
@@ -77,13 +77,11 @@
                                 </div>
                                 <h2>We couldn't find any data</h2>
                                 <p class="lead">
-                                    Sorry we can't find any data, to get rid of this message, make at least 1 entry.
+                                    No Tenants Available.
                                 </p>
-                                <a href="#" class="btn btn-primary mt-4">Create new One</a>
-                                <a href="#" class="mt-4 bb">Need Help?</a>
                                 </div>
                             </div>
-                        </div>            
+                        </div>
                         @endif
                   </tbody>
                 </table>

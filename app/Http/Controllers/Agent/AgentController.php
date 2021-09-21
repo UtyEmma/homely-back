@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Agent\CompileAgents;
 use App\Http\Controllers\Listings\CompileListing;
-use App\Http\Controllers\Wishlist\CompileWishlist;
+use App\Http\Controllers\WishList\CompileWishlist;
 
 class AgentController extends Controller
 {

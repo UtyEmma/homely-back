@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Models\Wishlist;
 use Exception;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Wishlist\WishlistNotificationHandler;
+use App\Http\Controllers\WishList\WishlistNotificationHandler;
 
 class WishlistController extends Controller
 {

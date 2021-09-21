@@ -32,12 +32,14 @@ class SocialAuthController extends Controller
 
             auth()->shouldUse($request->type);
             $token = Auth::login($user);
+            $avatar = $user->avatar ? json_decode($user->avatar)[0] : null;
+
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
 
         return $this->success("Log In Successful", [
-            'user' => $user,
+            'user' => array_merge($user->toArray(), ['avatar' => $avatar]),
             'token' => $token,
             'type' => $request->type
         ]);

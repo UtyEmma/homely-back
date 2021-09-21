@@ -43,14 +43,16 @@ class AuthAgentController extends Controller{
         try {
             $agent_id = $this->createUniqueToken('agents', 'unique_id');
             $h_password = Hash::make($request->password);
-            $create_user = Agent::create(array_merge($request->validated(),
-                                                    ['unique_id' => $agent_id,
-                                                    'password' => $h_password]));
 
-            $create_user ? $this->verify(Agent::find($agent_id)->first(), 'agent', false)
-                            : throw new Exception("Agent Signup Failed", 500);
+            Agent::create(array_merge($request->validated(), [
+                                    'unique_id' => $agent_id,
+                                    'password' => $h_password
+                                ]));
+
+            $this->verify(Agent::find($agent_id), 'agent', false);
+
         } catch (Exception $e) {
-           return $this->error(500, $e->getMessage());
+           return $this->error($e->getCode(), $e->getMessage());
         }
 
         return $this->success("Sign Up Successful");

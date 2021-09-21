@@ -26,7 +26,7 @@ class Agent extends Authenticatable implements JWTSubject
         'verified' => false,
         'no_reviews' => 0,
         'views' => 0,
-        'title' => "Bayof Agent"      
+        'title' => "Bayof Agent"
     ];
 
 

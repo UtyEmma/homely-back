@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use App\Models\Review;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Agent extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     protected $fillable = [ 'unique_id', 'email', 'password', 'firstname', 'lastname', 'phone_number', 'avatar', 'isVerified', 'whatsapp_no',
                                 'state', 'twitter', 'facebook', 'instagram', 'city', 'website', 'bio', 'title', 'auth_driver', 'username'];

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Chat;
 use Illuminate\Http\Request;
 use App\Models\Support;
+use Exception;
 
 class SupportController extends Controller{
 
@@ -23,20 +24,20 @@ class SupportController extends Controller{
                     'unique_id' => $unique_id,
                     'agent_id' => $auth->unique_id,
                     'sender' => 'agent',
-                    'issue_id' => $ticket_id 
+                    'issue_id' => $ticket_id
                 ]);
             }
 
         }catch(Exception $e){
             return $this->error(500, $e->getMessage());
         }
+        $new_ticket = Support::find($ticket_id);
 
-        $array = $this->compileChats($ticket_id);
-        $tickets = Support::where('agent_id', $auth->unique_id)->get();
+        $tickets =  $this->compileTickets($auth->unique_id);
 
         return $this->success("New Ticket has been Created", [
             'tickets' => $tickets,
-            'chat' =>  $array
+            'new_ticket' =>  $new_ticket
         ]);
     }
 
@@ -51,7 +52,7 @@ class SupportController extends Controller{
             ]);
 
         } catch (Exception $e) {
-            throw new Exception($e->getMessage(), 500);
+            throw new Exception($e->getMessage(), $e->getCode());
         }
         return $unique_id;
     }
@@ -64,13 +65,13 @@ class SupportController extends Controller{
                     $ticket->delete();
                     Chat::where('issue_id', $ticket_id)->delete();
                 }else{
-                    throw new Exception("Ticket was not creted by this Agent", 404);
+                    throw new Exception("Ticket was not creted by this Agent", 400);
                 }
             }else{
-                throw new Exception("Ticket Does not Exist", 404);
+                throw new Exception("Ticket Does not Exist", 400);
             }
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         return $this->success("Ticket Deleted Successfully", );
@@ -79,7 +80,7 @@ class SupportController extends Controller{
     protected function fetchAgentTickets(){
         try {
             $agent = auth()->user();
-            $tickets = Support::where('agent_id', $agent->unique_id)->get();
+            $tickets = $this->compileTickets($agent->unique_id);
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }

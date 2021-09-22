@@ -10,7 +10,7 @@ class Admin extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $fillable = ['unique_id', 'email', 'password', 'firstname', 'lastname'];
+    protected $fillable = ['unique_id', 'email', 'password', 'firstname', 'lastname', 'avatar'];
 
     protected $primaryKey = 'unique_id';
     protected $keyType = 'string';

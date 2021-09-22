@@ -6,9 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Agent;
 use App\Models\User;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Review extends Model{
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = ['unique_id', 'listing_id', 'reviewer_id', 'agent_id', 'review', 'rating'];
 

@@ -7,6 +7,7 @@ use App\Http\Libraries\Notifications\NotificationHandler;
 use App\Http\Requests\Listings\CreateListingRequest;
 use App\Models\Agent;
 use App\Models\Listing;
+use App\Models\Notification;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -135,6 +136,8 @@ class ListingController extends Controller{
     public function deleteListing($listing_id){
         try {
             $listing = Listing::find($listing_id) ?: throw new Exception("Listing Not Found", 404);
+            Notification::where('type_id', $listing_id)->delete();
+
             $listing->delete();
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
@@ -225,7 +228,7 @@ class ListingController extends Controller{
     public function suspendListing($listing_id){
         try {
             $user = auth()->user();
-            $listing = Listing::find($listing_id) ?: throw new Exception("Listing Not Found", 404);
+            if(!$listing = Listing::find($listing_id)){ throw new Exception("Listing Not Found", 404);}
             $listing->status = $listing->status === 'suspended' ? 'active' : 'suspended';
             $listing->save();
         } catch (Exception $e) {
@@ -241,9 +244,9 @@ class ListingController extends Controller{
         try {
             if(!$listing = Listing::find($listing_id)){ throw new Exception("Listing Not Found", 404); }
 
-            if ($listing->status === 'rented') {
-                return $this->error(400, "This Property has been set as Rented");
-            }
+            // if ($listing->status === 'rented') {
+            //     return $this->error(400, "This Property has been set as Rented");
+            // }
 
             $listing->status = $listing->status === 'suspended' ? 'active' : 'suspended';
             $listing->save();
@@ -256,19 +259,5 @@ class ListingController extends Controller{
 
         return $this->getSingleListing($agent->username, $listing->slug, "Listing $listing->status");
     }
-
-    public function adminDeleteListing($listing_id){
-        try {
-            if(!$listing = Listing::find($listing_id)){ throw new Exception("Listing Not Found", 404); }
-            $listing->delete();
-
-        } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
-        }
-
-        return $this->success("Listing Deleted");
-    }
-
-
 
 }

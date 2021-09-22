@@ -89,7 +89,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-6 col-lg-4 col-md-6">
+                    {{-- <div class="col-6 col-lg-4 col-md-6">
                         <div class="card">
                             <div class="card-body px-3 py-4-5">
                                 <div class="row">
@@ -109,7 +109,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="col-6 col-lg-4 col-md-6">
                         <div class="card">
                             <div class="card-body px-3 py-4-5">
@@ -161,7 +161,7 @@
                                                         <td class="col-1">
                                                             <div class="d-flex align-items-center">
                                                                 <div class="avatar avatar-md">
-                                                                    {{-- <img src="@php echo json_decode($ticket['agent']->avatar)[0]; @endphp}}"> --}}
+                                                                    {{-- <img src="@php echo $ticket['agent']; @endphp}}"> --}}
                                                                 </div>
                                                             </div>
                                                         </td>
@@ -254,7 +254,7 @@
                     <div class="card-content pb-4">
                         @php
                             $id = $auth->unique_id;
-                            $url = "http://localhost:3000?auth=admin&id=$id";
+                            $url = env('FRONTEND_URL')."?auth=admin&id=$id";
                         @endphp
                         <div class="px-4">
                             <a href="{{$url}}" target="_blank" class='btn btn-block btn-md d-flex align-items-center justify-content-center btn-outline-primary font-bold mt-3'>Visit Bayof <i class="ms-2 bi bi-box-arrow-in-up-right"></i></a>

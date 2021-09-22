@@ -14,7 +14,7 @@ class SupportController extends Controller{
 
     public function fetchTickets(){
         $all = Support::all();
-        $tickets = $this->compileTicketsData($all);    
+        $tickets = $this->compileTicketsData($all);
         return $this->view('support.tickets', 200, [
             'tickets' => $tickets,
             'page' => 'support',
@@ -31,14 +31,14 @@ class SupportController extends Controller{
                 $array[$i]['ticket'] = json_decode(json_encode($item));
                 $array[$i]['agent'] = Support::find($ticket->unique_id)->agent;
                 $i++;
-            }   
+            }
         }
         return $array;
     }
 
     public function resolvedTickets(){
         $resolved = Support::where('status', 'resolved')->get();
-        
+
         $tickets = $this->compileTicketsData($resolved);
 
         return $this->view('support.tickets', 200, [
@@ -47,8 +47,8 @@ class SupportController extends Controller{
             'status' => 'resolved'
         ]);;
     }
-    
-    
+
+
     public function pendingTickets(){
         $pending = Support::where('status', 'pending')->get();
         $tickets = $this->compileTicketsData($pending);
@@ -62,15 +62,15 @@ class SupportController extends Controller{
 
     public function markTicketAsResolved($id){
         if (!$ticket = Support::find($id)) { return $this->redirectBack('message', 'Ticket Does not Exist');}
-        $ticket->status = 'resolved';
+        $ticket->status = $ticket->status === 'pending' ? 'resolved' : 'pending';
         $ticket->save();
-        return $this->redirectBack('message', 'Ticket Marked As Resolved');
+        return $this->redirectBack('success', $ticket->status === 'pending' ? 'Ticket Reopened' : "Ticket Marked As Resolved");
     }
-    
+
     public function deleteTicket($id){
         if (!$ticket = Support::find($id)) { return $this->redirectBack('message', 'Ticket Does Not Exist');}
         $ticket->delete();
-        return $this->redirectBack('message', 'Ticket Deleted Successfully');
+        return $this->redirectBack('success', 'Ticket Deleted Successfully');
     }
 
     public function singleTicket($id){
@@ -97,7 +97,7 @@ class SupportController extends Controller{
             'message' => $request->message,
             'issue_id' => $ticket_id,
             'sender' => 'Admin'
-        ]);   
+        ]);
 
         if (!$create_chat) {
             return $this->redirectBack("error", "Your Reply has Not been Sent");

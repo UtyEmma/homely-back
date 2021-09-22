@@ -22,7 +22,7 @@
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
                             <li class="breadcrumb-item"><a href="/support">Support</a></li>
-                            <li class="breadcrumb-item current"><span href="/support">Ticket</span></li>
+                            <li class="breadcrumb-item current"><span >Ticket</span></li>
                         </ol>
                     </nav>
                 </div>
@@ -34,7 +34,7 @@
                 <section class="section">
                         <div class="row">
                             <div class="col-md-4">
-                                <a class="fs-6 btn btn-link d-flex align-items-center my-2" href="/support"><i class="bi bi-chevron-bar-left me-2"></i> Back To Support</a>
+                                <a class="fs-6 btn btn-link d-flex align-items-center my-2" href="/support"><i class="bi bi-chevron-left me-1"></i> Back To Support</a>
                                 <div class="card bg-light-primary">
                                     <div class="card-header bg-light-primary pt-3 pb-0">
                                         <h4 class="fw-bolder mb-0">Ticket Info</h4>
@@ -54,7 +54,7 @@
                                         </div>
 
                                         <div class="col-12 bg-white mt-3 rounded-3 p-2">
-                                            <a href="/support/resolve/{{$ticket->unique_id}}" class="btn btn-success btn-sm">Mark As Resolved</a>
+                                            <a href="/support/resolve/{{$ticket->unique_id}}" class="btn btn-sm {{$ticket->status === 'pending' ? 'btn-success' : 'btn-warning'}}">{{$ticket->status === 'pending' ? 'Mark As Resolved' : 'Reopen Ticket'}}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -84,7 +84,7 @@
                                                     <div class="chat-body">
                                                         <div class="chat-message">{{$chat->message}}</div>
                                                     </div>
-                                                </div>    
+                                                </div>
                                             @endforeach
                                     </div>
                                     <div class="card-footer bg-light">

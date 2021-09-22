@@ -8,7 +8,12 @@ trait CompileAgents {
 
 
     protected function compileAgents(){
-        $data = Agent::where('status', 'active')->get();
+        $q = Agent::query();
+
+        $q->where('username', '!=', '');
+        $q->where('status', 'active');
+        $data = $q->get();
+        //  = Agent::where('status', 'active')->where('username')->get();
         return $this->formatAgentData($data);
     }
 
@@ -17,13 +22,11 @@ trait CompileAgents {
 
         if (count($agents) > 0 ) {
             foreach ($agents as $key => $agent) {
-                $array[] = array_merge($agent->toArray(), [
-                    'avatar' => json_decode($agent->avatar),
-                ]);
+                $array[] = $agent;
             }
         }
 
         return $array;
-    }  
+    }
 
 }

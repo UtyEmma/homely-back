@@ -6,14 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Agent;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Wishlist extends Model
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     protected $fillable = ['unique_id', 'user_id', 'category', 'no_bedrooms', 'no_bathrooms', 'desc', 'area', 'amenities', 'budget',
                             'state', 'city', 'additional', ];
-                            
+
     protected $primaryKey = 'unique_id';
     protected $keyType = 'string';
     public $incrementing = false;

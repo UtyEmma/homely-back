@@ -16,13 +16,11 @@ trait CompileWishlist {
         $query->where('state', $agent->state);
         $all = $query->get();
 
-        $wishlists = array_map(function($item){
-            $user = User::find($item['user_id']);
+        $wishlists = array_map(function($wishlist){
+            $user = User::find($wishlist['user_id']);
             return [
-                'wishlists' => $item,
-                'user' => array_merge($user->toArray(), [
-                    'avatar' => $user->avatar ? json_decode($user->avatar)[0] : null
-                ])
+                'wishlists' => $wishlist,
+                'user' => $user
             ];
         }, $all->toArray());
 

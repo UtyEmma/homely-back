@@ -50,7 +50,7 @@
                           </div>
                           <div class="user-img d-flex align-items-center">
                               <div class="avatar avatar-md">
-                                  <img src="@php echo $auth->avatar ? json_decode($auth->avatar)[0]->url : asset('/images/faces/1.jpg') @endphp" class="img-fluid">
+                                  <img src="@php echo $auth->avatar ? $auth->avatar : asset('/images/faces/1.jpg') @endphp" class="img-fluid">
                               </div>
                           </div>
                       </div>

@@ -67,6 +67,7 @@ Route::middleware('auth')->group(function(){
     Route::get('/', [AppController::class, 'dashboard']);
     Route::get('profile', [AppController::class, 'profile']);
     Route::post('update-profile', [AdminController::class, 'update']);
+    Route::post('update-password', [AdminController::class, 'updatePassword']);
     Route::get('properties', [AppController::class, 'properties']);
 
     Route::prefix('tenants')->group(function(){

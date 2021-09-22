@@ -25,13 +25,7 @@ class AuthAgentController extends Controller{
             return $this->error(400, 'Invalid Email or Password');
         }
 
-        $user = auth()->user();
-
-        $agent = Agent::find($user->unique_id);
-
-        $agent = array_merge($agent->toArray(), [
-            'avatar' => json_decode($user->avatar)
-        ]);
+        $agent = auth()->user();
 
         return $this->success('Login Successful', [
             'token' => $token,
@@ -59,13 +53,7 @@ class AuthAgentController extends Controller{
     }
 
     public function getLoggedInUser () {
-        $auth = auth()->user();
-        $user = Agent::find($auth->unique_id);
-        $avatar = $user->avatar ? json_decode($user->avatar)[0] : null;
-
-        return $this->success("", [
-            'user' => array_merge($user->toArray(), ['avatar' => $avatar])
-        ]);
+        return $this->success("", [ 'user' => auth()->user() ]);
     }
 
 
@@ -84,16 +72,15 @@ class AuthAgentController extends Controller{
 
     public function resetPassword(ResetPasswordRequest $request){
         try {
-            $user = Agent::where('email', $request->email)->where('password_reset', $request->token)->first();
-            if (!$user) {
-                throw new Exception("Invalid Password Reset Details", 403);
+            if (!$user = Agent::where('email', $request->email)->where('password_reset', $request->token)->first()) {
+                throw new Exception("Invalid Password Reset Details", 400);
             }
 
             $user->password = Hash::make($request->password);
             $user->save();
 
         } catch (Exception $e) {
-            return $this->error(401, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         $user->password_reset = null;

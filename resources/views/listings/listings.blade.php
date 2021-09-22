@@ -8,7 +8,7 @@
 
 <div id="main">
     @include('layouts.nav')
-    
+
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -48,11 +48,12 @@
                         @foreach ($listings as $listing)
                             @php
                                 $slug = $listing->slug;
+                                $username = $listing->username;
                                 $id = $auth->unique_id;
-                                $url = "http://localhost:3000/listings/$slug?auth=admin&id=$id";
+                                $url = env('FRONTEND_URL')."/$username/$slug?auth=admin&id=$id";
                             @endphp
 
-                            
+
                             <tr>
                                 <td>{{$listing->index}}</td>
                                 <td>
@@ -60,7 +61,7 @@
                                 </td>
                                 <td><img alt="{{$listing->title}}" src="{{$listing->images[0]}}" width="35"></td>
                                 <td>
-                                    <a href="/reviews/{{$listing->unique_id}}" class="d-flex align-items-center">{{$listing->reviews}} Review{{$listing->reviews !== 1 ? 's' : '' }} <i class="bi bi-box-arrow-in-up-right ms-1"></i></a>
+                                    {{$listing->reviews}} Review{{$listing->reviews !== 1 ? 's' : '' }}
                                 </td>
                                 <td>
                                   <div class="badge badge-shadow {{ $listing->status ? 'bg-success' : 'bg-danger' }}">
@@ -93,7 +94,7 @@
                                 <a href="#" class="mt-4 bb">Need Help?</a>
                                 </div>
                             </div>
-                        </div>            
+                        </div>
                         @endif
                   </tbody>
                 </table>
@@ -104,7 +105,7 @@
 
     <script>
         function openPage(target){
-            return window.location.href = "http://"+target 
+            return window.location.href = "http://"+target
         }
     </script>
 

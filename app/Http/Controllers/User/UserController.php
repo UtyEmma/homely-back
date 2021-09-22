@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Libraries\Auth\Auth;
 use App\Http\Requests\Auth\User\UpdateUserRequest;
+use App\Models\Notification;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -17,7 +18,6 @@ class UserController extends Controller{
 
         try {
             $old_email = $user->email;
-            $avatar = null;
 
             $files = $request->hasFile('avatar') ? $this->handleFiles($request->file('avatar')) : $user->avatar;
 
@@ -25,7 +25,7 @@ class UserController extends Controller{
 
             User::find($user->unique_id)->update(array_merge(
                 $request->validated(), [
-                    'avatar' => $files
+                    'avatar' => $files ? json_decode($files)[0] : null
                 ]
             ));
 
@@ -41,12 +41,7 @@ class UserController extends Controller{
             return $this->error($e->getCode(), $e->getMessage());
         }
 
-        $avatar = $user->avatar ? json_decode($user->avatar)[0] : null;
-
-
-        $tenant = array_merge($user->toArray(), ['avatar' => $avatar]);
-
-        return $this->success("User Profile Updated!!!", [ 'tenant' => $tenant, 'email_updated' => $email_updated ]);
+        return $this->success("User Profile Updated!!!", [ 'tenant' => $user, 'email_updated' => $email_updated ]);
     }
 
     public function show($user){
@@ -54,8 +49,9 @@ class UserController extends Controller{
     }
 
     public function deleteUserAccount($user){
-        if(!$user = User::find($user)){return $this->error(404, "User Not Found");}
         try {
+            if(!$user = User::find($user)){ throw new Exception ("User Not Found", 400); }
+            Notification::where('receiver_id', $user)->delete();
             $user->delete();
         }catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());

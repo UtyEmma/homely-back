@@ -24,7 +24,7 @@ class SignupAgentRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email',
+            'email' => 'required|email|unique:agents,email',
             'firstname' => 'required|string',
             'lastname' => 'required|string',
             'password' => 'required',

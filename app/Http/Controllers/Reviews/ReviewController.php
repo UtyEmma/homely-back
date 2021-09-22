@@ -10,6 +10,7 @@ use App\Models\Listing;
 use App\Models\Agent;
 use App\Http\Controllers\Reviews\CompileReview;
 use App\Http\Libraries\Notifications\NotificationHandler;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Validator;
 
 class ReviewController extends Controller{
@@ -137,6 +138,7 @@ class ReviewController extends Controller{
             $agent->rating = $this->calculateRatings($agent->unique_id, 'agent_id');
             $agent->save();
 
+            Notification::where('type_id', $review_id)->delete();
             $review->delete();
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());

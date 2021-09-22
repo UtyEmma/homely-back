@@ -38,7 +38,6 @@ class AppController extends Controller
             'reviews' => count(Review::all()),
             'categories' => count(Category::all()),
             'amenities' => count(Amenities::all()),
-            'views' => count(Views::all()),
             'tickets' => $tickets
         ]);
     }
@@ -52,7 +51,7 @@ class AppController extends Controller
                 $array[$i]['ticket'] = json_decode(json_encode($item));
                 $array[$i]['agent'] = Support::find($ticket->unique_id)->agent;
                 $i++;
-            }   
+            }
         }
         return $array;
     }
@@ -83,7 +82,8 @@ class AppController extends Controller
         foreach ($listings as $key => $listing) {
             $array[] = array_merge($listing->toArray(), [
                 'index' => $i,
-                'images' => json_decode($listing->images)
+                'images' => json_decode($listing->images),
+                'username' => Agent::find($listing->agent_id)->username
             ]);
             $i++;
         }
@@ -111,7 +111,7 @@ class AppController extends Controller
         ]);
     }
 
-    
+
     public function properties(){
         $categories = Category::all();
         $amenities = Amenities::all();

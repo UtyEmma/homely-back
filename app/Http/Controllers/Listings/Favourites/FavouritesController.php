@@ -66,14 +66,12 @@ class FavouritesController extends Controller{
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
+
         $user = auth()->user();
-        $tenant = User::find($user->unique_id);
 
         return $this->success($message ?: "Favourites Fetched", [
             'listings' => $listings,
-            'user' => array_merge($tenant->toArray(), [
-                'avatar' => $tenant->avatar ? json_decode($tenant->avatar)[0] : null
-            ]),
+            'user' => $user,
             'status' => $status
         ]);
     }

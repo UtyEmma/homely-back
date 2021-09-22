@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Agent\CompileAgents;
 use App\Http\Controllers\Listings\CompileListing;
 use App\Http\Controllers\WishList\CompileWishlist;
+use App\Models\Listing;
 
 class AgentController extends Controller
 {
@@ -25,23 +26,23 @@ class AgentController extends Controller
         try {
             $agent = $this->agent();
 
-            $files = $request->hasFile('avatar') ? $this->handleFiles($request->file('avatar')) : null;
+            $files = $request->hasFile('avatar') ? $this->handleFiles($request->file('avatar')) : $agent->avatar;
 
             Agent::find($agent->unique_id)->update(array_merge($request->validated(), [
                                         'twitter' => $request->twitter,
                                         'facebook' => $request->facebook,
                                         'instagram' => $request->instagram,
-                                        'avatar' => $files ])
+                                        'avatar' => $files ? $files : null ])
                                     );
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
 
         $updated_agent = Agent::find($agent->unique_id);
-        $avatar = $updated_agent->avatar ? json_decode($updated_agent->avatar)[0] : "";
 
-        $agent = array_merge($updated_agent->toArray(), ['avatar' => $avatar]);
-        return $this->success("Agent Profile Updated!!!", ['agent' => $agent]);
+        return $this->success("Agent Profile Updated!!!", [
+            'agent' => $updated_agent
+        ]);
     }
 
     private $rented = [];
@@ -49,39 +50,36 @@ class AgentController extends Controller
 
     public function single($username, $message=""){
         try {
-            $agent = Agent::where('username', $username)->first() ? Agent::where('username', $username)->first() : throw new Exception("User Not Found", 404);
+            if (!$agent = Agent::where('username', $username)->first()) { throw new Exception("User Not Found", 404); }
+
+            $listings = Agent::find($agent->unique_id)->listings;
+            $reviews = Agent::find($agent->unique_id)->reviews;
+
+            auth()->shouldUse('tenant');
+            $user = auth()->user();
+
+            $formatted_listings = $this->formatListingData($listings, $user);
+            $listings = collect($formatted_listings);
+
+
+            $listings->filter(function($listing, $key){
+                if ($listing['status'] === 'rented') {
+                    array_push($this->rented, $listing);
+                }
+            });
+
+            $listings->filter(function($listing, $key){
+                if ($listing['status'] === 'active') {
+                    array_push($this->active, $listing);
+                }
+            });
+
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }
 
-        $listings = Agent::find($agent->unique_id)->listings;
-        $reviews = Agent::find($agent->unique_id)->reviews;
-
-        $formatted_agent = array_merge($agent->toArray(), [
-                            'avatar' => json_decode($agent->avatar),
-                        ]);
-
-        auth()->shouldUse('tenant');
-        $user = auth()->user();
-
-        $formatted_listings = $this->formatListingData($listings, $user);
-        $listings = collect($formatted_listings);
-
-
-        $listings->filter(function($listing, $key){
-            if ($listing['status'] === 'rented') {
-                array_push($this->rented, $listing);
-            }
-        });
-
-        $listings->filter(function($listing, $key){
-            if ($listing['status'] === 'active') {
-                array_push($this->active, $listing);
-            }
-        });
-
         return $this->success($message, [
-            'agent' => $formatted_agent,
+            'agent' => $agent,
             'listing' => [
                 'rented' => $this->rented,
                 'active' => $this->active
@@ -94,35 +92,12 @@ class AgentController extends Controller
         try {
             $agents = $this->compileAgents();
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         return $this->success("All Agents", [
             'agents' => $agents
         ]);
-    }
-
-    public function deleteUserAccount(){
-        try {
-            $agent = auth()->user();
-            $agent = Agent::find($agent->unique_id);
-            Auth::logout();
-            $agent->delete();
-        } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
-        }
-        return $this->success('Account Deleted');
-    }
-
-    public function fetchAgentWishlists(){
-        try {
-            $agent = auth()->user();
-            $wishlists = $this->compileAgentWishlist($agent->unique_id);
-        } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
-        }
-
-        return $this->success("Wishlists Fetched", $wishlists);
     }
 
     public function adminSuspendAgent($agent_id){
@@ -132,6 +107,8 @@ class AgentController extends Controller
             $user = Agent::find($agent->agent_id);
             $agent->status = $agent->status === 'suspended' ? 'active' : 'suspended';
             $agent->save();
+
+            Listing::where('agent_id', $agent_id)->update('status', $agent->status === 'suspended' ? 'active' : 'suspended');
 
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
@@ -153,16 +130,27 @@ class AgentController extends Controller
         return $this->single($agent->username, "Agent Verified");
     }
 
-    public function adminDeleteAgent($agent_id){
+    public function deleteUserAccount(){
         try {
-            if(!$agent = Agent::find($agent_id)){ throw new Exception("Agent Not Found", 404); }
+            $agent = auth()->user();
+            $agent = Agent::find($agent->unique_id);
+            Auth::logout();
             $agent->delete();
-
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
+        }
+        return $this->success('Account Deleted');
+    }
+
+    public function fetchAgentWishlists(){
+        try {
+            $agent = auth()->user();
+            $wishlists = $this->compileAgentWishlist($agent->unique_id);
+        } catch (Exception $e) {
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
-        return $this->success("Agent Deleted");
+        return $this->success("Wishlists Fetched", $wishlists);
     }
 
     public function setStatusToUnavailable(){

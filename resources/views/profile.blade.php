@@ -4,16 +4,16 @@
 
 <div id="main" class="layout-navbar">
     @include('layouts.nav')
-    
+
     <div class="content" id="main-content">
         <div class="container-fluid">
-            <form action="/admin/update/{{$admin->admin_id}}" method="post" enctype="multipart/form-data" >
+            <form action="/update-profile" method="post" enctype="multipart/form-data" >
                 @csrf
             <div class="row">
                 <div class="col-md-6">
                     <div class="card card-profile">
                         <div class="card-avatar bg-danger" style="overflow: hidden">
-                            <img id="avatar" class="img-fluid" src="@php echo $admin->avatar ? json_decode($admin->avatar)[0]->url : asset('/images/faces/1.jpg') @endphp">
+                            <img id="avatar" class="img-fluid" src="@php echo $admin->avatar ? $admin->avatar : asset('/images/faces/1.jpg') @endphp">
                         </div>
                         <div class="card-body">
                             <div class="form-group">
@@ -67,19 +67,6 @@
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
                             </div>
-                            <div class="col-6"> 
-                                <label>Update Password</label>
-                                <input type="text" class="form-control bg-light-secondary" name="password" placeholder="Create a new Password" />
-                            </div>
-
-                            <div class="col-6">
-                                <label>Confirm Password</label>
-                                <input type="text" class="form-control bg-light-secondary" name="password_confirmation" placeholder="Confirm Password" />
-                            </div>
-
-                            @error('password')
-                                <p class="text-danger">{{ $message }}</p>
-                            @enderror
                         </div>
 
                         <hr/>
@@ -93,7 +80,37 @@
             </div>
         </form>
 
-              
+
+        <div class="col-6 bg-white p-4">
+            <h4>Update Password</h4>
+            <form action="/update-password" method="post">
+                @csrf
+                <div class="form-group mt-4">
+                    <label>Old Password</label>
+                    <input type="password" class="form-control bg-light-secondary" name="old_password" placeholder="Old Password" />
+                </div>
+                @error('old_password')
+                    <p class="text-danger">{{ $message }}</p>
+                @enderror
+                <div class="form-group mt-4">
+                    <label>New Password</label>
+                    <input type="password" class="form-control bg-light-secondary" name="password" placeholder="Create a new Password" />
+                </div>
+
+                <div class="form-group mt-4">
+                    <label>Confirm Password</label>
+                    <input type="password" class="form-control bg-light-secondary" name="password_confirmation" placeholder="Confirm Password" />
+                </div>
+
+                @error('password')
+                    <p class="text-danger">{{ $message }}</p>
+                @enderror
+
+                <button class="btn btn-primary">Update</button>
+            </form>
+        </div>
+
+
 <!-- filepond validation -->
 <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js"></script>
 <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
@@ -126,9 +143,9 @@
         // calculates & adds resize information...
         FilePondPluginImageResize,
     );
-    
+
     // Filepond: Basic
-    FilePond.create( document.querySelector('.basic-filepond'), { 
+    FilePond.create( document.querySelector('.basic-filepond'), {
         allowImagePreview: false,
         allowMultiple: false,
         allowFileEncode: false,

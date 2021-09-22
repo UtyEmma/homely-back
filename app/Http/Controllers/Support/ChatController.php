@@ -26,19 +26,19 @@ class ChatController extends Controller{
 
             $ticket = Support::find($request->issue_id);
             $ticket->no_messages = $ticket->no_messages + 1;
-    
+
             $data = $this->compileChats($request->issue_id);
-            
+
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         return $this->success("Message Sent", $data);
     }
 
     public function fetchChats($issue_id){
-        try {    
-            $chats = $this->compileChats($issue_id); 
+        try {
+            $chats = $this->compileChats($issue_id);
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }

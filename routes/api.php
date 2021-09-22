@@ -119,11 +119,11 @@ Route::get('admin/verify/{id}', [AdminController::class, 'verifyAdmin']);
 Route::prefix('admin')->middleware('admin')->group(function(){
     Route::prefix('listing')->group(function(){
         Route::get('suspend/{id}', [ListingController::class, 'adminSuspendListing']);
-        Route::get('delete/{id}', [ListingController::class, 'adminDeleteListing']);
+        Route::get('delete/{id}', [AdminController::class, 'adminDeleteListing']);
     });
     Route::prefix('agent')->group(function(){
         Route::get('suspend/{id}', [AgentController::class, 'adminSuspendAgent']);
-        Route::get('delete/{id}', [AgentController::class, 'adminDeleteAgent']);
+        Route::get('delete/{id}', [AdminController::class, 'adminDeleteAgent']);
         Route::get('verify/{id}', [AgentController::class, 'adminVerifyAgent']);
     });
 });

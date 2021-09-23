@@ -112,7 +112,7 @@ class SupportController extends Controller{
             'publisher_id' => $admin->unique_id,
         ];
 
-        $this->makeNotification('support', $data);
+        $this->makeNotification('message', $data);
 
         return $this->redirectBack("success", "Your Reply has been Sent");
     }

@@ -10,8 +10,8 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
-class AdminController extends Controller
-{
+class AdminController extends Controller{
+
     public function singleAdmin($id){
         if ($admin = Admin::find($id)) {
             return view('admins.admin-details', ['admin' => $admin]);

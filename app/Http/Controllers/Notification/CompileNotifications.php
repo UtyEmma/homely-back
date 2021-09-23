@@ -12,7 +12,7 @@ trait CompileNotifications {
     public function compileNotifications($notifications){
         return array_map(function($notification){
             switch ($notification['type']) {
-                case 'listing':
+                case 'listing' || 'listing_suspended' || 'listing_rented':
                     return $this->formatListingNotification($notification);
                 case 'support':
                     return $this->formatSupportNotification($notification);
@@ -21,7 +21,7 @@ trait CompileNotifications {
                 case 'wishlist':
                     return $this->formatWishlistNotification($notification);
                 default:
-                    return [];
+                    return is_array($notification) ? $notification : [];
             }
         }, $notifications->toArray());
     }
@@ -33,6 +33,8 @@ trait CompileNotifications {
         return $notification;
     }
 
+
+
     public function formatSupportNotification($notification){
         return $notification;
     }
@@ -41,9 +43,5 @@ trait CompileNotifications {
         $reviews = Review::find($notification['type_id']);
         $notification['rating'] = $reviews->rating;
         return $notification;
-    }
-
-    public function formatWishlistNotification(){
-
     }
 }

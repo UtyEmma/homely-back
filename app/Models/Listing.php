@@ -22,7 +22,7 @@ class Listing extends Model
     public $incrementing = false;
 
     public $attributes = [
-        'status' => 'active',
+        'status' => 'pending',
         'views' => 0,
         'rented' => false,
         'reviews' => 0

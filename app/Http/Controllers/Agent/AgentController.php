@@ -11,11 +11,12 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Agent\CompileAgents;
 use App\Http\Controllers\Listings\CompileListing;
 use App\Http\Controllers\WishList\CompileWishlist;
+use App\Http\Libraries\Notifications\NotificationHandler;
 use App\Models\Listing;
 
 class AgentController extends Controller
 {
-    use CompileAgents, CompileListing, CompileWishlist;
+    use CompileAgents, CompileListing, CompileWishlist, NotificationHandler;
 
     private function isAgent($id) {
         if(!$agent = Agent::find($id)){throw new Exception("The Requested Agent does not Exist", 404);}
@@ -109,6 +110,17 @@ class AgentController extends Controller
             $agent->save();
 
             Listing::where('agent_id', $agent_id)->update('status', $agent->status === 'suspended' ? 'active' : 'suspended');
+
+            $admin = auth()->user();
+
+            $data = [
+                'type_id' => $agent_id,
+                'message' => $agent->status === 'suspended' ? 'Your Account has been suspeneded! Please contact our Support Center!' : 'Your account has been restored',
+                'publisher_id' => $admin->unique_id,
+                'receiver_id' => $agent_id
+            ];
+
+            $this->makeNotification('agent_suspended', $data);
 
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());

@@ -46,7 +46,7 @@ class ListingController extends Controller{
 
         $data = [
             'type_id' => $listing_id,
-            'message' => 'Your Property has been submitted and is being reviewed',
+            'message' => $listing->title.' has been created and is being reviewed!',
             'publisher_id' => $agent->unique_id,
             'receiver_id' => $agent->unique_id,
         ];
@@ -78,7 +78,7 @@ class ListingController extends Controller{
             }
 
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         return $this->success("Listings Loaded", [
@@ -113,7 +113,7 @@ class ListingController extends Controller{
             $featured_listings = $this->compileFeaturedListings($user);
 
         }catch (Exception $e) {
-            return $this->error(500, $e->getMessage()." Line:".$e->getLine());
+            return $this->error($e->getCode(), $e->getMessage()." Line:".$e->getLine());
         }
         return $this->success("Listings Loaded", [
             'listings' => $listings,
@@ -127,7 +127,7 @@ class ListingController extends Controller{
             $user = auth()->user();
             $listings = $this->compilePopularListings($user);
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         return $this->success("Popular Listings Fetched", $listings);
@@ -140,7 +140,7 @@ class ListingController extends Controller{
 
             $listing->delete();
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
         return $this->success("Listing Deleted");
     }
@@ -150,7 +150,7 @@ class ListingController extends Controller{
             if (!$agent = Agent::where('username', $username)->first()) { throw new Exception("This Agent Does Not Exist", 404); }
             if(!$listing = Listing::where('slug', $slug)->where('agent_id', $agent->unique_id)->first()) {throw new Exception("The Requested Listing Does Not Exist", 404);}
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         $features = $this->formatListingDetails((array) json_decode($listing->features), "Feature");
@@ -188,7 +188,7 @@ class ListingController extends Controller{
                                             'initial_fees' => $inital_fees ]));
 
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage()." :--- ".$e->getLine());
+            return $this->error($e->getCode(), $e->getMessage()." :--- ".$e->getLine());
         }
 
         $listing = Listing::find($listing_id);
@@ -199,6 +199,7 @@ class ListingController extends Controller{
 
     public function setListingAsRented($listing_id){
         try {
+            $user = auth()->user();
             if(!$listing = Listing::find($listing_id)){ throw new Exception("Listing Not Found", 404); }
 
             if ($listing->rented && $listing->status = 'rented') {
@@ -211,7 +212,16 @@ class ListingController extends Controller{
                 $listing->save();
             }
 
-            $message = $listing->rented ? "Listing Set as Rented" : "Listing Set as Available";
+            $data = [
+                'type_id' => $listing_id,
+                'message' => $listing->rented ? $listing->title.' has been set as Available!' : $listing->title.' has been set as Rented!',
+                'publisher_id' => $user->unique_id,
+                'receiver_id' => $listing->agent_id
+            ];
+
+            $this->makeNotification('listing_rented', $data);
+
+            $message = $listing->rented ? "Property Set as Rented" : "Property Set as Available";
 
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
@@ -231,6 +241,16 @@ class ListingController extends Controller{
             if(!$listing = Listing::find($listing_id)){ throw new Exception("Listing Not Found", 404);}
             $listing->status = $listing->status === 'suspended' ? 'active' : 'suspended';
             $listing->save();
+
+            $data = [
+                'type_id' => $listing_id,
+                'message' => $listing->status === 'suspended' ? 'Your Property has been suspended!' : 'Your Property has been Restored!',
+                'publisher_id' => $user->unique_id,
+                'receiver_id' => $listing->agent_id
+            ];
+
+            $this->makeNotification('listing_suspended', $data);
+
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }
@@ -243,13 +263,17 @@ class ListingController extends Controller{
     public function adminSuspendListing($listing_id){
         try {
             if(!$listing = Listing::find($listing_id)){ throw new Exception("Listing Not Found", 404); }
-
-            // if ($listing->status === 'rented') {
-            //     return $this->error(400, "This Property has been set as Rented");
-            // }
-
             $listing->status = $listing->status === 'suspended' ? 'active' : 'suspended';
             $listing->save();
+
+            $data = [
+                'type_id' => $listing_id,
+                'message' => $listing->status === 'suspended' ? 'Your Property has been suspended! Please contact support' : 'Your Property has been Restored!',
+                'publisher_id' => $listing->agent_id,
+                'receiver_id' => $listing->agent_id
+            ];
+
+            $this->makeNotification('listing', $data);
 
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());

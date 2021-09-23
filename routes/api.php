@@ -75,6 +75,7 @@ Route::prefix('agent')->middleware('role:agent')->group(function(){
 
         Route::prefix('notifications')->group(function(){
             Route::get('/', [NotificationController::class, 'fetchNotifications']);
+            Route::get('/markasread', [NotificationController::class, 'markAsRead']);
         });
 
     });

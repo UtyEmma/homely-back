@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Support;
 
 use App\Http\Controllers\Controller;
+use App\Http\Libraries\Notifications\NotificationHandler;
 use App\Models\Chat;
 use Illuminate\Http\Request;
 use App\Models\Support;
@@ -10,7 +11,7 @@ use Exception;
 
 class SupportController extends Controller{
 
-    use CompileChats;
+    use CompileChats, NotificationHandler;
 
     public function initiateNewIssue(Request $request){
         try{
@@ -28,12 +29,24 @@ class SupportController extends Controller{
                 ]);
             }
 
+            $data = [
+                'type_id' => $ticket_id,
+                'message' => 'Your Support Ticket has been created! We will be in touch soon!',
+                'publisher_id' => $auth->unique_id,
+                'receiver_id' => $auth->unique_id
+            ];
+
+            $this->makeNotification('support', $data);
+
         }catch(Exception $e){
             return $this->error(500, $e->getMessage());
         }
+
+
         $new_ticket = Support::find($ticket_id);
 
         $tickets =  $this->compileTickets($auth->unique_id);
+
 
         return $this->success("New Ticket has been Created", [
             'tickets' => $tickets,

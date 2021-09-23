@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Libraries\Notifications\NotificationHandler;
 use App\Models\Agent;
 use App\Models\Listing;
 use App\Models\Notification;
@@ -11,8 +12,9 @@ use App\Models\Support;
 use Exception;
 use Illuminate\Http\Request;
 
-class AgentController extends Controller
-{
+class AgentController extends Controller {
+    use NotificationHandler;
+
     public function single($id){
         if ($agent = Agent::find($id)) {
             return view('agents.single-agent', [
@@ -35,6 +37,7 @@ class AgentController extends Controller
             Notification::where('receiver_id', $id)->delete();
             Review::where('agent_id', $id)->delete();
             $agent->delete();
+
             return redirect()->back()->with('success', "Agent Deleted");
         }else{
             return redirect()->back()->with('error', "Agent does not Exist");
@@ -45,6 +48,18 @@ class AgentController extends Controller
         if ($agent = Agent::find($id)) {
             $agent->status = $agent->status === 'active' ? 'suspended' : 'active';
             $agent->save();
+
+            $admin = auth()->user();
+
+            $data = [
+                'type_id' => $id,
+                'message' => $agent->status === 'suspended' ? 'Your Account has been suspeneded! Please contact our Support Center!' : 'Your account has been restored',
+                'publisher_id' => $admin->unique_id,
+                'receiver_id' => $id
+            ];
+
+            $this->makeNotification('agent_suspended', $data);
+
             return redirect()->back()->with('success', "Agent $agent->status");
         }else{
             return redirect()->back()->with('error', "Agent does not Exist");

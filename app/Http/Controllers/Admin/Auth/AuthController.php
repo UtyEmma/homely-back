@@ -39,7 +39,7 @@ class AuthController extends Controller
             return redirect()->back()->with('error', $e->getMessage());
         }
 
-        return redirect('login')->with('message', 'Admin Registration Successful');
+        return redirect('login')->with('success', 'Admin Registration Successful');
     }
 
     public function logout(Request $request){
@@ -54,7 +54,7 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('login');
+        return redirect('login')->with('success', 'Logout Successful');
     }
 
 

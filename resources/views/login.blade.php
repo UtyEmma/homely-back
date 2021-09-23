@@ -28,6 +28,16 @@
                     @isset($message)
                         {{$message}}
                     @endisset
+                    @if($errors->any())
+                        <p class="text-danger">Invalid Input Data</p>
+                    @endif
+                    @if(Session::has('error'))
+                        <p class="text-danger">{{session('error')}}</p>
+                    @endif
+                    @if(Session::has('success'))
+                        <p class="text-success">{{session('success')}}</p>
+                    @endif
+
                     <form method="POST" action="/login">
                         @csrf
                         <div class="form-group position-relative has-icon-left mb-4">
@@ -35,18 +45,18 @@
                             <div class="form-control-icon">
                                 <i class="bi bi-person"></i>
                             </div>
+                            @error('email')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="form-group position-relative has-icon-left mb-4">
                             <input type="password" class="form-control form-control-xl" name="password" placeholder="Password">
                             <div class="form-control-icon">
                                 <i class="bi bi-shield-lock"></i>
                             </div>
-                        </div>
-                        <div class="form-check form-check-lg d-flex align-items-end">
-                            <input class="form-check-input me-2" type="checkbox" value="" id="flexCheckDefault">
-                            <label class="form-check-label text-gray-600" for="flexCheckDefault">
-                                Keep me logged in
-                            </label>
+                            @error('password')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
                         </div>
                         <button class="btn btn-primary btn-block btn-lg shadow-lg mt-3">Log in</button>
                     </form>
@@ -59,6 +69,7 @@
 
     </div>
 
+
     @if($errors->any())
         <script>
             toastr.options = {
@@ -66,7 +77,7 @@
                 "progressBar" : true,
                 "positionClass": "toast-top-center",
             }
-            toastr.error("Invalid Input Data");
+      		toastr.error("Invalid Input Data");
         </script>
     @endif
 
@@ -77,7 +88,7 @@
                 "progressBar" : true,
                 "positionClass": "toast-top-center",
             }
-            toastr.success("{{ session('success') }}", "Success");
+  	    	toastr.success("{{ session('success') }}", "Success");
         </script>
     @endif
 
@@ -88,7 +99,7 @@
                 "progressBar" : true,
                 "positionClass": "toast-top-center",
             }
-            toastr.info("{{ session('message') }}", "Message");
+      		toastr.info("{{ session('message') }}", "Message");
         </script>
     @endif
 
@@ -99,7 +110,7 @@
                 "progressBar" : true,
                 "positionClass": "toast-top-center",
             }
-            toastr.error("{{ session('error') }}", "Error");
+      		toastr.error("{{ session('error') }}", "Error");
         </script>
     @endif
 
@@ -113,6 +124,6 @@
             toastr.error("{{ session('warning') }}", "Error");
         </script>
     @endif
-</body>
 
+</body>
 </html>

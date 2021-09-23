@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Libraries\Functions\DateFunctions;
 use App\Http\Controllers\Notification\CompileNotifications;
 use App\Models\Notification;
+use Exception;
 use Illuminate\Http\Request;
 
 class NotificationController extends Controller{
@@ -13,13 +14,13 @@ class NotificationController extends Controller{
 
     public function fetchNotifications(){
         $user = auth()->user();
-        $all = Notification::where('receiver_id', $user->unique_id)->orderByDesc('created_at')->limit(3)->get();
+        $all = Notification::where('receiver_id', $user->unique_id)->orderByDesc('created_at')->get();
         $count = count(Notification::where('receiver_id', $user->unique_id)->where('read', false)->get());
 
         $compiled_notifications = $this->compileNotifications($all);
 
         $notifications = $this->formatNotifications($compiled_notifications);
-        
+
         return $this->success('Notifications Fetched', [
             'notifications' => $notifications,
             'no_of_notifications' => $count
@@ -29,10 +30,23 @@ class NotificationController extends Controller{
     public function formatNotifications($notifications) {
         $notifications = array_map(function($notification){
             return $notification = array_merge($notification, [
-                'created_at' => $this->getDateInterval($notification['created_at']) 
+                'created_at' => $this->getDateInterval($notification['created_at'])
             ]);
         }, $notifications);
 
         return $notifications;
+    }
+
+    public function markasread() {
+        try {
+            $user = auth()->user();
+            Notification::where('receiver_id', $user->unique_id)->update(['read' => true]);
+        } catch (Exception $e) {
+            $this->error($e->getCode(), $e->getMessage());
+        }
+
+        return $this->fetchNotifications();
+
+
     }
 }

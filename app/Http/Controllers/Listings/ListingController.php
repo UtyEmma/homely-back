@@ -26,32 +26,28 @@ class ListingController extends Controller{
             $slug = $this->createDelimitedString($request->title, ' ', '-');
 
             Listing::create(array_merge($request->all(), [
-                                            'unique_id' => $listing_id,
-                                            'agent_id' => $agent->unique_id,
-                                            'amenities' => json_encode($request->amenities),
-                                            'images' => $files,
-                                            'slug' => strtolower($slug),
-                                            'initial_fees' => $inital_fees
-                                        ]));
+                                'unique_id' => $listing_id,
+                                'agent_id' => $agent->unique_id,
+                                'amenities' => json_encode($request->amenities),
+                                'images' => $files,
+                                'slug' => strtolower($slug),
+                                'initial_fees' => $inital_fees
+                            ]));
+
+            $listing = Listing::find($listing_id);
+
+            $data = [
+                'type_id' => $listing_id,
+                'message' => $listing->title.' has been created and is being reviewed!',
+                'publisher_id' => $agent->unique_id,
+                'receiver_id' => $agent->unique_id,
+            ];
+
+            $this->makeNotification('listing', $data);
 
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage()." :--- ".$e->getLine());
+            return $this->error($e->getCode(), $e->getMessage()." :--- ".$e->getLine());
         }
-
-        $agent = Agent::find($agent->unique_id);
-        $agent->no_of_listings = $agent->no_of_listings + 1;
-        $agent->save();
-
-        $listing = Listing::find($listing_id);
-
-        $data = [
-            'type_id' => $listing_id,
-            'message' => $listing->title.' has been created and is being reviewed!',
-            'publisher_id' => $agent->unique_id,
-            'receiver_id' => $agent->unique_id,
-        ];
-
-        $this->makeNotification('listing', $data);
 
         return $this->success($request->title." has been added to your Listings", [
             'listing' => array_merge($listing->toArray(), ['images' => json_decode($listing->images)])
@@ -149,24 +145,24 @@ class ListingController extends Controller{
         try {
             if (!$agent = Agent::where('username', $username)->first()) { throw new Exception("This Agent Does Not Exist", 404); }
             if(!$listing = Listing::where('slug', $slug)->where('agent_id', $agent->unique_id)->first()) {throw new Exception("The Requested Listing Does Not Exist", 404);}
+            $features = $this->formatListingDetails((array) json_decode($listing->features), "Feature");
+
+            $single_listing = array_merge($listing->toArray(), [
+                'features' => $features,
+                'details' => json_decode($listing->details),
+                'images' => json_decode($listing->images),
+                'period' => $this->getDateInterval($listing->created_at)
+            ]);
+
+            $agent = Agent::find($listing->agent_id);
+
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }
 
-        $features = $this->formatListingDetails((array) json_decode($listing->features), "Feature");
-
-        $single_listing = array_merge($listing->toArray(), [
-            'features' => $features,
-            'details' => json_decode($listing->details),
-            'images' => json_decode($listing->images),
-            'period' => $this->getDateInterval($listing->created_at)
-        ]);
-
-        $agent = Agent::find($listing->agent_id);
-
         return $this->success($message, [
             'listing' => $single_listing,
-            'agent' => array_merge($agent->toArray(), ['avatar' => json_decode($agent->avatar)])
+            'agent' => $agent->toArray()
         ]);
     }
 
@@ -181,18 +177,19 @@ class ListingController extends Controller{
             $slug = $this->createDelimitedString($request->title, ' ', '-');
 
             Listing::find($listing_id)->update(array_merge($request->all(), [
-                                            'agent_id' => $agent->unique_id,
-                                            'amenities' => json_encode($request->amenities),
-                                            'images' => $files,
-                                            'slug' => strtolower($slug),
-                                            'initial_fees' => $inital_fees ]));
+                                                'agent_id' => $agent->unique_id,
+                                                'amenities' => json_encode($request->amenities),
+                                                'images' => $files,
+                                                'slug' => strtolower($slug),
+                                                'initial_fees' => $inital_fees ]));
+
+            $listing = Listing::find($listing_id);
+            $agent = Agent::find($listing->agent_id);
 
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage()." :--- ".$e->getLine());
         }
 
-        $listing = Listing::find($listing_id);
-        $agent = Agent::find($listing->agent_id);
 
         return $this->getSingleListing($agent->username, $slug, "Your Property has been updated successfully");
     }
@@ -227,12 +224,8 @@ class ListingController extends Controller{
             return $this->error($e->getCode(), $e->getMessage());
         }
 
-        return $this->success($message, [
-            'listing' => array_merge($listing->toArray(), [
-                                    'images' => json_decode($listing->images),
-                                    'period' => $this->getDateInterval($listing->created_at)
-                                ])
-        ]);
+        return $this->getSingleListing($user->username, $listing->slug, $message);
+
     }
 
     public function suspendListing($listing_id){
@@ -255,9 +248,8 @@ class ListingController extends Controller{
             return $this->error($e->getCode(), $e->getMessage());
         }
 
-        return $this->success("Listing ".$listing->status, [
-            'listing' => $this->formatListingData([$listing], $user)
-        ]);
+        return $this->getSingleListing($user->username, $listing->slug, "Listing ".$listing->status);
+
     }
 
     public function adminSuspendListing($listing_id){
@@ -275,11 +267,10 @@ class ListingController extends Controller{
 
             $this->makeNotification('listing', $data);
 
+            $agent = Agent::find($listing->agent_id);
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
         }
-
-        $agent = Agent::find($listing->agent_id);
 
         return $this->getSingleListing($agent->username, $listing->slug, "Listing $listing->status");
     }

@@ -40,6 +40,7 @@
                                 <th>Title</th>
                                 <th>Image</th>
                                 <th>Reviews</th>
+                                <th>Confirm</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -64,12 +65,19 @@
                                     {{$listing->reviews}} Review{{$listing->reviews !== 1 ? 's' : '' }}
                                 </td>
                                 <td>
-                                  <div class="badge badge-shadow {{ $listing->status ? 'bg-success' : 'bg-danger' }}">
-                                    {{ $listing->status ? 'active' : 'suspended' }}
+                                    @if ($listing->status !== "pending")
+                                       <div class="badge bg-success">Confirmed </div>
+                                    @else
+                                        <a href="listings/confirm/{{$listing->unique_id}}" class="btn btn-sm btn-success">Confirm</a>
+                                    @endif
+                                </td>
+                                <td>
+                                  <div class="badge badge-shadow {{ $listing->status === 'active' ? 'bg-success' : 'bg-warning' }}">
+                                    {{ $listing->status }}
                                   </div>
                                 </td>
                                 <td>
-                                  <a href="listings/suspend/{{$listing->unique_id}}" class="btn btn-sm btn-primary">{{ $listing->status ? 'Block' : 'Unblock' }}</a>
+                                  <a href="listings/suspend/{{$listing->unique_id}}" class="btn btn-sm btn-warning">{{ $listing->status === 'suspended' ? 'Unblock' : 'Block' }}</a>
                                   <a href="listings/delete/{{$listing->unique_id}}" class="btn btn-sm btn-danger">
                                     Delete
                                 </a>

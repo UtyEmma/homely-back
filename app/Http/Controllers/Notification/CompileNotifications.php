@@ -12,7 +12,7 @@ trait CompileNotifications {
     public function compileNotifications($notifications){
         return array_map(function($notification){
             switch ($notification['type']) {
-                case 'listing' || 'listing_suspended' || 'listing_rented':
+                case 'listing' || 'listing_suspended' || 'listing_rented' || 'listing_approved':
                     return $this->formatListingNotification($notification);
                 case 'support':
                     return $this->formatSupportNotification($notification);

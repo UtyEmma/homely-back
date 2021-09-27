@@ -25,7 +25,8 @@ class Listing extends Model
         'status' => 'pending',
         'views' => 0,
         'rented' => false,
-        'reviews' => 0
+        'reviews' => 0,
+        'rating' => 1
     ];
 
     public function agent(){

@@ -2,6 +2,7 @@
 
 @include('layouts.sidebar')
 <div id="main">
+
     @include('layouts.nav')
 
     <div class="page-heading">
@@ -29,10 +30,14 @@
                     <div class="card">
                         <div class="card-header d-flex justify-content-between">
                             <h4 class="card-title">Available Categories</h4>
-                            <button type="button" class="btn btn-outline-primary block"
-                                data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
-                                Create Category
-                            </button>
+                            <div class="d-flex">
+                                {{$categories->links()}}
+
+                                <button type="button" class="ms-4 btn btn-outline-primary block"
+                                    data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
+                                    Create Category
+                                </button>
+                            </div>
                         </div>
                         <div class="card-content">
                             <div class="card-body pt-0">

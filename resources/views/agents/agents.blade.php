@@ -41,6 +41,7 @@
                               <th>Index</th>
                               <th>Agent Name</th>
                               <th>Location</th>
+                              <th>Email Confirmed</th>
                               <th>Listings</th>
                               <th>Verified</th>
                               <th>Status</th>
@@ -52,15 +53,18 @@
                             @php
                                 $slug = $agent->username;
                                 $id = $auth->unique_id;
-                                $url = "http://localhost:3000/$slug?auth=admin&id=$id";
+                                $url = env('FRONTEND_URL')."/$slug?auth=admin&id=$id";
                             @endphp
                             <tr>
                                 <td>1</td>
                                 <td><a href="{{$url}}" target="_blank">{{$agent->firstname}} {{$agent->lastname}} </a></td>
-                                <td>{{$agent->city}}, {{$agent->state}}</td>
+                                <td>{{$agent->city || $agent->state ? $agent->city, $agent->state : "Not Available" }}</td>
+                                <td>
+                                    <div class="badge badge-shadow {{ $agent->isVerified ? 'bg-success' : 'bg-dark' }}">{{ $agent->isVerified ? 'Confirmed' : 'Not Confirmed' }}</div>
+                                </td>
                                 <td class="text-center">{{$agent->no_of_listings}}</td>
                                 <td>
-                                    <div class="badge badge-shadow {{ $agent->verified ? 'bg-success' : 'bg-dark' }}">{{ $agent->verified ? 'true' : 'false' }}</div>
+                                    <div class="badge badge-shadow {{ $agent->verified ? 'bg-success' : 'bg-dark' }}">{{ $agent->verified ? 'Verified' : 'Not Verified' }}</div>
                                 </td>
                                 <td>
                                   <div class="badge badge-shadow {{ $agent->status === 'active' ? 'bg-success' : 'bg-warning' }}">{{ $agent->status }}</div>

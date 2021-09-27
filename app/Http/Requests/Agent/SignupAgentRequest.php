@@ -27,8 +27,8 @@ class SignupAgentRequest extends FormRequest
             'email' => 'required|email|unique:agents,email',
             'firstname' => 'required|string',
             'lastname' => 'required|string',
-            'password' => 'required',
-            'username' => 'unique:agents,username'
+            'password' => 'required|min:6',
+            'username' => 'unique:agents,username|between:3,12'
         ];
     }
 }

@@ -97,6 +97,7 @@ class AppController extends Controller
 
     public function categories(){
         $categories = Category::all();
+
         return view('categories.categories', [
             'admin' => auth()->user(),
             'categories' => $categories,
@@ -113,7 +114,7 @@ class AppController extends Controller
 
 
     public function properties(){
-        $categories = Category::all();
+        $categories = Category::paginate(6);
         $amenities = Amenities::all();
         $features = Feature::all();
         return view('properties.properties', [

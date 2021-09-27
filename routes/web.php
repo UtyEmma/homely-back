@@ -90,7 +90,8 @@ Route::middleware('auth')->group(function(){
         Route::get('/', [AppController::class, 'listings']);
         Route::get('/{id}', [ListingsController::class, 'single']);
         Route::get('/delete/{id}', [ListingsController::class, 'deleteListing']);
-        Route::get('/suspend/{id}', [ListingsController::class, 'suspendListing']);
+        Route::get('/suspend/{id}', [ListingsController::class, 'suspendListing'])->middleware('can:makeChanges');
+        Route::get('/confirm/{id}', [ListingsController::class, 'approveListing']);
     });
 
     Route::prefix('categories')->group(function(){

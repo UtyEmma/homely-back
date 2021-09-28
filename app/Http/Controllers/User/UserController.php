@@ -13,19 +13,19 @@ use Illuminate\Http\Request;
 class UserController extends Controller{
 
     public function update(UpdateUserRequest $request){
-        $user = auth()->user();
-        $email_updated = false;
-
         try {
-            $old_email = $user->email;
+            $user = auth()->user();
+            $email_updated = false;
 
-            $files = $request->hasFile('avatar') ? $this->handleFiles($request->file('avatar')) : $user->avatar;
+            $request->hasFile('avatar') && $this->deleteFile($user->avatar);
+
+            $files = $request->hasFile('avatar') ? json_decode($this->handleFiles($request->file('avatar')))[0] : $user->avatar;
 
             if ($request->email !== $user->email) { $email_updated = true; }
 
             User::find($user->unique_id)->update(array_merge(
                 $request->validated(), [
-                    'avatar' => $files ? json_decode($files)[0] : null
+                    'avatar' => $files
                 ]
             ));
 

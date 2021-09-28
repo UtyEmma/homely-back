@@ -26,18 +26,11 @@ trait FileHandler{
         return $file_array;
     }
 
-    public function replace($files, $old_files){
-        if($old_files){
-            foreach (json_decode($old_files) as $key => $file) {
-                $this->deleteFile($file);
-            }
-        }
-        return $this->upload($files);
-    }
-
     private function deleteFile($file){
-        $cloudinary_id = $this->extractFileId($file);
-        Cloudinary::destroy($cloudinary_id);
+        if ($file) {
+            $cloudinary_id = $this->extractFileId($file);
+            Cloudinary::destroy($cloudinary_id);
+        }
     }
 
     private function extractFileId($file){

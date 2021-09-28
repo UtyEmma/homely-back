@@ -10,6 +10,8 @@ use App\Models\Listing;
 use App\Models\Notification;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ListingController extends Controller{
 
@@ -167,9 +169,35 @@ class ListingController extends Controller{
     }
 
 
-    public function updateListing(Request $request, $listing_id){
+    public function updateListing($request, $listing_id){
         try {
             $agent = auth()->user();
+
+            Validator::make($request->all(), [
+                'images.*' => ['required', 'image','mimes:jpeg,png,gif,webp','max:2048'],
+                'title' => ['required', Rule::unique('listings', 'title')->ignore($listing_id, 'unique_id')],
+                'tenure' => ['required', 'string'],
+                'rent' => ['required', 'numeric'],
+                'extra_fees' => ['nullable', 'numeric'],
+                'video_links' => ['nullable', 'string', 'url'],
+                'state' => ['required', 'string'],
+                'city' => ['required', 'string'],
+                'address' => ['required', 'string'],
+                'landmark' => ['nullable', 'string'],
+                'longitude' => ['required'],
+                'latitude' => ['required'],
+                'no_bedrooms' => ['required', 'numeric'],
+                'no_bathrooms' => ['required', 'numeric'],
+                'extra_info' => ['nullable','string'],
+                'amenities.*' => ['nullable']
+            ]);
+
+            if ($request->hasFile('images')) {
+                $images = json_decode($agent->images);
+                foreach ($images as $image) { $this->deleteFile($image); }
+            }else{
+                throw new Exception("Property Images are Required", 400);
+            }
 
             $files = $request->hasFile('images') ? $this->handleFiles($request->file('images')) : [];
             $inital_fees = $request->rent + $request->extra_fees;

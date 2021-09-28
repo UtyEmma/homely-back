@@ -54,11 +54,13 @@ class AdminController extends Controller{
     public function update(UpdateAdminRequest $request){
         try {
             $validated = $request->validated();
-            $admin_id = auth()->user()->unique_id;
+            $admin = auth()->user();
+            $admin_id = $admin->unique_id;
 
-            $files = $request->hasFile('avatar') ? $this->handleFiles($request->file('avatar')) : null;
-            Admin::find($admin_id)->update(array_merge($validated, ['avatar' => $files ? json_decode($files)[0] : null]));
+            $request->hasFile('avatar') && $this->deleteFile($admin->avatar);
+            $files = $request->hasFile('avatar') ? json_decode($this->handleFiles($request->file('avatar')))[0] : $admin->avatar;
 
+            Admin::find($admin_id)->update(array_merge($validated, ['avatar' => $files]));
         } catch (Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }

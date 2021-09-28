@@ -26,23 +26,29 @@ class AgentController extends Controller
     public function update(AgentUpdateRequest $request){
         try {
             $agent = $this->agent();
+            $email_updated = false;
 
-            $files = $request->hasFile('avatar') ? $this->handleFiles($request->file('avatar')) : $agent->avatar;
+            $request->hasFile('avatar') && $this->deleteFile($agent->avatar);
+
+            $file = $request->hasFile('avatar') ? json_decode($this->handleFiles($request->file('avatar')))[0]  : $agent->avatar;
+
+            if ($request->email !== $agent->email) { $email_updated = true; }
 
             Agent::find($agent->unique_id)->update(array_merge($request->validated(), [
                                         'twitter' => $request->twitter,
                                         'facebook' => $request->facebook,
                                         'instagram' => $request->instagram,
-                                        'avatar' => $files ? $files : null ])
+                                        'avatar' => $file ])
                                     );
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         $updated_agent = Agent::find($agent->unique_id);
 
         return $this->success("Agent Profile Updated!!!", [
-            'agent' => $updated_agent
+            'agent' => $updated_agent,
+            'email_updated' => $email_updated
         ]);
     }
 

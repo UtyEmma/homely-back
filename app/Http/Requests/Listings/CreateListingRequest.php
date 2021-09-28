@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Listings;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Validation\Rule;
 
 class CreateListingRequest extends FormRequest
@@ -23,8 +24,7 @@ class CreateListingRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules(){
         return [
             'images.*' => ['required', 'image','mimes:jpeg,png,gif,webp','max:2048'],
             'title' => ['required', 'unique:App\Models\Listing,title'],
@@ -41,6 +41,7 @@ class CreateListingRequest extends FormRequest
             'no_bedrooms' => ['required', 'numeric'],
             'no_bathrooms' => ['required', 'numeric'],
             'extra_info' => ['nullable','string'],
+            'amenities' => ['nullable']
         ];
     }
 }

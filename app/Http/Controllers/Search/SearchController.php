@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Search;
 
 
 // use App\Http\Controllers\Controller;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Listing;

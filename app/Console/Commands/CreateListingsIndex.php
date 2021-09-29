@@ -13,7 +13,6 @@ class CreateListingsIndex extends Command
      * @var string
      */
     protected $signature = 'index:listings';
-
     /**
      * The console command description.
      *
@@ -30,7 +29,6 @@ class CreateListingsIndex extends Command
     {
         parent::__construct();
     }
-
     /**
      * Execute the console command.
      *

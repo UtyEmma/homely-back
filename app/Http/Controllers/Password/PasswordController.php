@@ -32,7 +32,7 @@ class PasswordController extends Controller{
             $user->save();
 
             $this->sendResetEmail($token, $user);
-            
+
 
         } catch (Exception $e) {
             return $this->error(500, $e->getMessage());
@@ -62,7 +62,7 @@ class PasswordController extends Controller{
             // if ($tokenLifetime > 24) {
             //     throw new Exception("Password Reset Token has Expired!!!", 400);
             // }
-            
+
             $user->password = Hash::make($request->password);
             $user->password_reset = null;
             $user->save();
@@ -73,5 +73,5 @@ class PasswordController extends Controller{
 
         return $this->success("User Password Has been updated", $request->type);
     }
-    
+
 }

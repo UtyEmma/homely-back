@@ -1,13 +1,28 @@
 <?php
+
 namespace App\Http\Controllers\Agent;
 
-trait CompileAgents{
+use App\Models\Agent;
 
-    public function formatAgentData($agents){
+trait CompileAgents {
+
+
+    protected function compileAgents(){
+        $q = Agent::query();
+
+        $q->where('username', '!=', '');
+        $q->where('status', 'active');
+        $data = $q->get();
+        //  = Agent::where('status', 'active')->where('username')->get();
+        return $this->formatAgentData($data);
+    }
+
+    protected function formatAgentData($agents){
         $array = [];
-        if (count($agents) > 0) {
+
+        if (count($agents) > 0 ) {
             foreach ($agents as $key => $agent) {
-                $array[] = array_merge($agent->toArray(), ['avatar' => json_decode($agent->avatar)[0]]);
+                $array[] = $agent;
             }
         }
 

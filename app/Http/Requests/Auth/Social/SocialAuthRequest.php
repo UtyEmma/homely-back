@@ -26,7 +26,10 @@ class SocialAuthRequest extends FormRequest
     public function rules()
     {
         return [
-            'data' => ['required'],
+            'data.given_name' => ['required', 'string'],
+            'data.family_name' => ['required', 'string'],
+            'data.email' => ['required', 'email'],
+            'data.picture' => ['required', 'url'],
             'driver' => ['required', 'string'],
             'type' => ['string', 'in:agent,tenant']
         ];

@@ -14,7 +14,7 @@ trait FileHandler{
         return $files;
     }
 
-    private function upload($files){
+    public function upload($files){
         if(!is_array($files)){ throw new Exception("No files selected"); }
 
         for($i=0; $i < count($files); $i++) {
@@ -26,7 +26,7 @@ trait FileHandler{
         return $file_array;
     }
 
-    private function deleteFile($file){
+    public function deleteFile($file){
         if ($file) {
             $cloudinary_id = $this->extractFileId($file);
             Cloudinary::destroy($cloudinary_id);

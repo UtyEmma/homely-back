@@ -11,12 +11,13 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Agent\CompileAgents;
 use App\Http\Controllers\Listings\CompileListing;
 use App\Http\Controllers\WishList\CompileWishlist;
+use App\Http\Libraries\Files\FileHandler;
 use App\Http\Libraries\Notifications\NotificationHandler;
 use App\Models\Listing;
 
 class AgentController extends Controller
 {
-    use CompileAgents, CompileListing, CompileWishlist, NotificationHandler;
+    use CompileAgents, CompileListing, CompileWishlist, NotificationHandler, FileHandler;
 
     private function isAgent($id) {
         if(!$agent = Agent::find($id)){throw new Exception("The Requested Agent does not Exist", 404);}
@@ -41,7 +42,7 @@ class AgentController extends Controller
                                         'avatar' => $file ])
                                     );
         } catch (Exception $e) {
-            return $this->error($e->getCode(), $e->getMessage());
+            return $this->error(500, $e->getMessage());
         }
 
         $updated_agent = Agent::find($agent->unique_id);

@@ -18,7 +18,7 @@ class SocialAuthController extends Controller
         try {
             $user_data = $request->filled('accessToken')
                 ? $this->authWithToken($request->driver, $request->accessToken)
-                    : $this->tokenlessAuth($request->driver, $request);
+                    : $this->tokenlessAuth($request->driver, $request->all());
 
             if (!$user = $this->checkForExistingUser($user_data, $request->type)) {
                 if($request->type === 'tenant'){
@@ -74,7 +74,8 @@ class SocialAuthController extends Controller
     }
 
     private function tokenlessAuth($driver, $data){
-        return $this->extractUserData((array) $data, $driver);
+        $array = (array) $data;
+        return $this->extractUserData($array, $driver);
     }
 
     private function extractUserData($data, $driver){

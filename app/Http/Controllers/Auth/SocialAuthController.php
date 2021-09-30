@@ -34,7 +34,7 @@ class SocialAuthController extends Controller
             $token = Auth::login($user);
 
         } catch (Exception $e) {
-            return $this->error($e->getCode(), $e->getMessage()." : ".$e->getLine());
+            return $this->error(500, $e->getMessage()." : ".$e->getLine());
         }
 
         return $this->success("Log In Successful", [

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Listings\CompileListing;
 use App\Http\Libraries\Notifications\NotificationHandler;
 use App\Models\Agent;
 use App\Models\Favourite;
@@ -12,18 +13,12 @@ use App\Models\Review;
 use Exception;
 
 class ListingsController extends Controller{
-    use NotificationHandler;
+    use NotificationHandler, CompileListing;
 
     public function deleteListing($id){
         if($listing = Listing::find($id)) {
             $agent = Agent::find($listing->agent_id);
-            $agent->no_of_listings = --$agent->no_of_listings;
-            $agent->save();
-            Review::where('listing_id', $id)->delete();
-            Favourite::where('listing_id', $id)->delete();
-            Notification::where('type_id', $id)->delete();
-            $listing->delete();
-
+            $this->clearListingData($listing, $agent);
         }else{
             return redirect()->back()->with('error', 'Listing Does not Exist!!!');
         }

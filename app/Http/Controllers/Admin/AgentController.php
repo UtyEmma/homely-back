@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Agent\CompileAgents;
 use App\Http\Controllers\Controller;
 use App\Http\Libraries\Notifications\NotificationHandler;
 use App\Models\Agent;
+use App\Models\Chat;
 use App\Models\Listing;
 use App\Models\Notification;
 use App\Models\Review;
@@ -13,7 +15,7 @@ use Exception;
 use Illuminate\Http\Request;
 
 class AgentController extends Controller {
-    use NotificationHandler;
+    use NotificationHandler, CompileAgents;
 
     public function single($id){
         if ($agent = Agent::find($id)) {
@@ -32,12 +34,7 @@ class AgentController extends Controller {
 
     public function deleteAgent($id){
         if ($agent = Agent::find($id)) {
-            Listing::where('agent_id', $id)->delete();
-            Support::where('agent_id', $id)->delete();
-            Notification::where('receiver_id', $id)->delete();
-            Review::where('agent_id', $id)->delete();
-            $agent->delete();
-
+            $this->clearAgentData($agent);
             return redirect()->back()->with('success', "Agent Deleted");
         }else{
             return redirect()->back()->with('error', "Agent does not Exist");

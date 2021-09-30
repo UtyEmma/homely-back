@@ -16,9 +16,9 @@ class SocialAuthController extends Controller
 {
     public function handleAuth(SocialAuthRequest $request){
         try {
-            $user_data = array_key_exists('accessToken', $request->data)
-                ? $this->authWithToken($request->driver, $request->data['accessToken'])
-                    : $this->tokenlessAuth($request->driver, $request->data);
+            $user_data = $request->filled('accessToken')
+                ? $this->authWithToken($request->driver, $request->accessToken)
+                    : $this->tokenlessAuth($request->driver, $request);
 
             if (!$user = $this->checkForExistingUser($user_data, $request->type)) {
                 if($request->type === 'tenant'){
@@ -26,7 +26,7 @@ class SocialAuthController extends Controller
                 }elseif ($request->type === 'agent') {
                     $user = $this->createAgent($user_data);
                 }else {
-                    throw new Exception("Invalid Authentication Request", 401);
+                    throw new Exception("Invalid Authentication Request", 400);
                 }
             }
 
@@ -34,7 +34,7 @@ class SocialAuthController extends Controller
             $token = Auth::login($user);
 
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage()." : ".$e->getLine());
+            return $this->error($e->getCode(), $e->getMessage()." : ".$e->getLine());
         }
 
         return $this->success("Log In Successful", [
@@ -74,7 +74,7 @@ class SocialAuthController extends Controller
     }
 
     private function tokenlessAuth($driver, $data){
-        return $this->extractUserData($data, $driver);
+        return $this->extractUserData((array) $data, $driver);
     }
 
     private function extractUserData($data, $driver){

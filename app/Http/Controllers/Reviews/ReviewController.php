@@ -124,7 +124,6 @@ class ReviewController extends Controller{
         try {
             $this->checkIfReviewBelongstoCurrentUser($review_id);
 
-
             $review = Review::find($review_id);
             $listing_id = $review->listing_id;
 
@@ -139,6 +138,7 @@ class ReviewController extends Controller{
             $agent->save();
 
             Notification::where('type_id', $review_id)->delete();
+
             $review->delete();
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());

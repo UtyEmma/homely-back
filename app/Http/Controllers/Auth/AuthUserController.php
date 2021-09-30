@@ -50,8 +50,14 @@ class AuthUserController extends Controller{
         return $this->success("Sign Up Successful! Verification Email Sent");
     }
 
-    public function resendVerificationLink(User $user){
-        return $this->verify($user, 'tenant', true);
+    public function resendVerificationLink($user){
+        try {
+            if (!$user = User::find($user)) { throw new Exception("Tenant Not Found", 404); }
+            if ($user->isVerified) { throw new Exception("Your Email has been verified Already. Please Login!", 400); }
+            return $this->verify($user, 'tenant', true);
+        } catch (Exception $e) {
+            return $this->error($e->getCode(), $e->getMessage());
+        }
     }
 
     public function getLoggedInUser () {

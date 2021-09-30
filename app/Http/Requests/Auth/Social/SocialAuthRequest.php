@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Auth\Social;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Request;
 
 use function PHPUnit\Framework\returnArgument;
 
@@ -23,15 +24,14 @@ class SocialAuthRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules(){
         return [
-            'data.given_name' => ['required', 'string'],
-            'data.family_name' => ['required', 'string'],
-            'data.email' => ['required', 'email'],
-            'data.picture' => ['required', 'url'],
+            'given_name' => ['nullable', 'string'],
+            'family_name' => ['nullable', 'string'],
+            'email' => ['nullable', 'email'],
+            'picture' => ['nullable', 'url'],
             'driver' => ['required', 'string'],
-            'type' => ['string', 'in:agent,tenant']
+            'type' => ['required', 'string', 'in:agent,tenant']
         ];
     }
 }

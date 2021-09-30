@@ -7,6 +7,8 @@ use App\Models\Listing;
 use App\Models\User;
 use App\Models\Category;
 use App\Models\Favourite;
+use App\Models\Notification;
+use App\Models\Review;
 
 trait CompileListing{
 
@@ -149,7 +151,6 @@ trait CompileListing{
 
 
     private $model;
-
     public function formatListingDetails($details, $model){
         $this->model = app("App\\Models\\$model");
         $array = count($details) > 0
@@ -157,5 +158,18 @@ trait CompileListing{
                                 array_keys($details), array_values($details)) : [];
 
         return $array;
+    }
+
+    public function clearListingData($listing, $agent){
+        $id = $listing->unique_id;
+
+        $agent->no_of_listings = $agent->no_of_listings - 1;
+        $agent->save();
+
+        Review::where('listing_id', $id)->delete();
+        Favourite::where('listing_id', $id)->delete();
+        Notification::where('type_id', $id)->delete();
+
+        $listing->delete();
     }
 }

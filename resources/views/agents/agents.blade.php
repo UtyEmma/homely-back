@@ -58,7 +58,7 @@
                             <tr>
                                 <td>1</td>
                                 <td><a href="{{$url}}" target="_blank">{{$agent->firstname}} {{$agent->lastname}} </a></td>
-                                <td>{{$agent->city || $agent->state ? $agent->city, $agent->state : "Not Available" }}</td>
+                                <td>{{$agent->city || $agent->state ? $agent->city.", ".$agent->state : "Not Available" }}</td>
                                 <td>
                                     <div class="badge badge-shadow {{ $agent->isVerified ? 'bg-success' : 'bg-dark' }}">{{ $agent->isVerified ? 'Confirmed' : 'Not Confirmed' }}</div>
                                 </td>

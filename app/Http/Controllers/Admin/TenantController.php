@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\User\CompileTenant;
 use App\Models\Favourite;
 use App\Models\Notification;
 use App\Models\Review;
@@ -12,6 +13,7 @@ use Exception;
 use Illuminate\Http\Request;
 
 class TenantController extends Controller{
+    use CompileTenant;
 
     private function getTenantData($id) {
         if (!$user = User::find($id)) {
@@ -38,13 +40,8 @@ class TenantController extends Controller{
 
     public function deleteTenant($id){
         try {
-            $tenant = $this->getTenantData($id);
-            $tenant->delete();
-
-            Wishlist::where('user_id', $id)->delete();
-            Review::where('user_id', $id)->delete();
-            Favourite::where('user_id', $id)->delete();
-            Notification::where('receiver_id', $id)->delete();
+            if (!$tenant = User::find($id)) { throw new Exception("This tenant does not exist", 400); }
+            $this->clearTenantData($tenant);
         } catch (Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }

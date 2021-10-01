@@ -42,7 +42,7 @@ Route::prefix('agent')->middleware('role:agent')->group(function(){
 
         Route::post('update', [AgentController::class, 'update']);
         Route::get('user/{user}', [AgentController::class, 'single']);
-        Route::get('unanvailable', [AgentController::class, 'setStatusToUnavailable']);
+        Route::get('unavailable', [AgentController::class, 'setStatusToUnavailable']);
 
         Route::prefix('listing')->group(function(){
             Route::post('create', [ListingController::class, 'createListing']);
@@ -135,7 +135,7 @@ Route::prefix('tenant')->group(function(){
 });
 
 Route::prefix('agent')->group(function(){
-    Route::post('login', [AuthAgentController::class, 'login']);
+    Route::post('login', [AuthAgentController::class, 'login'])->middleware('role:agent');
     Route::post('signup', [AuthAgentController::class, 'signup']);
     Route::get('all', [AgentController::class, 'show']);
     Route::get('/{slug}', [AgentController::class, 'single']);

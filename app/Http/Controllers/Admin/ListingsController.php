@@ -61,6 +61,11 @@ class ListingsController extends Controller{
             if (!$listing = Listing::find($id)) { throw new Exception("This Property is Not Found", 404); }
             if ($listing->status !== 'pending') { throw new Exception("This property is already approved", 400); }
 
+            $agent = Agent::find($listing->agent_id);
+
+            $agent->no_of_listings = $agent->no_of_listings + 1;
+            $agent->save();
+
             $listing->status = 'active';
             $listing->save();
 

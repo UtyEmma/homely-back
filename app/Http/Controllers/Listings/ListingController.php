@@ -12,6 +12,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class ListingController extends Controller{
 
@@ -25,7 +26,7 @@ class ListingController extends Controller{
             $inital_fees = $request->rent + $request->extra_fees;
 
             $listing_id = $this->createUniqueToken('listings', 'unique_id');
-            $slug = $this->createDelimitedString($request->title, ' ', '-');
+            $slug = Str::slug($request->title, '-');
 
             Listing::create(array_merge($request->all(), [
                                 'unique_id' => $listing_id,
@@ -48,11 +49,12 @@ class ListingController extends Controller{
             $this->makeNotification('listing', $data);
 
         } catch (Exception $e) {
-            return $this->error($e->getCode(), $e->getMessage()." :--- ".$e->getLine());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         return $this->success($request->title." has been added to your Listings", [
-            'listing' => array_merge($listing->toArray(), ['images' => json_decode($listing->images)])
+            'listing' => array_merge($listing->toArray(), ['images' => json_decode($listing->images)]),
+            'agent' => $agent
         ]);
     }
 
@@ -98,6 +100,7 @@ class ListingController extends Controller{
 
         return $this->success('Property Removed Successfully', [
             'listings' => $array,
+            'agent' => $agent,
             'count' => count($listings)
         ]);
     }

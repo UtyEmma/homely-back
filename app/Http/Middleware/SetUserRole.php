@@ -17,7 +17,7 @@ class SetUserRole
     public function handle(Request $request, Closure $next, $role = "")
     {
         if ($role) {
-            auth()->shouldUse($role);   
+            auth()->shouldUse($role);
         }
         return $next($request);
     }

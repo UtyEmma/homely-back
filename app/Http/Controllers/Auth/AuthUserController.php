@@ -16,19 +16,15 @@ class AuthUserController extends Controller{
     use ResetPassword;
 
     public function login(LoginRequest $request){
-
         if (!$token = JWTAuth::attempt($request->all())) {
             return $this->error(400, 'Invalid Email or Password');
         }
 
         $user = auth()->user();
-        $current_user = User::find($user->unique_id);
-
-        $avatar = $user->avatar ? json_decode($current_user->avatar)[0] : null;
 
         return $this->success("Login Successful", [
             'token' => $token,
-            'user' => array_merge($current_user->toArray(), ['avatar' => $avatar])
+            'user' => $user
         ]);
     }
 

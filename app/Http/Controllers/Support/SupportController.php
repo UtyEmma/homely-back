@@ -20,6 +20,7 @@ class SupportController extends Controller{
 
             if ($ticket_id){
                 $unique_id = $this->createUniqueToken('chats', 'unique_id');
+
                 Chat::create([
                     'message' => $request->message,
                     'unique_id' => $unique_id,

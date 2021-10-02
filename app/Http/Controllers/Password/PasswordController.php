@@ -35,7 +35,7 @@ class PasswordController extends Controller{
 
 
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         return $this->success("Password Reset Token Sent!!!", ['status' => true]);
@@ -46,18 +46,16 @@ class PasswordController extends Controller{
     public function resetPassword(ResetPasswordRequest $request){
         try {
 
-            if ($request->type === 'tenant') {
+            if ($request->type === 'tenant') :
                 $user = User::where('email', $request->email)->where('password_reset', $request->token)->first();
-            }elseif ($request->type === 'agent') {
+            elseif ($request->type === 'agent') :
                 $user = Agent::where('email', $request->email)->where('password_reset', $request->token)->first();
-            }
+            endif;
 
-            if (!$user) {
-                throw new Exception("Invalid Password Reset Details", 400);
-            }
+            if (!$user) { throw new Exception("Invalid Password Reset Details", 400); }
 
             // Check for the last time the model was modified inorder to check for token expiry
-            $tokenLifetime = $this->timeDiffInHours($user->updated_at, Date::now());
+            // $tokenLifetime = $this->timeDiffInHours($user->updated_at, Date::now());
 
             // if ($tokenLifetime > 24) {
             //     throw new Exception("Password Reset Token has Expired!!!", 400);
@@ -68,7 +66,7 @@ class PasswordController extends Controller{
             $user->save();
 
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage()." @ ".$e->getLine());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         return $this->success("User Password Has been updated", $request->type);

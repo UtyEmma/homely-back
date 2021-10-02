@@ -16,15 +16,14 @@ class DetailController extends Controller
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }
-
         return $this->success('Details Fetched', [ 'amenities' => $amenities ]);
     }
 
-    private function formatDetails ($detail, $title){
+    private function formatDetails ($details, $title){
         $array = [];
-        foreach ($detail as $key => $value) {
-            array_push($array, $value[$title]);
-        }
+        $array = array_map(function($item) use ($title) {
+            return $item[$title];
+        }, $details->toArray());
         $sorted_array = Arr::sort($array);
         return $sorted_array;
     }
@@ -32,10 +31,7 @@ class DetailController extends Controller
     public function fetchCategories(){
         try {
             $categories = Category::all();
-            $array = [];
-
-            if (count($categories) > 0) { $array = $categories; }
-
+            $array = count($categories) > 0 ? $categories : [];
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }

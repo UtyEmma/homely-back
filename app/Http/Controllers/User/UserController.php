@@ -41,7 +41,10 @@ class UserController extends Controller{
             return $this->error($e->getCode(), $e->getMessage());
         }
 
-        return $this->success("User Profile Updated!!!", [ 'tenant' => $user, 'email_updated' => $email_updated ]);
+        return $this->success("User Profile Updated!!!", [
+            'user' => $user,
+            'email_updated' => $email_updated
+        ]);
     }
 
     public function show($user){

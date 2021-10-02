@@ -30,6 +30,7 @@ class UpdateUserRequest extends FormRequest
             'avatar' => 'nullable|image',
             'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($user->unique_id, 'unique_id')],
             'phone' => 'nullable|numeric',
+            'username' => ['required', Rule::unique('users', 'username')->ignore($user->unique_id, 'unique_id'), Rule::unique('agents', 'username')->ignore($user->unique_id, 'unique_id')]
         ];
     }
 }

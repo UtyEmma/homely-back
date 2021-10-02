@@ -7,32 +7,33 @@ use App\Http\Libraries\Functions\DateFunctions;
 use App\Models\Agent;
 use App\Models\Review;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 trait CompileReview{
     use DateFunctions;
 
-    protected function compileReviewsData($reviews){
+    protected function compileReviewsData($reviews, $role){
         $array = [];
         $i = 0;
-        $user = auth('tenant')->user();
+        $user = auth()->user();
+        $table = ($role === 'tenant') ? 'users' : 'agents';
 
         if ($reviews && count($reviews) > 0) {
-            foreach ($reviews as $key => $review) {
+            $array = array_map(function($review) use ($user, $table) {
                 $owned_by_user = false;
-                if($publisher = User::find($review->reviewer_id)){
-                    if ($user && $review->reviewer_id === $user->unique_id) {
-                        $owned_by_user = true;
-                    }
 
-                    $array[$i]['review'] = array_merge($review->toArray(), [
+                if($publisher = DB::table($table)->find($review->reviewer_id)){
+                    if ($user) : $owned_by_user = ($review->reviewer_id === $user->unique_id); endif;
+
+                    $review['review'] = array_merge($review->toArray(), [
                         'owned_by_user' => $owned_by_user,
                         'created_at' => $this->parseTimestamp($review->created_at)
                     ]);
-                    $array[$i]['publisher'] =  $publisher;
+
+                    $review['publisher'] =  $publisher;
                 }
 
-                $i++;
-            }
+            }, $reviews);
         }
 
         return $array;
@@ -67,9 +68,9 @@ trait CompileReview{
         return $array;
     }
 
-    protected function checkIfReviewBelongstoCurrentUser ($review_id) {
-        if (!Review::find($review_id)) { throw new Exception("Sorry! The Review does not exist!", 404); }
-        if (!$review = Review::find($review_id)->publisher) {
+    protected function checkIfReviewBelongstoCurrentUser ($review_id, $user) {
+        if (!$review = Review::find($review_id)) { throw new Exception("Sorry! The Review does not exist!", 400); }
+        if ($review->reviewer_id !== $user->unique_id) {
             throw new Exception("The review does not belong to the current user", 400);
         }
     }

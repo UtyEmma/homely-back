@@ -18,6 +18,7 @@ use App\Http\Controllers\Reviews\ReviewController;
 use App\Http\Controllers\Search\SearchController;
 use App\Http\Controllers\Support\ChatController;
 use App\Http\Controllers\Support\SupportController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -83,6 +84,7 @@ Route::prefix('agent')->middleware('role:agent')->group(function(){
 });
 
 
+
 Route::prefix('tenant')->middleware('role:tenant')->group(function(){
 
     Route::get('resend/{user}', [AuthUserController::class, 'resendVerificationLink']);
@@ -101,18 +103,18 @@ Route::prefix('tenant')->middleware('role:tenant')->group(function(){
 
         });
 
-        Route::prefix('reviews')->group(function(){
-            Route::post('create/{listing_id}', [ReviewController::class, 'createReview']);
-            Route::post('edit', [ReviewController::class, 'updateReview']);
-            Route::get('delete/{review_id}', [ReviewController::class, 'deleteReview']);
-        });
-
         Route::prefix('favourites')->group(function(){
             Route::get('add/{listing_id}', [FavouritesController::class, 'addToFavourites']);
             Route::get('remove/{listing_id}', [FavouritesController::class, 'removeFromFavourites']);
             Route::get('/', [FavouritesController::class, 'fetchFavourites']);
         });
     });
+});
+
+Route::prefix('reviews')->group(function(){
+    Route::post('create/{listing_id}', [ReviewController::class, 'createReview']);
+    Route::post('edit', [ReviewController::class, 'updateReview']);
+    Route::get('delete/{review_id}', [ReviewController::class, 'deleteReview']);
 });
 
 Route::get('admin/verify/{id}', [AdminController::class, 'verifyAdmin']);

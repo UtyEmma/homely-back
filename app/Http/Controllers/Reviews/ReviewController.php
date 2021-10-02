@@ -16,15 +16,21 @@ use Illuminate\Support\Facades\Validator;
 class ReviewController extends Controller{
 
     use CompileReview, NotificationHandler;
+    private $role;
+
+    protected function __construct(Request $request){
+        $role = $this->role = $request->role;
+        $this->middleware("role:$role")->only(['createReview', 'updateReview', 'deleteReview']);
+    }
 
     public function createReview(Request $request, $listing_id){
-        $user = auth()->user();
-
-        if (Review::where('listing_id', $listing_id)->where('reviewer_id', $user->unique_id)->first()) {
-            return $this->error(405, "You have already reviewed this Listing");
-        }
-
         try {
+            $user = auth()->user();
+
+            if (Review::where('listing_id', $listing_id)->where('reviewer_id', $user->unique_id)->first()) {
+                throw new Exception("You have already reviewed this Listing", 400);
+            }
+
             $unique_id = $this->createUniqueToken('reviews', 'unique_id');
             $agent = Listing::find($listing_id)->agent;
 
@@ -36,7 +42,7 @@ class ReviewController extends Controller{
             ]));
 
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         $agent->no_reviews = $agent->no_reviews + 1;
@@ -66,9 +72,9 @@ class ReviewController extends Controller{
         try{
             $agent = auth()->user();
             $agents_reviews = Agent::find($agent->unique_id)->reviews;
-            $reviews = $this->compileReviewsData($agents_reviews);
+            $reviews = $this->compileReviewsData($agents_reviews, $this->role);
         }catch(Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         return $this->success("Agent's Reviews Fetched", [
@@ -82,9 +88,9 @@ class ReviewController extends Controller{
         try {
             $listings_reviews = Review::where('listing_id', $listing_id)->where('status', true)->get();
 
-            $reviews = $this->compileReviewsData($listings_reviews);
+            $reviews = $this->compileReviewsData($listings_reviews, $this->role);
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
         return $this->success($message ?: 'Fetched Reviews', $reviews);
     }
@@ -92,7 +98,7 @@ class ReviewController extends Controller{
 
     public function reportUser(Request $request, $review_id){
         try {
-            $validated = Validator::make([
+            Validator::make([
                 'report' => 'required|string'
             ]);
 
@@ -102,17 +108,17 @@ class ReviewController extends Controller{
                 'reported' => true
             ]);
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
     }
 
     public function updateReview(Request $request){
         try {
             $user = auth()->user();
-            $this->checkIfReviewBelongstoCurrentUser($request->unique_id);
+            $this->checkIfReviewBelongstoCurrentUser($request->unique_id, $user);
             Review::where('unique_id', $request->unique_id)->update((array) $request->all());
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         $review = Review::find($request->unique_id);
@@ -122,7 +128,8 @@ class ReviewController extends Controller{
 
     public function deleteReview($review_id){
         try {
-            $this->checkIfReviewBelongstoCurrentUser($review_id);
+            $user = auth()->user();
+            $this->checkIfReviewBelongstoCurrentUser($review_id, $user);
 
             $review = Review::find($review_id);
             $listing_id = $review->listing_id;

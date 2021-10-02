@@ -28,7 +28,7 @@ class AgentUpdateRequest extends FormRequest
             'email' => ['required', 'string', 'email', Rule::unique('agents', 'email')->ignore($user->unique_id, 'unique_id')],
             'firstname' => 'required|string',
             'lastname' => 'required|string',
-            'username' => ['required', 'string', Rule::unique('agents', 'username')->ignore($user->unique_id, 'unique_id')],
+            'username' => ['required', 'string', Rule::unique('users', 'username')->ignore($user->unique_id, 'unique_id'), Rule::unique('agents', 'username')->ignore($user->unique_id, 'unique_id')],
             'avatar' => 'nullable|file',
             'email' => 'required|email|string',
             'location' => 'nullable|string',

@@ -42,13 +42,13 @@ class AgentController extends Controller
                                         'avatar' => $file ])
                                     );
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         $updated_agent = Agent::find($agent->unique_id);
 
         return $this->success("Agent Profile Updated!!!", [
-            'agent' => $updated_agent,
+            'user' => $updated_agent,
             'email_updated' => $email_updated
         ]);
     }

@@ -40,7 +40,7 @@ class AuthUserController extends Controller{
             $this->verify(User::find($user_id), 'tenant', false);
 
         } catch (Exception $e) {
-           return $this->error(500, $e->getMessage()."::".$e->getLine());
+           return $this->error($e->getCode(), $e->getMessage()."::".$e->getLine());
         }
 
         return $this->success("Sign Up Successful! Verification Email Sent");

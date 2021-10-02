@@ -8,9 +8,15 @@ use App\Models\Agent;
 use App\Models\Review;
 use Exception;
 use Illuminate\Support\Facades\DB;
+// use Illuminate\Support\Facades\Request;
 
 trait CompileReview{
     use DateFunctions;
+
+    function role () {
+        $request = request()->all();
+        return $request['role'];
+    }
 
     protected function compileReviewsData($reviews, $role){
         $array = [];

@@ -18,7 +18,7 @@ class ReviewController extends Controller{
     use CompileReview, NotificationHandler;
     private $role;
 
-    protected function __construct(Request $request){
+    public function __construct(Request $request){
         $role = $this->role = $request->role;
         $this->middleware("role:$role")->only(['createReview', 'updateReview', 'deleteReview']);
     }

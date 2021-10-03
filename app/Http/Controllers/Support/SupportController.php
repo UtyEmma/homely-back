@@ -39,15 +39,13 @@ class SupportController extends Controller{
 
             $this->makeNotification('support', $data);
 
+            $new_ticket = Support::find($ticket_id);
+
+            $tickets =  $this->compileTickets($auth->unique_id);
+
         }catch(Exception $e){
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
-
-
-        $new_ticket = Support::find($ticket_id);
-
-        $tickets =  $this->compileTickets($auth->unique_id);
-
 
         return $this->success("New Ticket has been Created", [
             'tickets' => $tickets,
@@ -96,7 +94,7 @@ class SupportController extends Controller{
             $agent = auth()->user();
             $tickets = $this->compileTickets($agent->unique_id);
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         return $this->success("Fetched Agents", $tickets);

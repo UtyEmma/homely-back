@@ -88,15 +88,19 @@ class ListingController extends Controller{
     }
 
     public function agentRemoveListing($listing_id){
-        $agent = auth()->user();
-        $i = 0;
-        $listing = Listing::find($listing_id);
-        $listing->status == 'inactive' ? $listing->status = 'active' : $listing->status = 'inactive';
-        $listing->save();
+        try {
+            $agent = auth()->user();
+            $i = 0;
+            $listing = Listing::find($listing_id);
+            $listing->status == 'inactive' ? $listing->status = 'active' : $listing->status = 'inactive';
+            $listing->save();
 
-        $listings = Agent::find($agent->unique_id)->listings;
+            $listings = Agent::find($agent->unique_id)->listings;
 
-        $array = $this->formatListingData($listings, $agent);
+            $array = $this->formatListingData($listings, $agent);
+        } catch (Exception $e) {
+            return $this->error($e->getCode(), $e->getMessage());
+        }
 
         return $this->success('Property Removed Successfully', [
             'listings' => $array,
@@ -137,9 +141,8 @@ class ListingController extends Controller{
     public function deleteListing($listing_id){
         try {
             $listing = Listing::find($listing_id) ?: throw new Exception("Listing Not Found", 404);
-            Notification::where('type_id', $listing_id)->delete();
-
-            $listing->delete();
+            $agent = Agent::find($listing->agent_id);
+            $this->clearListingData($listing, $agent);
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }
@@ -172,7 +175,7 @@ class ListingController extends Controller{
     }
 
 
-    public function updateListing($request, $listing_id){
+    public function updateListing(Request $request, $listing_id){
         try {
             $agent = auth()->user();
 
@@ -195,8 +198,11 @@ class ListingController extends Controller{
                 'amenities.*' => ['nullable']
             ]);
 
+            $listing = Listing::find($listing_id);
+            $agent = Agent::find($listing->agent_id);
+
             if ($request->hasFile('images')) {
-                $images = json_decode($agent->images);
+                $images = json_decode($listing->images);
                 foreach ($images as $image) { $this->deleteFile($image); }
             }else{
                 throw new Exception("Property Images are Required", 400);
@@ -214,11 +220,9 @@ class ListingController extends Controller{
                                                 'slug' => strtolower($slug),
                                                 'initial_fees' => $inital_fees ]));
 
-            $listing = Listing::find($listing_id);
-            $agent = Agent::find($listing->agent_id);
 
         } catch (Exception $e) {
-            return $this->error($e->getCode(), $e->getMessage()." :--- ".$e->getLine());
+            return $this->error(500, $e->getMessage()." :--- ".$e->getLine());
         }
 
 
@@ -300,7 +304,7 @@ class ListingController extends Controller{
 
             $agent = Agent::find($listing->agent_id);
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         return $this->getSingleListing($agent->username, $listing->slug, "Listing $listing->status");

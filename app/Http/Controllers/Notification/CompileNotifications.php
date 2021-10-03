@@ -40,8 +40,6 @@ trait CompileNotifications {
         }
     }
 
-
-
     public function formatSupportNotification($notification){
         return $notification;
     }

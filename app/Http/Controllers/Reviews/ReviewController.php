@@ -16,15 +16,12 @@ use Illuminate\Support\Facades\Validator;
 class ReviewController extends Controller{
 
     use CompileReview, NotificationHandler;
-    private $role;
-
-    public function __construct(Request $request){
-        $role = $this->role = $request->role;
-        $this->middleware("role:$role")->only(['createReview', 'updateReview', 'deleteReview']);
-    }
 
     public function createReview(Request $request, $listing_id){
+        auth()->shouldUse($request->role);
+
         try {
+
             $user = auth()->user();
 
             if (Review::where('listing_id', $listing_id)->where('reviewer_id', $user->unique_id)->first()) {
@@ -63,16 +60,58 @@ class ReviewController extends Controller{
 
         $this->makeNotification('review', $data);
 
-        return $this->fetchListingReviews($listing_id, "Your Review has been Submitted");
+        $listings_reviews = Review::where('listing_id', $listing_id)->where('status', true)->get();
+        $reviews = $this->compileReviewsData($listings_reviews, $request->role);
+
+        return $this->success('Your review has been submitted', $reviews);
     }
 
+    public function createAgentReview(Request $request, $agent_id){
+        try {
+            auth()->shouldUse($request->role);
+            $user = auth()->user();
+
+            if (Review::where('agent_id', $agent_id)->where('listing_id', null)->where('reviewer_id', $user->unique_id)->first()) {
+                throw new Exception("You have already reviewed this Agent", 400);
+            }
+
+            $unique_id = $this->createUniqueToken('reviews', 'unique_id');
+            $agent = Agent::find($agent_id);
+
+            Review::create(array_merge($request->all(), [
+                'reviewer_id' => $user->unique_id,
+                'agent_id' => $agent->unique_id,
+                'unique_id' => $unique_id
+            ]));
+
+        } catch (Exception $e) {
+            return $this->error($e->getCode(), $e->getMessage());
+        }
+
+        $agent->no_reviews = $agent->no_reviews + 1;
+        $agent->rating = $this->calculateRatings($agent->unique_id, 'agent_id');
+        $agent->save();
+
+        $data = [
+            'type_id' => $unique_id,
+            'publisher_id' => $user->unique_id,
+            'receiver_id' => $agent->unique_id,
+            'message' => 'You have a new review'
+        ];
+
+        $this->makeNotification('review', $data);
+
+        $agent_reviews = Review::where('agent_id', $agent_id)->where('listing_id', null)->where('status', true);
+        $reviews = $this->compileReviewsData($agent_reviews, $request->role);
+        return $this->success("Fetched Reviews", $reviews);
+    }
 
 
     public function fetchAgentReviews(){
         try{
             $agent = auth()->user();
             $agents_reviews = Agent::find($agent->unique_id)->reviews;
-            $reviews = $this->compileReviewsData($agents_reviews, $this->role);
+            $reviews = $this->compileReviewsData($agents_reviews);
         }catch(Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }
@@ -84,11 +123,11 @@ class ReviewController extends Controller{
     }
 
 
-    public function fetchListingReviews($listing_id, $message = ""){
+    public function fetchListingReviews(Request $request, $listing_id, $message = ""){
+        auth()->shouldUse($request->role);
         try {
             $listings_reviews = Review::where('listing_id', $listing_id)->where('status', true)->get();
-
-            $reviews = $this->compileReviewsData($listings_reviews, $this->role);
+            $reviews = $this->compileReviewsData($listings_reviews);
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }
@@ -113,31 +152,49 @@ class ReviewController extends Controller{
     }
 
     public function updateReview(Request $request){
+        auth()->shouldUse($request->role);
         try {
             $user = auth()->user();
             $this->checkIfReviewBelongstoCurrentUser($request->unique_id, $user);
-            Review::where('unique_id', $request->unique_id)->update((array) $request->all());
+            $review = Review::find($request->unique_id);
+            Review::where('unique_id', $request->unique_id)->update($request->except('role'));
+
+            if ($review->listing_id) {
+                $listing = Listing::find($review->listing_id);
+                $listing->rating = $this->calculateRatings($review->listing_id, 'listing_id');
+                $listing->save();
+            }
+
+            $agent = Agent::find($review->agent_id);
+            $agent->rating = $this->calculateRatings($agent->unique_id, 'agent_id');
+            $agent->save();
+
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }
 
         $review = Review::find($request->unique_id);
-        return $this->fetchListingReviews($review->listing_id, "Your Review has been updated");
+        return $this->fetchListingReviews($request, $review->listing_id, "Your Review has been updated");
+
+
     }
 
 
-    public function deleteReview($review_id){
+    public function deleteReview(Request $request, $review_id){
         try {
+            auth()->shouldUse($request->role);
             $user = auth()->user();
             $this->checkIfReviewBelongstoCurrentUser($review_id, $user);
 
             $review = Review::find($review_id);
-            $listing_id = $review->listing_id;
 
-            $listing = Listing::find($listing_id);
-            $listing->reviews = $listing->reviews - 1;
-            $listing->rating = $this->calculateRatings($listing_id, 'listing_id');
-            $listing->save();
+            if ($listing_id = $review->listing_id) {
+                $listing = Listing::find($listing_id);
+                $listing->reviews = $listing->reviews - 1;
+                $listing->rating = $this->calculateRatings($listing_id, 'listing_id');
+                $listing->save();
+            }
+
 
             $agent = Agent::find($review->agent_id);
             $agent->no_reviews = $agent->no_reviews - 1;
@@ -151,7 +208,7 @@ class ReviewController extends Controller{
             return $this->error($e->getCode(), $e->getMessage());
         }
 
-        return $this->fetchListingReviews($listing_id, "Your Review has been deleted");
+        return $this->fetchListingReviews($request, $listing_id, "Your Review has been deleted");
     }
 
 

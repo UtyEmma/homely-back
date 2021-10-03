@@ -36,9 +36,9 @@ class AgentController extends Controller
             if ($request->email !== $agent->email) { $email_updated = true; }
 
             Agent::find($agent->unique_id)->update(array_merge($request->validated(), [
-                                        'twitter' => $request->twitter,
-                                        'facebook' => $request->facebook,
-                                        'instagram' => $request->instagram,
+                                        'twitter' => "https://twitter.com/".$request->twitter,
+                                        'facebook' => "https://facebook.com/".$request->facebook,
+                                        'instagram' => "https://instagram.com/".$request->instagram,
                                         'avatar' => $file ])
                                     );
         } catch (Exception $e) {
@@ -130,7 +130,7 @@ class AgentController extends Controller
             $this->makeNotification('agent_suspended', $data);
 
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         return $this->single($agent->username, "Agent $agent->status");
@@ -143,7 +143,7 @@ class AgentController extends Controller
             $agent->save();
 
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         return $this->single($agent->username, "Agent Verified");
@@ -179,7 +179,7 @@ class AgentController extends Controller
             $agent->status = $agent->status === 'active' ? 'unavailable' : 'active';
             $agent->save();
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         return $this->single($agent->username, "Agent Status Set To Unavailable");

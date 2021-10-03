@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Agent\CompileAgents;
+use App\Http\Controllers\Listings\CompileListing;
 use App\Models\Admin;
 use App\Models\Agent;
 use App\Models\Listing;
@@ -12,6 +14,7 @@ use Exception;
 use Illuminate\Support\Facades\Request;
 
 class AdminController extends Controller{
+    use CompileAgents, CompileListing;
 
     function verifyAdmin ($id) {
         try {
@@ -31,17 +34,9 @@ class AdminController extends Controller{
     public function adminDeleteAgent($agent_id){
         try {
             if(!$agent = Agent::find($agent_id)){ throw new Exception("Agent Not Found", 404); }
-
-            Listing::where('agent_id', $agent_id)->delete();
-            Notification::where('receiver_id', $agent_id)->delete();
-            Support::where('agent_id', $agent_id)->delete();
-            Review::where('agent_id', $agent_id)->delete();
-
-            $agent->delete();
-
-
+            $this->clearAgentData($agent);
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         return $this->success("Agent Deleted");
@@ -51,12 +46,9 @@ class AdminController extends Controller{
     public function adminDeleteListing($listing_id){
         try {
             if(!$listing = Listing::find($listing_id)){ throw new Exception("Listing Not Found", 404); }
-            Notification::where('type_id', $listing_id)->delete();
-            Review::where('listing_id', $listing_id)->delete();
-            $listing->delete();
-
+            $this->clearListingData($listing, Agent::find($listing->agent_id));
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         return $this->success("Listing Deleted");

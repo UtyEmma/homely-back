@@ -18,7 +18,6 @@ trait CompileAgents {
         $q->where('username', '!=', '');
         $q->where('status', 'active');
         $data = $q->get();
-        //  = Agent::where('status', 'active')->where('username')->get();
         return $this->formatAgentData($data);
     }
 

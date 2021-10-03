@@ -40,7 +40,7 @@ class ChatController extends Controller{
         try {
             $chats = $this->compileChats($issue_id);
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         return $this->success('', $chats);

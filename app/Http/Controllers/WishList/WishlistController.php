@@ -37,7 +37,7 @@ class WishlistController extends Controller
             $this->sendWishlistToAgents($wishlist);
 
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         return $this->success('Wishlist Item Added', [
@@ -50,7 +50,7 @@ class WishlistController extends Controller
             $tenant = auth()->user();
             $wishlists = Wishlist::where('user_id', $tenant->unique_id)->get();
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         return $this->success($message ?: "Wishlists Fetched", [
@@ -76,7 +76,7 @@ class WishlistController extends Controller
             count($wishlist) < 10 && $wishlist = array_merge($wishlist, Wishlist::where('state', $agent->state)->where('status', true)->get());
 
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         return $this->success("Agent Wishlist Fetched", [

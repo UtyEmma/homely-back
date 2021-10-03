@@ -54,13 +54,6 @@ class PasswordController extends Controller{
 
             if (!$user) { throw new Exception("Invalid Password Reset Details", 400); }
 
-            // Check for the last time the model was modified inorder to check for token expiry
-            // $tokenLifetime = $this->timeDiffInHours($user->updated_at, Date::now());
-
-            // if ($tokenLifetime > 24) {
-            //     throw new Exception("Password Reset Token has Expired!!!", 400);
-            // }
-
             $user->password = Hash::make($request->password);
             $user->password_reset = null;
             $user->save();

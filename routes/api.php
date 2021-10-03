@@ -113,6 +113,7 @@ Route::prefix('tenant')->middleware('role:tenant')->group(function(){
 
 Route::prefix('reviews')->group(function(){
     Route::post('create/{listing_id}', [ReviewController::class, 'createReview']);
+    Route::post('agent/create/{agent_id}', [ReviewController::class, 'createAgentReview']);
     Route::post('edit', [ReviewController::class, 'updateReview']);
     Route::get('delete/{review_id}', [ReviewController::class, 'deleteReview']);
 });

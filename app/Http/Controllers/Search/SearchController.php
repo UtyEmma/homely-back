@@ -64,7 +64,7 @@ class SearchController extends Controller{
             $listings = $this->formatListingData($query, $user);
 
         }catch(Exception $e){
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         return $this->success('Search Results', $listings);

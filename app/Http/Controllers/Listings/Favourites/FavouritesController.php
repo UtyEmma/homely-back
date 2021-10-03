@@ -35,7 +35,7 @@ class FavouritesController extends Controller{
             $user->save();
 
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         return $this->fetchFavourites("Property added to your favourites", true);
@@ -64,7 +64,7 @@ class FavouritesController extends Controller{
         try {
            $listings = $this->allFavourites();
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         $user = auth()->user();

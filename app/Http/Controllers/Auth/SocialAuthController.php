@@ -7,10 +7,8 @@ use App\Http\Requests\Auth\Social\SocialAuthRequest;
 use App\Models\Agent;
 use App\Models\User;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class SocialAuthController extends Controller
 {
@@ -30,11 +28,15 @@ class SocialAuthController extends Controller
                 }
             }
 
+            if ($user->trashed()) {
+                throw new Exception("This Email Already Exists!", 400);
+            }
+
             auth()->shouldUse($request->type);
             $token = Auth::login($user);
 
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage()." : ".$e->getLine());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
         return $this->success("Log In Successful", [
@@ -62,9 +64,9 @@ class SocialAuthController extends Controller
 
     private function checkForExistingUser($user, $type){
         if ($type === 'tenant') {
-            return User::where('email', $user['email'])->first();
+            return User::withTrashed()->where('email', $user['email'])->first();
         }elseif ($type === 'agent') {
-            return Agent::where('email', $user['email'])->first();
+            return Agent::withTrashed()->where('email', $user['email'])->first();
         }
     }
 

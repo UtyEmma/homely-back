@@ -3,9 +3,6 @@
 namespace App\Http\Requests\Auth\Social;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Request;
-
-use function PHPUnit\Framework\returnArgument;
 
 class SocialAuthRequest extends FormRequest
 {

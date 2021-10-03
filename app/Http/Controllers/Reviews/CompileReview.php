@@ -18,18 +18,18 @@ trait CompileReview{
         return $request['role'];
     }
 
-    protected function compileReviewsData($reviews, $role){
+    protected function compileReviewsData($reviews){
         $array = [];
-        $i = 0;
         $user = auth()->user();
-        $table = ($role === 'tenant') ? 'users' : 'agents';
 
         if ($reviews && count($reviews) > 0) {
-            $array = array_map(function($review) use ($user, $table) {
+
+            $array = $reviews->map(function($review) use ($user) {
                 $owned_by_user = false;
 
-                if($publisher = DB::table($table)->find($review->reviewer_id)){
-                    if ($user) : $owned_by_user = ($review->reviewer_id === $user->unique_id); endif;
+                if($publisher = $this->reviewPublisher($review->reviewer_id)){
+
+                    if ($user) : $owned_by_user = $review->reviewer_id === $user->unique_id; endif;
 
                     $review['review'] = array_merge($review->toArray(), [
                         'owned_by_user' => $owned_by_user,
@@ -39,10 +39,16 @@ trait CompileReview{
                     $review['publisher'] =  $publisher;
                 }
 
-            }, $reviews);
+                return $review;
+            });
         }
 
         return $array;
+    }
+
+    private function reviewPublisher ($reviewer_id) {
+        $reviewer = User::find($reviewer_id) ?: Agent::find($reviewer_id);
+        return $reviewer;
     }
 
     protected function calculateRatings($id, $type){
@@ -61,14 +67,13 @@ trait CompileReview{
                 $listing = Review::find($review->unique_id)->listing;
                 $publisher = Review::find($review->unique_id)->publisher;
                 $agent = Agent::find($listing->agent_id);
-                if ($listing) {
-                    $array[] = array_merge($review->toArray(), [
-                        'listing_title' => $listing->title,
-                        'listing_slug' => $listing->slug,
-                        'publisher_name' => $publisher->firstname." ".$publisher->lastname,
-                        'agent_username' => $agent->username
-                    ]);
-                }
+
+                $array[] = array_merge($review->toArray(), [
+                    'listing_title' => $listing && $listing->title,
+                    'listing_slug' => $listing && $listing->slug,
+                    'publisher_name' => $publisher->firstname." ".$publisher->lastname,
+                    'agent_username' => $agent->username
+                ]);
             }
         }
         return $array;

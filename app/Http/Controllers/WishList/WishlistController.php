@@ -16,12 +16,11 @@ class WishlistController extends Controller
 
     public function createWishlist(CreateWishlistRequest $request){
         try {
-            $validated = $request->validated();
             $tenant = auth()->user();
             $unique_id = $this->createUniqueToken('wishlists', 'unique_id');
             $amenities = json_encode($request->amenities);
 
-            $new_wishlist = Wishlist::create(array_merge($request->all(), [
+            Wishlist::create(array_merge($request->all(), [
                 'unique_id' => $unique_id,
                 'user_id' => $tenant->unique_id,
                 'amenities' => $amenities,
@@ -31,7 +30,6 @@ class WishlistController extends Controller
             $user = User::find($tenant->unique_id);
             $user->wishlists = $user->wishlists + 1;
             $user->save();
-
 
             $wishlist = Wishlist::find($unique_id);
             $this->sendWishlistToAgents($wishlist);
@@ -63,7 +61,7 @@ class WishlistController extends Controller
         try {
             return Wishlist::all();
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
     }
 

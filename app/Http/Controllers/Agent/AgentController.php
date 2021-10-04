@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Agent\CompileAgents;
 use App\Http\Controllers\Listings\CompileListing;
+use App\Http\Controllers\Reviews\CompileReview;
 use App\Http\Controllers\WishList\CompileWishlist;
 use App\Http\Libraries\Files\FileHandler;
 use App\Http\Libraries\Notifications\NotificationHandler;
@@ -17,7 +18,7 @@ use App\Models\Listing;
 
 class AgentController extends Controller
 {
-    use CompileAgents, CompileListing, CompileWishlist, NotificationHandler, FileHandler;
+    use CompileAgents, CompileListing, CompileWishlist, NotificationHandler, FileHandler, CompileReview;
 
     private function isAgent($id) {
         if(!$agent = Agent::find($id)){throw new Exception("The Requested Agent does not Exist", 404);}
@@ -61,7 +62,9 @@ class AgentController extends Controller
             if (!$agent = Agent::where('username', $username)->first()) { throw new Exception("User Not Found", 404); }
 
             $listings = Agent::find($agent->unique_id)->listings;
-            $reviews = Agent::find($agent->unique_id)->reviews;
+            $agent_reviews = Agent::find($agent->unique_id)->reviews;
+
+            $reviews = $this->compileReviewsData($agent_reviews);
 
             auth()->shouldUse('tenant');
             $user = auth()->user();

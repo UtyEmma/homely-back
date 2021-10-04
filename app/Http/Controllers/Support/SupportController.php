@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Support;
 
 use App\Http\Controllers\Controller;
 use App\Http\Libraries\Notifications\NotificationHandler;
+use App\Http\Requests\Support\NewTicketRequest;
 use App\Models\Chat;
 use Illuminate\Http\Request;
 use App\Models\Support;
@@ -13,7 +14,7 @@ class SupportController extends Controller{
 
     use CompileChats, NotificationHandler;
 
-    public function initiateNewIssue(Request $request){
+    public function initiateNewIssue(NewTicketRequest $request){
         try{
             $auth = auth()->user();
             $ticket_id = $this->createTicket($request->title, $auth->unique_id);

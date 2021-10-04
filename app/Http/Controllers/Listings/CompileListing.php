@@ -18,27 +18,27 @@ trait CompileListing{
         return $listings;
     }
 
-    protected function compileListingWithQuery($request){
+    protected function compileListingWithQuery($request, $user){
 
         $query = Listing::query();
 
         $query->when($request->query('state'), function($q, $state){ return $q->where('state', $state); });
         $query->when($request->query('city'), function($q, $lga){ return $q->where('city', $lga); });
         $query->when($request->query('type'), function($q, $category){ return $q->where('type', $category); });
-        $query->when($request->query('price'), function($q, $income){
-            switch ($income) {
-                case '0':
-                    return $q->where('rent', "<=", 200000);
+        $query->when($request->query('price'), function($q, $rent){
+            switch ($rent) {
                 case '1':
-                    return $q->where('rent', ">=", 200000)->where('rent', "<=", 400000);
+                    return $q->where('rent', "<", 200000);
                 case '2':
-                    return $q->where('rent', ">=", 400000)->where('rent', "<=", 800000);
+                    return $q->where('rent', ">=", 200000)->where('rent', "<=", 400000);
                 case '3':
-                    return $q->where('rent', ">=", 800000)->where('rent', "<=", 2000000);
+                    return $q->where('rent', ">=", 400000)->where('rent', "<=", 800000);
                 case '4':
+                    return $q->where('rent', ">=", 800000)->where('rent', "<=", 2000000);
+                case '5':
                     return $q->where('rent', ">=", 2000000);
                 default:
-                    break;
+                    return $q;
             }
         });
 
@@ -69,7 +69,7 @@ trait CompileListing{
 
         $listings = $query->get();
 
-        return $this->formatListingData($listings);
+        return $this->formatListingData($listings, $user);
     }
 
     /** Featured Listings */

@@ -19,10 +19,12 @@ class ReviewController extends Controller{
 
     public function createReview(Request $request, $listing_id){
         auth()->shouldUse($request->role);
-
         try {
-
             $user = auth()->user();
+
+            if(!$user){
+                throw new Exception("Invalid User Details", 401);
+            }
 
             if (Review::where('listing_id', $listing_id)->where('reviewer_id', $user->unique_id)->first()) {
                 throw new Exception("You have already reviewed this Listing", 400);
@@ -71,6 +73,10 @@ class ReviewController extends Controller{
             auth()->shouldUse($request->role);
             $user = auth()->user();
 
+            if(!$user){
+                throw new Exception("Invalid User Details", 401);
+            }
+
             if (Review::where('agent_id', $agent_id)->where('listing_id', null)->where('reviewer_id', $user->unique_id)->first()) {
                 throw new Exception("You have already reviewed this Agent", 400);
             }
@@ -110,6 +116,11 @@ class ReviewController extends Controller{
     public function fetchAgentReviews(){
         try{
             $agent = auth()->user();
+
+            if(!$agent){
+                throw new Exception("Invalid User Details", 401);
+            }
+
             $agents_reviews = Agent::find($agent->unique_id)->reviews;
             $reviews = $this->compileReviewsData($agents_reviews);
         }catch(Exception $e) {
@@ -155,6 +166,9 @@ class ReviewController extends Controller{
         auth()->shouldUse($request->role);
         try {
             $user = auth()->user();
+            if(!$user){
+                throw new Exception("Invalid User Details", 401);
+            }
             $this->checkIfReviewBelongstoCurrentUser($request->unique_id, $user);
             $review = Review::find($request->unique_id);
             Review::where('unique_id', $request->unique_id)->update($request->except('role'));
@@ -184,6 +198,11 @@ class ReviewController extends Controller{
         try {
             auth()->shouldUse($request->role);
             $user = auth()->user();
+
+            if(!$user){
+                throw new Exception("Invalid User Details", 401);
+            }
+
             $this->checkIfReviewBelongstoCurrentUser($review_id, $user);
 
             $review = Review::find($review_id);

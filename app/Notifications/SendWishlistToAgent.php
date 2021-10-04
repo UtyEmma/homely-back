@@ -47,7 +47,7 @@ class SendWishlistToAgent extends Notification
         return (new MailMessage)
                     ->line($details['greeting'])
                     ->line($details['body'])
-                    ->action('Check it out', url($details['link']))
+                    ->action('View Wishlists', url($details['link']))
                     ->line($details['thanks']);
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Reviews;
 
+use App\Http\Controllers\Agent\AgentController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Exception;
@@ -91,7 +92,7 @@ class ReviewController extends Controller{
             ]));
 
         } catch (Exception $e) {
-            return $this->error($e->getCode(), $e->getMessage());
+            return $this->error(500, $e->getMessage());
         }
 
         $agent->no_reviews = $agent->no_reviews + 1;
@@ -107,9 +108,9 @@ class ReviewController extends Controller{
 
         $this->makeNotification('review', $data);
 
-        $agent_reviews = Review::where('agent_id', $agent_id)->where('listing_id', null)->where('status', true);
-        $reviews = $this->compileReviewsData($agent_reviews, $request->role);
-        return $this->success("Fetched Reviews", $reviews);
+        $agentController = new AgentController();
+
+        return $agentController->single($agent->username, "Review Submitted");
     }
 
 
@@ -121,8 +122,8 @@ class ReviewController extends Controller{
                 throw new Exception("Invalid User Details", 401);
             }
 
-            $agents_reviews = Agent::find($agent->unique_id)->reviews;
-            $reviews = $this->compileReviewsData($agents_reviews);
+            $agents_reviews = Review::where('agent_id', $agent->unique_id)->get();
+            $reviews = $this->compileReviewsData($agents_reviews->where('listing_id', null));
         }catch(Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }
@@ -194,6 +195,7 @@ class ReviewController extends Controller{
     }
 
 
+
     public function deleteReview(Request $request, $review_id){
         try {
             auth()->shouldUse($request->role);
@@ -230,5 +232,41 @@ class ReviewController extends Controller{
         return $this->fetchListingReviews($request, $listing_id, "Your Review has been deleted");
     }
 
+    public function deleteAgentReview(Request $request, $review_id){
+        try {
+            if($request->role) : auth()->shouldUse($request->role); endif;
+            $user = auth()->user();
+
+            if(!$user){
+                throw new Exception("Invalid User Details", 401);
+            }
+
+            $this->checkIfReviewBelongstoCurrentUser($review_id, $user);
+
+            $review = Review::find($review_id);
+
+            if ($listing_id = $review->listing_id) {
+                $listing = Listing::find($listing_id);
+                $listing->reviews = $listing->reviews - 1;
+                $listing->rating = $this->calculateRatings($listing_id, 'listing_id');
+                $listing->save();
+            }
+
+
+            $agent = Agent::find($review->agent_id);
+            $agent->no_reviews = $agent->no_reviews - 1;
+            $agent->rating = $this->calculateRatings($agent->unique_id, 'agent_id');
+            $agent->save();
+
+            Notification::where('type_id', $review_id)->delete();
+
+            $review->delete();
+        } catch (Exception $e) {
+            return $this->error($e->getCode(), $e->getMessage());
+        }
+
+        $agentController = new AgentController();
+        return $agentController->single($agent->username, "Review Submitted");
+    }
 
 }

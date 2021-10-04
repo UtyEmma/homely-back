@@ -15,6 +15,8 @@ use App\Http\Controllers\WishList\CompileWishlist;
 use App\Http\Libraries\Files\FileHandler;
 use App\Http\Libraries\Notifications\NotificationHandler;
 use App\Models\Listing;
+use App\Models\Review;
+use Illuminate\Support\Facades\Request as FacadesRequest;
 
 class AgentController extends Controller
 {
@@ -59,21 +61,21 @@ class AgentController extends Controller
 
     public function single($username, $message=""){
         try {
+            if(isset($_REQUEST['role'])): auth()->shouldUse($_REQUEST['role']); endif;
+
             if (!$agent = Agent::where('username', $username)->first()) { throw new Exception("User Not Found", 404); }
 
             $listings = Agent::find($agent->unique_id)->listings;
-            $agent_reviews = Agent::find($agent->unique_id)->reviews;
+            $agent_reviews = Review::where('agent_id', $agent->unique_id)->where('listing_id', null)->get();
 
             $reviews = $this->compileReviewsData($agent_reviews);
 
-            auth()->shouldUse('tenant');
             $user = auth()->user();
 
             $formatted_listings = $this->formatListingData($listings, $user);
             $listings = collect($formatted_listings);
 
-
-            $listings->filter(function($listing, $key){
+            $listings->filter(function($listing, $key) {
                 if ($listing['status'] === 'rented') {
                     array_push($this->rented, $listing);
                 }

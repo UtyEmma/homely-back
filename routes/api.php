@@ -116,6 +116,7 @@ Route::prefix('reviews')->group(function(){
     Route::post('agent/create/{agent_id}', [ReviewController::class, 'createAgentReview']);
     Route::post('edit', [ReviewController::class, 'updateReview']);
     Route::get('delete/{review_id}', [ReviewController::class, 'deleteReview']);
+    Route::get('agent/delete/{review_id}', [ReviewController::class, 'deleteAgentReview']);
 });
 
 Route::get('admin/verify/{id}', [AdminController::class, 'verifyAdmin']);

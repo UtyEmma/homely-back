@@ -12,7 +12,7 @@ trait ResponseStatus {
         ], 200);
     }
 
-    protected function error(int $code, string $message="", $data=[]){
+    protected function error(int|string $code, string $message="", $data=[]){
         return response()->json([
             'status' => false,
             'message' => $message,
@@ -26,7 +26,7 @@ trait ResponseStatus {
 
     protected function redirectBack(string $key = "", string $value = ""){
         if ($key) {
-            return redirect()->back()->with($key, $value);   
+            return redirect()->back()->with($key, $value);
         }
 
         return redirect()->back();

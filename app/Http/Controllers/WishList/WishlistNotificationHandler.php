@@ -13,7 +13,8 @@ trait WishlistNotificationHandler{
     protected function sendWishlistToAgents($wishlist) {
         $agents = $this->compileAgents($wishlist);
 
-        foreach ($agents as $key => $agent) {
+        foreach ($agents as $key => $value) {
+            $agent = Agent::find($value['unique_id']);
             $this->sendNotification($agent, $wishlist);
         }
 

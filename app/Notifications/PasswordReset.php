@@ -45,7 +45,6 @@ class PasswordReset extends Notification
     {
         return (new MailMessage)->view(
             'emails.passwords.resetPassword', [
-                'username' => $this->username,
                 'token' => $this->token
             ]
         );

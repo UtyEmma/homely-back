@@ -41,11 +41,9 @@ class EmailVerification extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
-                    ->line($this->details['greeting'])
-                    ->line($this->details['body'])
-                    ->action('Verify your Email', url($this->details['link']))
-                    ->line($this->details['thanks']);
+        return (new MailMessage)->view('emails.verification.verify-email', [
+            'links' => $this->details['link']
+        ]);
     }
 
     /**

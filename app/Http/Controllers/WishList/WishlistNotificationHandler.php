@@ -13,10 +13,10 @@ trait WishlistNotificationHandler{
     protected function sendWishlistToAgents($wishlist) {
         $agents = $this->compileAgents($wishlist);
 
-        foreach ($agents as $key => $value) {
-            $agent = Agent::find($value['unique_id']);
-            $this->sendNotification($agent, $wishlist);
-        }
+        // foreach ($agents as $key => $value) {
+            // $agent = Agent::find($value['unique_id']);
+        $this->sendNotification($agents, $wishlist);
+        // }
 
         return true;
     }
@@ -26,16 +26,16 @@ trait WishlistNotificationHandler{
         $agents = Agent::where('city', $wishlist->city)->where('status', 'active')->get();
 
         if (count($agents) < 20) {
-            $agents = array_merge($agents->toArray(), Agent::where('state', $wishlist->state)->where('status', 'active')->get()->toArray());
+            $agents = Agent::where('state', $wishlist->state)->where('status', 'active')->get();
         }
 
         return $agents;
     }
 
-    private function sendNotification ($agent, $wishlist){
+    private function sendNotification ($agents, $wishlist){
         try {
             $details = $this->notificationDetails($wishlist);
-            Notification::send($agent, new SendWishlistToAgent($details));
+            Notification::send($agents, new SendWishlistToAgent($details));
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), $e->getCode());
         }

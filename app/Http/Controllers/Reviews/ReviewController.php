@@ -58,7 +58,7 @@ class ReviewController extends Controller{
             'type_id' => $unique_id,
             'publisher_id' => $user->unique_id,
             'receiver_id' => $agent->unique_id,
-            'message' => 'You have received a new review'
+            'message' => 'Your property '.$listing->title.' has a new review'
         ];
 
         $this->makeNotification('review', $data);
@@ -103,7 +103,7 @@ class ReviewController extends Controller{
             'type_id' => $unique_id,
             'publisher_id' => $user->unique_id,
             'receiver_id' => $agent->unique_id,
-            'message' => 'You have a new review'
+            'message' => 'You have received a new review'
         ];
 
         $this->makeNotification('review', $data);

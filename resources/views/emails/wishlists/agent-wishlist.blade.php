@@ -69,7 +69,7 @@
 <table border="0" cellpadding="0" cellspacing="0" class="image_block" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
 <tr>
 <td style="padding-bottom:25px;padding-top:15px;width:100%;padding-right:0px;padding-left:0px;">
-<div align="center" style="line-height:10px"><img alt="your logo" src="asset('/images/emails/create-wishlist/bayof-logo.svg')" style="display: block; height: auto; border: 0; width: 124px; max-width: 100%;" title="your logo" width="124"/></div>
+<div align="center" style="line-height:10px"><img alt="your logo" src="https://res.cloudinary.com/daet76bb5/image/upload/v1633550126/bayof-logo_bxn7vz.png" style="display: block; height: auto; border: 0; width: 124px; max-width: 100%;" title="your logo" width="124"/></div>
 </td>
 </tr>
 </table>
@@ -85,7 +85,7 @@
 <tbody>
 <tr>
 <td>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #49a1ff; background-image: url({{asset('/images/emails/create-wishlist/bg-white-rombo.png')}}); background-repeat: no-repeat;" width="620">
+<table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #49a1ff; background-image: url('https://res.cloudinary.com/daet76bb5/image/upload/v1633550160/bg-white-rombo_g2dcqa.png'); background-repeat: no-repeat;" width="620">
 <tbody>
 <tr>
 <th class="column" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; padding-top: 45px; padding-bottom: 0px;" width="100%">
@@ -103,7 +103,7 @@
 <table border="0" cellpadding="0" cellspacing="0" class="image_block" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
 <tr>
 <td style="padding-bottom:15px;padding-left:60px;padding-right:60px;padding-top:60px;width:100%;">
-<div align="center" style="line-height:10px"><img alt="Forgot your password?" src="asset('/images/emails/create-wishlist/wishlist-email.svg')" style="display: block; height: auto; border: 0; width: 217px; max-width: 100%;" title="Forgot your password?" width="217"/></div>
+<div align="center" style="line-height:10px"><img alt="Create Wishlist?" src="https://res.cloudinary.com/daet76bb5/image/upload/v1633551537/wishlist-email_d301ge.svg" style="display: block; height: auto; border: 0; width: 217px; max-width: 100%;" title="House?" width="217"/></div>
 </td>
 </tr>
 </table>
@@ -221,8 +221,8 @@
 <td>
 <table align="center" border="0" cellpadding="0" cellspacing="0" class="social-table" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="72px">
 <tr>
-<td style="padding:0 2px 0 2px;"><a href="https://www.facebook.com/" target="_blank"><img alt="Facebook" height="32" src="{{asset('/images/emails/create-wishlist/facebook2x.png')}}" style="display: block; height: auto; border: 0;" title="facebook" width="32"/></a></td>
-<td style="padding:0 2px 0 2px;"><a href="https://www.twitter.com/" target="_blank"><img alt="Twitter" height="32" src="{{asset('/images/emails/create-wishlist/twitter2x.png')}}" style="display: block; height: auto; border: 0;" title="twitter" width="32"/></a></td>
+<td style="padding:0 2px 0 2px;"><a href="https://www.facebook.com/" target="_blank"><img alt="Facebook" height="32" src="https://res.cloudinary.com/daet76bb5/image/upload/v1633550160/facebook2x_gjtp7x.png" style="display: block; height: auto; border: 0;" title="facebook" width="32"/></a></td>
+<td style="padding:0 2px 0 2px;"><a href="https://www.twitter.com/" target="_blank"><img alt="Twitter" height="32" src="https://res.cloudinary.com/daet76bb5/image/upload/v1633550160/twitter2x_bhqzxo.png" style="display: block; height: auto; border: 0;" title="twitter" width="32"/></a></td>
 </tr>
 </table>
 </td>

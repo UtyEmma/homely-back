@@ -16,7 +16,6 @@ use App\Http\Libraries\Files\FileHandler;
 use App\Http\Libraries\Notifications\NotificationHandler;
 use App\Models\Listing;
 use App\Models\Review;
-use Illuminate\Support\Facades\Request as FacadesRequest;
 
 class AgentController extends Controller
 {

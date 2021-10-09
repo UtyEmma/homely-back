@@ -39,6 +39,7 @@ trait CompileAgents {
         Support::where('agent_id', $id)->delete();
         Chat::where('agent_id', $id)->delete();
         Notification::where('receiver_id', $id)->delete();
+        Notification::where('type_id', $id)->delete();
         Review::where('agent_id', $id)->delete();
         $agent->delete();
     }

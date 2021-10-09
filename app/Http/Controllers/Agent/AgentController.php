@@ -158,7 +158,7 @@ class AgentController extends Controller
             $agent = auth()->user();
             $agent = Agent::find($agent->unique_id);
             Auth::logout();
-            $agent->delete();
+            $this->clearAgentData($agent);
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }

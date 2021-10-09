@@ -166,6 +166,7 @@ trait CompileListing{
         $agent->no_of_listings = $agent->no_of_listings - 1;
         $agent->save();
 
+
         Review::where('listing_id', $id)->delete();
         Favourite::where('listing_id', $id)->delete();
         Notification::where('type_id', $id)->delete();

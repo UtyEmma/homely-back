@@ -146,7 +146,7 @@ class ListingController extends Controller{
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }
-        return $this->success("Listing Deleted");
+        return $this->success("Listing Deleted", ['agent' => $agent]);
     }
 
     public function getSingleListing($username, $slug, $message = ""){

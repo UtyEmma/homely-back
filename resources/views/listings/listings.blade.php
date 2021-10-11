@@ -29,7 +29,54 @@
         <section class="section">
             <div class="card">
                 <div class="card-header">
-                    Filter
+                    <div class="col-md-4">
+                        <form action="/listings" method="get">
+                            <div class="row gx-1">
+                                <div class="col-8">
+                                    <select class="form-control form-select" name="sort">
+                                        <option value="">All</option>
+                                        <option value="confirmed">Approved Agents</option>
+                                        <option value="not_confirmed">Unapproved Properties</option>
+                                        <option value="rented">Rented Properties</option>
+                                        <option value="not_rented">Available Properties</option>
+                                        <option value="suspended">Suspended Properties</option>
+                                        <option value="active">Active Properties</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-4">
+                                    <button class="btn btn-outline-primary" type="submit">Sort</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="col-md-6">
+                        <form action="/tenants" method="get">
+                            <div class="row gx-1">
+                                <div class="col-4">
+                                    <input type="text" name="search" class="form-control" placeholder="Search">
+                                </div>
+                                <div class="col-4">
+                                    <select name="search_param" required class="form-select"  id="">
+                                        <option value="" selected>Search By</option>
+                                        <option value="title">Title</option>
+                                        <option value="type">Category</option>
+                                        <option value="state">State</option>
+                                        <option value="city">City</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-4">
+                                    <button class="btn btn-outline-primary" type="submit">Sort</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="col-md-2">
+                        {{$tenants->links()}}
+                    </div>
                 </div>
                 <div class="card-body">
                     <table class="table table-striped" id="table1">

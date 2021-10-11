@@ -83,6 +83,7 @@ class ListingsController extends Controller{
         }
 
         return redirect()->back()->with('success', "The Property has been approved");
-
     }
+
+    // public function searchListings ()
 }

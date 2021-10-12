@@ -31,7 +31,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('agent')->middleware('role:agent')->group(function(){
+Route::prefix('agent')->middleware(['cors', 'role:agent'])->group(function(){
 
     Route::get('resend/{agent}', [AuthAgentController::class, 'resendVerificationLink']);
     Route::get('logout', [AuthAgentController::class, 'logout']);
@@ -85,7 +85,7 @@ Route::prefix('agent')->middleware('role:agent')->group(function(){
 
 
 
-Route::prefix('tenant')->middleware('role:tenant')->group(function(){
+Route::prefix('tenant')->middleware(['cors', 'role:tenant'])->group(function(){
 
     Route::get('resend/{user}', [AuthUserController::class, 'resendVerificationLink']);
     Route::get('/user', [AuthUserController::class, 'getLoggedInUser']);
@@ -111,7 +111,7 @@ Route::prefix('tenant')->middleware('role:tenant')->group(function(){
     });
 });
 
-Route::prefix('reviews')->group(function(){
+Route::prefix('reviews')->middleware('cors')->group(function(){
     Route::post('create/{listing_id}', [ReviewController::class, 'createReview']);
     Route::post('agent/create/{agent_id}', [ReviewController::class, 'createAgentReview']);
     Route::post('edit', [ReviewController::class, 'updateReview']);
@@ -119,9 +119,9 @@ Route::prefix('reviews')->group(function(){
     Route::get('agent/delete/{review_id}', [ReviewController::class, 'deleteAgentReview']);
 });
 
-Route::get('admin/verify/{id}', [AdminController::class, 'verifyAdmin']);
+Route::get('admin/verify/{id}', [AdminController::class, 'verifyAdmin'])->middleware('cors');
 
-Route::prefix('admin')->middleware('admin')->group(function(){
+Route::prefix('admin')->middleware(['cors', 'admin'])->group(function(){
     Route::prefix('listing')->group(function(){
         Route::get('suspend/{id}', [ListingController::class, 'adminSuspendListing']);
         Route::get('delete/{id}', [AdminController::class, 'adminDeleteListing']);
@@ -133,12 +133,12 @@ Route::prefix('admin')->middleware('admin')->group(function(){
     });
 });
 
-Route::prefix('tenant')->group(function(){
+Route::prefix('tenant')->middleware('cors')->group(function(){
     Route::post('login', [AuthUserController::class, 'login'])->middleware('role:tenant');
     Route::post('signup', [AuthUserController::class, 'signup']);
 });
 
-Route::prefix('agent')->group(function(){
+Route::prefix('agent')->middleware('cors')->group(function(){
     Route::post('login', [AuthAgentController::class, 'login'])->middleware('role:agent');
     Route::post('signup', [AuthAgentController::class, 'signup']);
     Route::get('all', [AgentController::class, 'show']);
@@ -147,7 +147,7 @@ Route::prefix('agent')->group(function(){
     Route::post('reset-password', [AuthAgentController::class, 'resetPassword']);
 });
 
-Route::prefix('listings')->middleware('role')->group(function(){
+Route::prefix('listings')->middleware(['cors', 'role'])->group(function(){
     Route::get('/', [ListingController::class, 'fetchListings']);
     Route::get('/popular', [ListingController::class, 'fetchPopularListings']);
     Route::get('/{username}/{slug}', [ListingController::class, 'getSingleListing']);
@@ -155,20 +155,20 @@ Route::prefix('listings')->middleware('role')->group(function(){
     Route::post('/update-views/{listing_id}', [ListingController::class, 'updateListingViews']);
 });
 
-Route::prefix('details')->group(function(){
+Route::prefix('details')->middleware('cors')->group(function(){
     Route::get('/', [DetailController::class, 'fetchDetails']);
     Route::get('categories', [DetailController::class, 'fetchCategories']);
 });
 
-Route::prefix('reviews')->group(function(){
+Route::prefix('reviews')->middleware('cors')->group(function(){
     Route::get('fetch/{listing_id}', [ReviewController::class, 'fetchListingReviews']);
 });
 
-Route::prefix('social')->group(function(){
+Route::prefix('social')->middleware('cors')->group(function(){
     Route::post('auth', [SocialAuthController::class, 'handleAuth']);
 });
 
-Route::prefix('auth')->group(function(){
+Route::prefix('auth')->middleware('cors')->group(function(){
     Route::post('reset-password', [PasswordController::class, 'resetPassword']);
     Route::post('recover-password', [PasswordController::class, 'recoverPassword']);
     Route::get('email/verify/{code}', [VerificationController::class, 'verify_email']);

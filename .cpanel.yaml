@@ -1,0 +1,8 @@
+---
+deployment:
+  tasks:
+    #deploy to public_html dir
+    - export DEPLOYPATH=/home/bayozkqt/public_html/
+    # - export DEPLOYPATH=/home/bayozkqt/repositories/bayof-coming-soon-v2/
+    # deploy all root folder
+    - /bin/cp -r * $DEPLOYPATH

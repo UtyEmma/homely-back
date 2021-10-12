@@ -31,7 +31,57 @@
         <section class="section">
             <div class="card">
                 <div class="card-header">
-                    Filter
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <form action="/agents" method="get">
+                                <div class="row gx-1">
+                                    <div class="col-8">
+                                        <select class="form-control form-select" name="sort">
+                                            <option value="">All</option>
+                                            <option value="confirmed">Approved Agents</option>
+                                            <option value="not_confirmed">Unapproved Agents</option>
+                                            <option value="email_verified">Email Verified</option>
+                                            <option value="email_not_verified">Email Unverified</option>
+                                            <option value="verified_agents">Verified Agents</option>
+                                            <option value="unverified_agents">Unverified Agents</option>
+                                            <option value="suspended">Suspended Agents</option>
+                                            <option value="active">Active Agents</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-4">
+                                        <button class="btn btn-outline-primary" type="submit">Sort</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-6">
+                            <form action="/agents" method="get">
+                                <div class="row gx-1">
+                                    <div class="col-4">
+                                        <input type="text" name="search" class="form-control" placeholder="Search">
+                                    </div>
+                                    <div class="col-4">
+                                        <select name="search_param" required class="form-select"  id="">
+                                            <option value="" selected>Search By</option>
+                                            <option value="firstname">Firstname</option>
+                                            <option value="lastname">Lastname</option>
+                                            <option value="username">Username</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-4">
+                                        <button class="btn btn-outline-primary" type="submit">Sort</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="col-md-2">
+                            {{$agents->links()}}
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <table class="table table-striped" id="table1">

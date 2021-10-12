@@ -31,7 +31,53 @@
         <section class="section">
             <div class="card">
                 <div class="card-header">
-                    Filter
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <form action="/tenants" method="get">
+                                <div class="row gx-1">
+                                    <div class="col-8">
+                                        <select class="form-control form-select" name="sort">
+                                            <option value="">All</option>
+                                            <option value="email_verified">Verified Email</option>
+                                            <option value="email_not_verified">Unverified Email</option>
+                                            <option value="suspended">Suspended Tenants</option>
+                                            <option value="active">Active Tenants</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-4">
+                                        <button class="btn btn-block btn-outline-primary" type="submit">Sort</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="col-md-6">
+                            <form action="/tenants" method="get">
+                                <div class="row gx-1">
+                                    <div class="col-4">
+                                        <input type="text" name="search" class="form-control" placeholder="Search">
+                                    </div>
+                                    <div class="col-4">
+                                        <select name="search_param" required class="form-select"  id="">
+                                            <option value="" selected>Search By</option>
+                                            <option value="firstname">Firstname</option>
+                                            <option value="lastname">Lastname</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-4">
+                                        <button class="btn btn-outline-primary" type="submit">Sort</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="col-md-2">
+                            {{$tenants->links()}}
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <table class="table table-striped" id="table1">

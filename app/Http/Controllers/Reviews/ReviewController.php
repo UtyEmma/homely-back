@@ -41,30 +41,31 @@ class ReviewController extends Controller{
                 'unique_id' => $unique_id
             ]));
 
+
+            $agent->no_reviews = $agent->no_reviews + 1;
+            $agent->rating = $this->calculateRatings($agent->unique_id, 'agent_id');
+            $agent->save();
+
+            $listing = Listing::find($listing_id);
+            $listing->reviews = $listing->reviews + 1;
+            $listing->rating = $this->calculateRatings($listing_id, 'listing_id');
+            $listing->save();
+
+            $data = [
+                'type_id' => $listing_id,
+                'publisher_id' => $user->unique_id,
+                'receiver_id' => $agent->unique_id,
+                'message' => 'Your property '.$listing->title.' has a new review'
+            ];
+
+            $this->makeNotification('review', $data);
+
+            $listings_reviews = Review::where('listing_id', $listing_id)->where('status', true)->get();
+            $reviews = $this->compileReviewsData($listings_reviews, $request->role);
+
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }
-
-        $agent->no_reviews = $agent->no_reviews + 1;
-        $agent->rating = $this->calculateRatings($agent->unique_id, 'agent_id');
-        $agent->save();
-
-        $listing = Listing::find($listing_id);
-        $listing->reviews = $listing->reviews + 1;
-        $listing->rating = $this->calculateRatings($listing_id, 'listing_id');
-        $listing->save();
-
-        $data = [
-            'type_id' => $unique_id,
-            'publisher_id' => $user->unique_id,
-            'receiver_id' => $agent->unique_id,
-            'message' => 'You have received a new review'
-        ];
-
-        $this->makeNotification('review', $data);
-
-        $listings_reviews = Review::where('listing_id', $listing_id)->where('status', true)->get();
-        $reviews = $this->compileReviewsData($listings_reviews, $request->role);
 
         return $this->success('Your review has been submitted', $reviews);
     }
@@ -100,10 +101,10 @@ class ReviewController extends Controller{
         $agent->save();
 
         $data = [
-            'type_id' => $unique_id,
+            'type_id' => $agent->unique_id,
             'publisher_id' => $user->unique_id,
             'receiver_id' => $agent->unique_id,
-            'message' => 'You have a new review'
+            'message' => 'You have received a new review'
         ];
 
         $this->makeNotification('review', $data);

@@ -141,12 +141,17 @@ class ListingController extends Controller{
     public function deleteListing($listing_id){
         try {
             $listing = Listing::find($listing_id) ?: throw new Exception("Listing Not Found", 404);
+
             $agent = Agent::find($listing->agent_id);
+            $agent->no_of_listings = $agent->no_of_listings - 1;
+
+            $agent->save();
             $this->clearListingData($listing, $agent);
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }
-        return $this->success("Listing Deleted");
+
+        return $this->success("Listing Deleted", ['agent' => $agent]);
     }
 
     public function getSingleListing($username, $slug, $message = ""){

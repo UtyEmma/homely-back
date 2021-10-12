@@ -75,6 +75,7 @@ Route::middleware('auth')->group(function(){
         Route::get('/{id}', [TenantController::class, 'single']);
         Route::get('/delete/{id}', [TenantController::class, 'deleteTenant']);
         Route::get('/suspend/{id}', [TenantController::class, 'suspendTenant']);
+        Route::post('/search', [TenantController::class, 'searchForTenant']);
     });
 
     Route::prefix('agents')->group(function(){
@@ -84,6 +85,7 @@ Route::middleware('auth')->group(function(){
         Route::get('/suspend/{id}', [AgentController::class, 'suspendAgent']);
         Route::get('/verify/{id}', [AgentController::class, 'verifyAgent']);
         Route::get('/confirm-email/{id}', [AgentController::class, 'confirmAgentEmail']);
+        Route::post('/search', [TenantController::class, 'searchForAgent']);
     });
 
     Route::prefix('listings')->group(function(){
@@ -92,6 +94,7 @@ Route::middleware('auth')->group(function(){
         Route::get('/delete/{id}', [ListingsController::class, 'deleteListing']);
         Route::get('/suspend/{id}', [ListingsController::class, 'suspendListing'])->middleware('can:makeChanges');
         Route::get('/confirm/{id}', [ListingsController::class, 'approveListing']);
+        Route::post('/search', [TenantController::class, 'searchForListings']);
     });
 
     Route::prefix('categories')->group(function(){

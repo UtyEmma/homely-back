@@ -20,6 +20,8 @@ class PasswordController extends Controller{
     public function recoverPassword(RecoverPasswordRequest $request){
         try {
             $token = $this->createRandomToken();
+            $user = null;
+
             if ($request->type === 'tenant') {
                 $user = User::where('email', $request->email)->first();
             }elseif ($request->type === 'agent') {
@@ -45,14 +47,23 @@ class PasswordController extends Controller{
 
     public function resetPassword(ResetPasswordRequest $request){
         try {
-
+            $user = null;
             if ($request->type === 'tenant') :
                 $user = User::where('email', $request->email)->where('password_reset', $request->token)->first();
             elseif ($request->type === 'agent') :
                 $user = Agent::where('email', $request->email)->where('password_reset', $request->token)->first();
             endif;
 
+
             if (!$user) { throw new Exception("Invalid Password Reset Details", 400); }
+
+            $time = now()->diffInHours($user->updated_at);
+
+            if($time > 24){
+                $user->password_reset = null;
+                throw new Exception("Your Password Reset Token has Expired", 400);
+            }
+
 
             $user->password = Hash::make($request->password);
             $user->password_reset = null;
@@ -62,7 +73,7 @@ class PasswordController extends Controller{
             return $this->error($e->getCode(), $e->getMessage());
         }
 
-        return $this->success("User Password Has been updated", $request->type);
+        return $this->success("User Password Has been updated $time", $request->type);
     }
 
 }

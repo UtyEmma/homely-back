@@ -16,7 +16,6 @@ use App\Http\Libraries\Files\FileHandler;
 use App\Http\Libraries\Notifications\NotificationHandler;
 use App\Models\Listing;
 use App\Models\Review;
-use Illuminate\Support\Facades\Request as FacadesRequest;
 
 class AgentController extends Controller
 {
@@ -159,7 +158,7 @@ class AgentController extends Controller
             $agent = auth()->user();
             $agent = Agent::find($agent->unique_id);
             Auth::logout();
-            $agent->delete();
+            $this->clearAgentData($agent);
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }

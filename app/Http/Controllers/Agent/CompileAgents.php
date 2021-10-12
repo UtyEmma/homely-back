@@ -1,5 +1,6 @@
 <?php
 
+// git mv app/Http/Controllers/Agent/compileAgents.php app/Http/Controllers/Agent/CompileAgents.php
 namespace App\Http\Controllers\Agent;
 
 use App\Models\Agent;
@@ -39,6 +40,7 @@ trait CompileAgents {
         Support::where('agent_id', $id)->delete();
         Chat::where('agent_id', $id)->delete();
         Notification::where('receiver_id', $id)->delete();
+        Notification::where('type_id', $id)->delete();
         Review::where('agent_id', $id)->delete();
         $agent->delete();
     }

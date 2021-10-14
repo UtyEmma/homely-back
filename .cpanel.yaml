@@ -2,7 +2,7 @@
 deployment:
   tasks:
     #deploy to public_html dir
-    - export DEPLOYPATH=/home/bayozkqt/public_html/
+    - export DEPLOYPATH=/home/bayozkqt/test-server.bayof.co/
     # - export DEPLOYPATH=/home/bayozkqt/repositories/bayof-coming-soon-v2/
     # deploy folder
     - /bin/cp -R app $DEPLOYPATH
@@ -14,6 +14,7 @@ deployment:
     - /bin/cp -R routes $DEPLOYPATH
     - /bin/cp -R storage $DEPLOYPATH
     - /bin/cp -R tests $DEPLOYPATH
+    - /bin/cp -R vendor $DEPLOYPATH
     # deploy individual files
     - /bin/cp .editorconfig $DEPLOYPATH
     - /bin/cp .env $DEPLOYPATH

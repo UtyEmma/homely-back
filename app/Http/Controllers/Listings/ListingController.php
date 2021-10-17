@@ -130,12 +130,17 @@ class ListingController extends Controller{
     public function fetchPopularListings(){
         try {
             $user = auth()->user();
-            $listings = $this->compilePopularListings($user);
+            $popular_listings = $this->compilePopularListings($user);
+            $compiledByDuration = $this->compileListingsByType($user);
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }
 
-        return $this->success("Popular Listings Fetched", $listings);
+        return $this->success("Popular Listings Fetched", [
+            'popular' => $popular_listings,
+            'rented' => $compiledByDuration['rented'],
+            'on_sale' => $compiledByDuration['on_sale']
+        ]);
     }
 
     public function deleteListing($listing_id){

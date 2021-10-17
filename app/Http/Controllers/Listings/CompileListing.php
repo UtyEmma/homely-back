@@ -150,14 +150,14 @@ trait CompileListing{
     }
 
     private function compileListingsByType ($user) {
-        $for_rent = Listing::where('duration', '!=', 'sale')
-                            ->latest()
+        $for_rent = Listing::where('tenure', '!=', 'sale')
                             ->limit(10)
+                            ->latest()
                             ->get();
 
         $rented_listings = $this->formatListingData($for_rent, $user);
 
-        $for_sale = Listing::where('duration', 'sale')->latest()->limit(10)->get();
+        $for_sale = Listing::where('tenure', 'sale')->latest()->limit(10)->get();
         $selling_listings = $this->formatListingData($for_sale, $user);
 
         return [

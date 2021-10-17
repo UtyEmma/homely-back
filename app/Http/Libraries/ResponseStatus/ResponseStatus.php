@@ -12,7 +12,7 @@ trait ResponseStatus {
         ], 200);
     }
 
-    protected function error( $code, string $message="", $data=[]){
+    protected function error($code, string $message="", $data=[]){
         return response()->json([
             'status' => false,
             'message' => $message,

@@ -145,7 +145,7 @@ class ListingController extends Controller{
 
     public function deleteListing($listing_id){
         try {
-            $listing = Listing::find($listing_id) ?: throw new Exception("Listing Not Found", 404);
+            if(!$listing = Listing::find($listing_id)) { throw new Exception("Listing Not Found", 404); }
 
             $agent = Agent::find($listing->agent_id);
             $agent->no_of_listings = $agent->no_of_listings - 1;

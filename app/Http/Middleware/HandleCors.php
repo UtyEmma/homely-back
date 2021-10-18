@@ -16,6 +16,20 @@ class HandleCors
      */
     public function handle(Request $request, Closure $next)
     {
-        return $next($request)->header("Access-Control-Allow-Origin", "*");
+        header('Access-Control-Allow-Origin: *');
+        $headers = [
+            'Access-Control-Allow-Methods' =>  'DELETE, POST, GET, OPTIONS, PUT',
+            'Access-Control-Allow-Headers' =>  '*',
+        ];
+
+        if ($request->getMethod() == 'OPTIONS') {
+            return response()->json('OK', 200, $headers);
+        }
+
+        $response = $next($request);
+        foreach ($headers as $key => $value) {
+            $response->header($key, $value);
+        }
+        return $response;
     }
 }

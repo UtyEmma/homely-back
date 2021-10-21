@@ -75,7 +75,7 @@
                     </div>
 
                     <div class="col-md-2">
-                        {{$tenants->links()}}
+                        {{$listings->links()}}
                     </div>
                 </div>
                 <div class="card-body">

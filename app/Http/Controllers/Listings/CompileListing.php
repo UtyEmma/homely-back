@@ -180,7 +180,7 @@ trait CompileListing{
     public function clearListingData($listing, $agent){
         $id = $listing->unique_id;
 
-        $agent->no_of_listings = $agent->no_of_listings - 1;
+        $agent->no_of_listings = $agent->no_of_listings > 0 ? $agent->no_of_listings - 1 : 0;
         $agent->save();
 
 

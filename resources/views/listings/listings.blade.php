@@ -2,6 +2,7 @@
 
 @php
     $auth = auth()->user();
+    // print_r(count($listings))
 @endphp
 
 @include('layouts.sidebar')
@@ -28,7 +29,7 @@
         </div>
         <section class="section">
             <div class="card">
-                <div class="card-header">
+                {{-- <div class="card-header">
                     <div class="col-md-4">
                         <form action="/listings" method="get">
                             <div class="row gx-1">
@@ -52,7 +53,7 @@
                     </div>
 
                     <div class="col-md-6">
-                        <form action="/tenants" method="get">
+                        <form action="/listings" method="get">
                             <div class="row gx-1">
                                 <div class="col-4">
                                     <input type="text" name="search" class="form-control" placeholder="Search">
@@ -75,9 +76,9 @@
                     </div>
 
                     <div class="col-md-2">
-                        {{$tenants->links()}}
+                        {{$listings->links()}}
                     </div>
-                </div>
+                </div> --}}
                 <div class="card-body">
                     <table class="table table-striped" id="table1">
                     @if (isset($listings) && count($listings) > 0)

@@ -212,14 +212,14 @@ class ReviewController extends Controller{
 
             if ($listing_id = $review->listing_id) {
                 $listing = Listing::find($listing_id);
-                $listing->reviews = $listing->reviews - 1;
+                $listing->reviews = $listing->reviews > 0 ? $listing->reviews - 1 : 0;
                 $listing->rating = $this->calculateRatings($listing_id, 'listing_id');
                 $listing->save();
             }
 
 
             $agent = Agent::find($review->agent_id);
-            $agent->no_reviews = $agent->no_reviews - 1;
+            $agent->no_reviews = $agent->no_reviews > 0 ? $agent->no_reviews - 1 : 0;
             $agent->rating = $this->calculateRatings($agent->unique_id, 'agent_id');
             $agent->save();
 
@@ -248,14 +248,14 @@ class ReviewController extends Controller{
 
             if ($listing_id = $review->listing_id) {
                 $listing = Listing::find($listing_id);
-                $listing->reviews = $listing->reviews - 1;
+                $listing->reviews = $listing->reviews > 0 ? $listing->reviews - 1 : 0;
                 $listing->rating = $this->calculateRatings($listing_id, 'listing_id');
                 $listing->save();
             }
 
 
             $agent = Agent::find($review->agent_id);
-            $agent->no_reviews = $agent->no_reviews - 1;
+            $agent->no_reviews = $agent->reviews > 0 ? $agent->no_reviews - 1 : 0;
             $agent->rating = $this->calculateRatings($agent->unique_id, 'agent_id');
             $agent->save();
 

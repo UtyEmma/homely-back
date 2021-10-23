@@ -86,11 +86,11 @@ class AuthAgentController extends Controller{
         $user->password_reset = null;
         $user->save();
 
-        return $this->success("Your Password Has been reset");
+        return $this->success("Your Password has been reset");
     }
 
-    public function resendVerificationLink($agent){
-        if (!Agent::find($agent)) { return $this->error(404, "The agent does not exist"); }
+    public function resendVerificationLink($agent_id){
+        if (!$agent = Agent::find($agent_id)) { return $this->error(404, "The agent does not exist"); }
         return $this->verify($agent, 'agent', true);
     }
 

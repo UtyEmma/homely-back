@@ -99,22 +99,20 @@ class AppController extends Controller{
             $listings = Listing::paginate(15);
         }
 
+        // $array = [];
 
-        $array = [];
-        $i = 1;
-
-        foreach ($listings as $key => $listing) {
-            $array[] = array_merge($listing->toArray(), [
-                'index' => $i,
-                'images' => json_decode($listing->images),
-                'username' => Agent::find($listing->agent_id)->username
-            ]);
-            $i++;
-        }
+        // foreach ($listings as $key => $listing) {
+        //     $agent = Agent::find($listing->agent_id);
+        //     $array[] = [
+        //         'images' => json_decode($listing->images),
+        //         'username' => $agent->username
+        //     ];
+        // }
 
         return view('listings.listings', [
             'admin' => auth()->user(),
-            'listings' => json_decode(json_encode($array)),
+            'listings' => $listings,
+            // 'agent' => $array,
             'page' => 'listings',
         ]);
     }

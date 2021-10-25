@@ -54,7 +54,8 @@ class ListingController extends Controller{
 
         return $this->success($request->title." has been added to your Listings", [
             'listing' => array_merge($listing->toArray(), ['images' => json_decode($listing->images)]),
-            'agent' => $agent
+            'agent' => $agent,
+            'slug' => $listing->slug
         ]);
     }
 
@@ -114,7 +115,6 @@ class ListingController extends Controller{
             auth()->shouldUse('tenant');
             $user = auth()->user();
             $listings  = count($request->query()) < 1 ?  $this->compileListings($user) : $this->compileListingWithQuery($request, $user);
-
             $featured_listings = $this->compileFeaturedListings($user);
 
         }catch (Exception $e) {

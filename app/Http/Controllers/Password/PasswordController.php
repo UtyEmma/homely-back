@@ -40,7 +40,7 @@ class PasswordController extends Controller{
             return $this->error($e->getCode(), $e->getMessage());
         }
 
-        return $this->success("Password Reset Token Sent!!!", ['status' => true]);
+        return $this->success("Check your inbox, for a reset pin.", ['status' => true]);
     }
 
 
@@ -73,7 +73,7 @@ class PasswordController extends Controller{
             return $this->error($e->getCode(), $e->getMessage());
         }
 
-        return $this->success("User Password Has been updated $time", $request->type);
+        return $this->success("Your Password has been updated", $request->type);
     }
 
 }

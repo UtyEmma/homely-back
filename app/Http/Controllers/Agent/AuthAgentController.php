@@ -14,11 +14,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class AuthAgentController extends Controller{
+class AuthAgentController extends Controller
+{
 
     use ResetPassword;
 
-    public function login(AgentLoginRequest $request){
+    public function login(AgentLoginRequest $request)
+    {
         auth()->shouldUse('agent');
 
         if (!$token = JWTAuth::attempt($request->all())) {
@@ -33,31 +35,35 @@ class AuthAgentController extends Controller{
         ]);
     }
 
-    public function signup (SignupAgentRequest $request){
+    public function signup(SignupAgentRequest $request)
+    {
         try {
             $agent_id = $this->createUniqueToken('agents', 'unique_id');
             $h_password = Hash::make($request->password);
 
             Agent::create(array_merge($request->validated(), [
-                                    'unique_id' => $agent_id,
-                                    'password' => $h_password
-                                ]));
+                'unique_id' => $agent_id,
+                'password' => $h_password
+            ]));
 
-            $this->verify(Agent::find($agent_id), 'agent', false);
+            $verify = $this->verify(Agent::find($agent_id), 'agent', false);
+            // return $verify;
 
         } catch (Exception $e) {
-           return $this->error($e->getCode(), $e->getMessage());
+            return $this->error($e->getCode(), $e->getMessage());
         }
 
-        return $this->success("Sign Up Successful");
+        return $this->success("Account created successfully! Proceed to confirm email.");
     }
 
-    public function getLoggedInUser () {
-        return $this->success("", [ 'user' => auth()->user() ]);
+    public function getLoggedInUser()
+    {
+        return $this->success("", ['user' => auth()->user()]);
     }
 
 
-    public function forgotPassword(Request $request){
+    public function forgotPassword(Request $request)
+    {
         try {
             if (!$user = Agent::where('email', $request->email)->first()) {
                 return $this->error(404, "Email Address Does Not Exist");
@@ -70,7 +76,8 @@ class AuthAgentController extends Controller{
         return $this->success("Password Reset Token Sent! Please Check your Email");
     }
 
-    public function resetPassword(ResetPasswordRequest $request){
+    public function resetPassword(ResetPasswordRequest $request)
+    {
         try {
             if (!$user = Agent::where('email', $request->email)->where('password_reset', $request->token)->first()) {
                 throw new Exception("Invalid Password Reset Details", 400);
@@ -78,7 +85,6 @@ class AuthAgentController extends Controller{
 
             $user->password = Hash::make($request->password);
             $user->save();
-
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }
@@ -89,13 +95,17 @@ class AuthAgentController extends Controller{
         return $this->success("Your Password has been reset");
     }
 
-    public function resendVerificationLink($agent_id){
-        if (!$agent = Agent::find($agent_id)) { return $this->error(404, "The agent does not exist"); }
+    public function resendVerificationLink($agent_id)
+    {
+        if (!$agent = Agent::find($agent_id)) {
+            return $this->error(404, "The agent does not exist");
+        }
         return $this->verify($agent, 'agent', true);
     }
 
 
-    public function logout(){
+    public function logout()
+    {
         Auth::logout();
         return $this->success();
     }

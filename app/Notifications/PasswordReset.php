@@ -18,10 +18,11 @@ class PasswordReset extends Notification
      *
      * @return void
      */
-    public function __construct($token, $username)
+    public function __construct($token, $firstname)
     {
         $this->token = $token;
-        $this->username = $username;
+        $this->firstname = $firstname;
+        // $this->user = $user;
     }
 
     /**
@@ -44,8 +45,9 @@ class PasswordReset extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)->view(
-            'emails.passwords.resetPassword', [
-                'token' => $this->token
+            'emails.passwords.reset-password', [
+                'token' => $this->token,
+                'firstname' => $this->firstname
             ]
         );
     }

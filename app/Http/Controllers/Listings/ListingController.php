@@ -14,11 +14,13 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 
-class ListingController extends Controller{
+class ListingController extends Controller
+{
 
     use CompileListing, NotificationHandler;
 
-    public function createListing(CreateListingRequest $request){
+    public function createListing(CreateListingRequest $request)
+    {
         try {
             $agent = auth()->user();
 
@@ -29,37 +31,37 @@ class ListingController extends Controller{
             $slug = Str::slug($request->title, '-');
 
             Listing::create(array_merge($request->all(), [
-                                'unique_id' => $listing_id,
-                                'agent_id' => $agent->unique_id,
-                                'amenities' => json_encode($request->amenities),
-                                'images' => $files,
-                                'slug' => strtolower($slug),
-                                'initial_fees' => $inital_fees
-                            ]));
+                'unique_id' => $listing_id,
+                'agent_id' => $agent->unique_id,
+                'amenities' => json_encode($request->amenities),
+                'images' => $files,
+                'slug' => strtolower($slug),
+                'initial_fees' => $inital_fees
+            ]));
 
             $listing = Listing::find($listing_id);
 
             $data = [
                 'type_id' => $listing_id,
-                'message' => $listing->title.' has been created and is being reviewed!',
+                'message' => $listing->title . ' has been created and is being reviewed!',
                 'publisher_id' => $agent->unique_id,
                 'receiver_id' => $agent->unique_id,
             ];
 
             $this->makeNotification('listing', $data);
-
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }
 
-        return $this->success($request->title." has been added to your Listings", [
+        return $this->success($request->title . " has been added to your Listings", [
             'listing' => array_merge($listing->toArray(), ['images' => json_decode($listing->images)]),
             'agent' => $agent
         ]);
     }
 
 
-    public function getAgentsListings(){
+    public function getAgentsListings()
+    {
         try {
             $agent = auth()->user();
             $array = [];
@@ -69,14 +71,13 @@ class ListingController extends Controller{
             if (count($listings) > 0) {
                 foreach ($listings as $listing) {
                     $array[$i] = array_merge($listing->toArray(), [
-                                    'image' => json_decode($listing->images),
-                                    'amenities' => json_decode($listing->amenities),
-                                    'created_at' => $this->parseTimestamp($listing->created_at)->date
-                                ]);
+                        'image' => json_decode($listing->images),
+                        'amenities' => json_decode($listing->amenities),
+                        'created_at' => $this->parseTimestamp($listing->created_at)->date
+                    ]);
                     $i++;
                 }
             }
-
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }
@@ -87,7 +88,8 @@ class ListingController extends Controller{
         ]);
     }
 
-    public function agentRemoveListing($listing_id){
+    public function agentRemoveListing($listing_id)
+    {
         try {
             $agent = auth()->user();
             $i = 0;
@@ -109,25 +111,26 @@ class ListingController extends Controller{
         ]);
     }
 
-    public function fetchListings(Request $request){
+    public function fetchListings(Request $request)
+    {
         try {
             auth()->shouldUse('tenant');
             $user = auth()->user();
             $listings  = count($request->query()) < 1 ?  $this->compileListings($user) : $this->compileListingWithQuery($request, $user);
 
-            $featured_listings = $this->compileFeaturedListings($user);
 
-        }catch (Exception $e) {
-            return $this->error($e->getCode(), $e->getMessage()." Line:".$e->getLine());
+            $featured_listings = $this->compileFeaturedListings($user);
+        } catch (Exception $e) {
+            return $this->error($e->getCode(), $e->getMessage() . " Line:" . $e->getLine());
         }
         return $this->success("Listings Loaded", [
             'listings' => $listings,
-            'featured' => $featured_listings
+            'featured' => $featured_listings,
         ]);
-
     }
 
-    public function fetchPopularListings(){
+    public function fetchPopularListings()
+    {
         try {
             $user = auth()->user();
             $popular_listings = $this->compilePopularListings($user);
@@ -143,9 +146,12 @@ class ListingController extends Controller{
         ]);
     }
 
-    public function deleteListing($listing_id){
+    public function deleteListing($listing_id)
+    {
         try {
-            if(!$listing = Listing::find($listing_id)) { throw new Exception("Listing Not Found", 404); }
+            if (!$listing = Listing::find($listing_id)) {
+                throw new Exception("Listing Not Found", 404);
+            }
 
             $agent = Agent::find($listing->agent_id);
             $agent->no_of_listings = $agent->no_of_listings - 1;
@@ -159,10 +165,15 @@ class ListingController extends Controller{
         return $this->success("Listing Deleted", ['agent' => $agent]);
     }
 
-    public function getSingleListing($username, $slug, $message = ""){
+    public function getSingleListing($username, $slug, $message = "")
+    {
         try {
-            if (!$agent = Agent::where('username', $username)->first()) { throw new Exception("This Agent Does Not Exist", 404); }
-            if(!$listing = Listing::where('slug', $slug)->where('agent_id', $agent->unique_id)->first()) {throw new Exception("The Requested Listing Does Not Exist", 404);}
+            if (!$agent = Agent::where('username', $username)->first()) {
+                throw new Exception("This Agent Does Not Exist", 404);
+            }
+            if (!$listing = Listing::where('slug', $slug)->where('agent_id', $agent->unique_id)->first()) {
+                throw new Exception("The Requested Listing Does Not Exist", 404);
+            }
             $features = $this->formatListingDetails((array) json_decode($listing->features), "Feature");
 
             $single_listing = array_merge($listing->toArray(), [
@@ -173,7 +184,6 @@ class ListingController extends Controller{
             ]);
 
             $agent = Agent::find($listing->agent_id);
-
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }
@@ -185,12 +195,13 @@ class ListingController extends Controller{
     }
 
 
-    public function updateListing(Request $request, $listing_id){
+    public function updateListing(Request $request, $listing_id)
+    {
         try {
             $agent = auth()->user();
 
             Validator::make($request->all(), [
-                'images.*' => ['required', 'image','mimes:jpeg,png,gif,webp','max:2048'],
+                'images.*' => ['required', 'image', 'mimes:jpeg,png,gif,webp', 'max:2048'],
                 'title' => ['required', Rule::unique('listings', 'title')->ignore($listing_id, 'unique_id')],
                 'tenure' => ['required', 'string'],
                 'rent' => ['required', 'numeric'],
@@ -204,7 +215,7 @@ class ListingController extends Controller{
                 'latitude' => ['required'],
                 'no_bedrooms' => ['required', 'numeric'],
                 'no_bathrooms' => ['required', 'numeric'],
-                'extra_info' => ['nullable','string'],
+                'extra_info' => ['nullable', 'string'],
                 'amenities.*' => ['nullable']
             ]);
 
@@ -213,8 +224,10 @@ class ListingController extends Controller{
 
             if ($request->hasFile('images')) {
                 $images = json_decode($listing->images);
-                foreach ($images as $image) { $this->deleteFile($image); }
-            }else{
+                foreach ($images as $image) {
+                    $this->deleteFile($image);
+                }
+            } else {
                 throw new Exception("Property Images are Required", 400);
             }
 
@@ -224,31 +237,33 @@ class ListingController extends Controller{
             $slug = $this->createDelimitedString($request->title, ' ', '-');
 
             Listing::find($listing_id)->update(array_merge($request->all(), [
-                                                'agent_id' => $agent->unique_id,
-                                                'amenities' => json_encode($request->amenities),
-                                                'images' => $files,
-                                                'slug' => strtolower($slug),
-                                                'initial_fees' => $inital_fees ]));
-
-
+                'agent_id' => $agent->unique_id,
+                'amenities' => json_encode($request->amenities),
+                'images' => $files,
+                'slug' => strtolower($slug),
+                'initial_fees' => $inital_fees
+            ]));
         } catch (Exception $e) {
-            return $this->error(500, $e->getMessage()." :--- ".$e->getLine());
+            return $this->error(500, $e->getMessage() . " :--- " . $e->getLine());
         }
 
 
         return $this->getSingleListing($agent->username, $slug, "Your Property has been updated successfully");
     }
 
-    public function setListingAsRented($listing_id){
+    public function setListingAsRented($listing_id)
+    {
         try {
             $user = auth()->user();
-            if(!$listing = Listing::find($listing_id)){ throw new Exception("Listing Not Found", 404); }
+            if (!$listing = Listing::find($listing_id)) {
+                throw new Exception("Listing Not Found", 404);
+            }
 
             if ($listing->rented && $listing->status = 'rented') {
                 $listing->rented = false;
                 $listing->status = 'active';
                 $listing->save();
-            }else{
+            } else {
                 $listing->rented = true;
                 $listing->status = 'rented';
                 $listing->save();
@@ -256,7 +271,7 @@ class ListingController extends Controller{
 
             $data = [
                 'type_id' => $listing_id,
-                'message' => $listing->rented ? $listing->title.' has been set as Available!' : $listing->title.' has been set as Rented!',
+                'message' => $listing->rented ? $listing->title . ' has been set as Available!' : $listing->title . ' has been set as Rented!',
                 'publisher_id' => $user->unique_id,
                 'receiver_id' => $listing->agent_id
             ];
@@ -264,19 +279,20 @@ class ListingController extends Controller{
             $this->makeNotification('listing_rented', $data);
 
             $message = $listing->rented ? "Property Set as Rented" : "Property Set as Available";
-
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }
 
         return $this->getSingleListing($user->username, $listing->slug, $message);
-
     }
 
-    public function suspendListing($listing_id){
+    public function suspendListing($listing_id)
+    {
         try {
             $user = auth()->user();
-            if(!$listing = Listing::find($listing_id)){ throw new Exception("Listing Not Found", 404);}
+            if (!$listing = Listing::find($listing_id)) {
+                throw new Exception("Listing Not Found", 404);
+            }
             $listing->status = $listing->status === 'suspended' ? 'active' : 'suspended';
             $listing->save();
 
@@ -288,18 +304,19 @@ class ListingController extends Controller{
             ];
 
             $this->makeNotification('listing_suspended', $data);
-
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }
 
-        return $this->getSingleListing($user->username, $listing->slug, "Listing ".$listing->status);
-
+        return $this->getSingleListing($user->username, $listing->slug, "Listing " . $listing->status);
     }
 
-    public function adminSuspendListing($listing_id){
+    public function adminSuspendListing($listing_id)
+    {
         try {
-            if(!$listing = Listing::find($listing_id)){ throw new Exception("Listing Not Found", 404); }
+            if (!$listing = Listing::find($listing_id)) {
+                throw new Exception("Listing Not Found", 404);
+            }
             $listing->status = $listing->status === 'suspended' ? 'active' : 'suspended';
             $listing->save();
 
@@ -319,5 +336,4 @@ class ListingController extends Controller{
 
         return $this->getSingleListing($agent->username, $listing->slug, "Listing $listing->status");
     }
-
 }

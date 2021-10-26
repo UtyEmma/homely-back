@@ -114,11 +114,11 @@ class ListingController extends Controller{
         try {
             auth()->shouldUse('tenant');
             $user = auth()->user();
-            $listings  = count($request->query()) < 1 ?  $this->compileListings($user) : $this->compileListingWithQuery($request, $user);
+            $listings = $this->compileListingWithQuery($request, $user);
             $featured_listings = $this->compileFeaturedListings($user);
 
         }catch (Exception $e) {
-            return $this->error($e->getCode(), $e->getMessage()." Line:".$e->getLine());
+            return $this->error(500, $e->getMessage()." Line:".$e->getLine());
         }
         return $this->success("Listings Loaded", [
             'listings' => $listings,

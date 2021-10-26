@@ -12,8 +12,10 @@ use App\Models\Review;
 
 trait CompileListing{
 
+    private $items_per_page = 15;
+
     protected function compileListings($user){
-        $all = Listing::where('status', 'active')->get();
+        $all = Listing::where('status', 'active')->paginate($this->items_per_page);
         $listings = $this->formatListingData($all, $user);
         return $listings;
     }
@@ -65,11 +67,13 @@ trait CompileListing{
             }
         });
 
-        $query->where('status', '=', 'active');
 
-        $listings = $query->get();
+        $query->join('agents', 'listings.agent_id', '=', 'agents.unique_id')->select('listings.*', 'agents.username');
+        $query->where('listings.status', '=', 'active');
 
-        return $this->formatListingData($listings, $user);
+        $listings = $query->paginate($this->items_per_page);
+
+        return $this->formatListingData($listings, $user, true);
     }
 
     /** Featured Listings */
@@ -85,8 +89,10 @@ trait CompileListing{
         $user && $user->state ? $state = $user->state : $state =  null;
         $user && $user->city ? $city = $user->city : $city = null;
 
-        $state ? $by_state = Listing::where('state', $user->state)->where('status', 'active')->get() : $by_state = [];
-        $city ? $by_city = Listing::where('city', $user->city)->where('status', 'active')->get() : $by_city = [];
+        $state ? $by_state = Listing::where('state', $user->state)->where('status', 'active')->paginate(15) : $by_state = [];
+        $city ? $by_city = Listing::where('city', $user->city)->where('status', 'active')->paginate(15) : $by_city = [];
+
+
 
         $related_listings = array_merge($by_state, $by_city);
         count($related_listings) < $index ? $listings = array_merge($related_listings, Listing::where('status', 'active')->get()->toArray()) : $listings = $related_listings;
@@ -95,7 +101,7 @@ trait CompileListing{
     }
 
 
-    public function formatListingData($listings, $user = null){
+    public function formatListingData($listings, $user = null, $paginated = false){
         $array = [];
 
         if (count($listings) > 0) {
@@ -118,7 +124,11 @@ trait CompileListing{
             }
         }
 
-        return $array;
+        if ($paginated) {
+            return array_merge($listings->toArray(), ['data' => $array]);
+        }else {
+            return $array;
+        }
     }
 
     private function compilePopularListings($user){

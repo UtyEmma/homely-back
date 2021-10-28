@@ -20,7 +20,7 @@ trait CompileListing
     {
         $all = Listing::where('status', 'active')->paginate($this->NO_FOR_PAGINATION);
         // $all = Listing::where('status', 'active')->get();
-        $listings = $this->formatListingData2($all, $user);
+        $listings = $this->formatListingsWithPagination($all, $user);
         return $listings;
     }
 
@@ -32,6 +32,7 @@ trait CompileListing
 
     protected function compileListingWithQuery($request, $user)
     {
+        // return 'man';
 
         $query = Listing::query();
 
@@ -86,9 +87,10 @@ trait CompileListing
 
         $query->where('status', '=', 'active');
 
-        $listings = $query->get();
+        // $listings = $query->get();
+        $listings = $query->paginate($this->NO_FOR_PAGINATION);
 
-        return $this->formatListingData($listings, $user);
+        return $this->formatListingsWithPagination($listings, $user);
     }
 
     /** Featured Listings */
@@ -116,7 +118,7 @@ trait CompileListing
     }
 
 
-    public function formatListingData2($listings, $user = null)
+    public function formatListingsWithPagination($listings, $user = null)
     {
         $array = [];
 

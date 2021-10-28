@@ -66,6 +66,7 @@ class ListingController extends Controller
             $agent = auth()->user();
             $array = [];
             $listings = Agent::find($agent->unique_id)->listings;
+            // return $listings;
             $i = 0;
 
             if (count($listings) > 0) {
@@ -117,7 +118,7 @@ class ListingController extends Controller
             auth()->shouldUse('tenant');
             $user = auth()->user();
             $listings  = count($request->query()) < 1 ?  $this->compileListings($user) : $this->compileListingWithQuery($request, $user);
-
+            // return $listings;
 
             $featured_listings = $this->compileFeaturedListings($user);
         } catch (Exception $e) {

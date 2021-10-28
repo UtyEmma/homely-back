@@ -21,12 +21,16 @@ class AgentController extends Controller
 {
     use CompileAgents, CompileListing, CompileWishlist, NotificationHandler, FileHandler, CompileReview;
 
-    private function isAgent($id) {
-        if(!$agent = Agent::find($id)){throw new Exception("The Requested Agent does not Exist", 404);}
+    private function isAgent($id)
+    {
+        if (!$agent = Agent::find($id)) {
+            throw new Exception("The Requested Agent does not Exist", 404);
+        }
         return $agent;
     }
 
-    public function update(AgentUpdateRequest $request){
+    public function update(AgentUpdateRequest $request)
+    {
         try {
             $agent = $this->agent();
             $email_updated = false;
@@ -35,14 +39,18 @@ class AgentController extends Controller
 
             $file = $request->hasFile('avatar') ? json_decode($this->handleFiles($request->file('avatar')))[0]  : $agent->avatar;
 
-            if ($request->email !== $agent->email) { $email_updated = true; }
+            if ($request->email !== $agent->email) {
+                $email_updated = true;
+            }
 
-            Agent::find($agent->unique_id)->update(array_merge($request->validated(), [
-                                        'twitter' => "https://twitter.com/".$request->twitter,
-                                        'facebook' => "https://facebook.com/".$request->facebook,
-                                        'instagram' => "https://instagram.com/".$request->instagram,
-                                        'avatar' => $file ])
-                                    );
+            Agent::find($agent->unique_id)->update(
+                array_merge($request->validated(), [
+                    'twitter' => "https://twitter.com/" . $request->twitter,
+                    'facebook' => "https://facebook.com/" . $request->facebook,
+                    'instagram' => "https://instagram.com/" . $request->instagram,
+                    'avatar' => $file
+                ])
+            );
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }
@@ -58,11 +66,15 @@ class AgentController extends Controller
     private $rented = [];
     private $active = [];
 
-    public function single($username, $message=""){
+    public function single($username, $message = "")
+    {
         try {
-            if(isset($_REQUEST['role'])): auth()->shouldUse($_REQUEST['role']); endif;
+            if (isset($_REQUEST['role'])) : auth()->shouldUse($_REQUEST['role']);
+            endif;
 
-            if (!$agent = Agent::where('username', $username)->first()) { throw new Exception("User Not Found", 404); }
+            if (!$agent = Agent::where('username', $username)->first()) {
+                throw new Exception("User Not Found", 404);
+            }
 
             $listings = Agent::find($agent->unique_id)->listings;
             $agent_reviews = Review::where('agent_id', $agent->unique_id)->where('listing_id', null)->get();
@@ -74,18 +86,17 @@ class AgentController extends Controller
             $formatted_listings = $this->formatListingData($listings, $user);
             $listings = collect($formatted_listings);
 
-            $listings->filter(function($listing, $key) {
+            $listings->filter(function ($listing, $key) {
                 if ($listing['status'] === 'rented') {
                     array_push($this->rented, $listing);
                 }
             });
 
-            $listings->filter(function($listing, $key){
+            $listings->filter(function ($listing, $key) {
                 if ($listing['status'] === 'active') {
                     array_push($this->active, $listing);
                 }
             });
-
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }
@@ -100,7 +111,8 @@ class AgentController extends Controller
         ]);
     }
 
-    public function show(){
+    public function show()
+    {
         try {
             $agents = $this->compileAgents();
         } catch (Exception $e) {
@@ -112,9 +124,12 @@ class AgentController extends Controller
         ]);
     }
 
-    public function adminSuspendAgent($agent_id){
+    public function adminSuspendAgent($agent_id)
+    {
         try {
-            if(!$agent = Agent::find($agent_id)){ throw new Exception("Listing Not Found", 404); }
+            if (!$agent = Agent::find($agent_id)) {
+                throw new Exception("Listing Not Found", 404);
+            }
 
             $user = Agent::find($agent->agent_id);
             $agent->status = $agent->status === 'suspended' ? 'active' : 'suspended';
@@ -132,7 +147,6 @@ class AgentController extends Controller
             ];
 
             $this->makeNotification('agent_suspended', $data);
-
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }
@@ -140,12 +154,14 @@ class AgentController extends Controller
         return $this->single($agent->username, "Agent $agent->status");
     }
 
-    public function adminVerifyAgent($agent_id){
+    public function adminVerifyAgent($agent_id)
+    {
         try {
-            if(!$agent = Agent::find($agent_id)){ throw new Exception("Listing Not Found", 404); }
+            if (!$agent = Agent::find($agent_id)) {
+                throw new Exception("Listing Not Found", 404);
+            }
             $agent->verified = !$agent->verified;
             $agent->save();
-
         } catch (Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }
@@ -153,7 +169,8 @@ class AgentController extends Controller
         return $this->single($agent->username, "Agent Verified");
     }
 
-    public function deleteUserAccount(){
+    public function deleteUserAccount()
+    {
         try {
             $agent = auth()->user();
             $agent = Agent::find($agent->unique_id);
@@ -165,7 +182,8 @@ class AgentController extends Controller
         return $this->success('Account Deleted');
     }
 
-    public function fetchAgentWishlists(){
+    public function fetchAgentWishlists()
+    {
         try {
             $agent = auth()->user();
             $wishlists = $this->compileAgentWishlist($agent->unique_id);
@@ -176,7 +194,8 @@ class AgentController extends Controller
         return $this->success("Wishlists Fetched", $wishlists);
     }
 
-    public function setStatusToUnavailable(){
+    public function setStatusToUnavailable()
+    {
         try {
             $user = auth()->user();
             $agent = Agent::find($user->agent_id);
@@ -189,5 +208,30 @@ class AgentController extends Controller
         return $this->single($agent->username, "Agent Status Set To Unavailable");
     }
 
+    public function homePagePioneerAgents()
+    {
+        try {
+            $pioneer_agents = [
+                'okorieebube1@gmail.com', 'tester1@gmail.com'
+            ];
+            $pioneer_agent_details = [];
 
+            foreach ($pioneer_agents as $e ) {
+                $q = Agent::query();
+                $q->where('email', $e);
+                $q->where('status', 'active');
+                $data = $q->get();
+                array_push($pioneer_agent_details, $data);
+            }
+
+
+
+
+        } catch (Exception $e) {
+            return $this->error($e->getCode(), $e->getMessage());
+        }
+        return $this->success("All Agents", [
+            'pioneer_agents' => $pioneer_agent_details
+        ]);
+    }
 }

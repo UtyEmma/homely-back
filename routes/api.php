@@ -118,6 +118,8 @@ Route::prefix('reviews')->middleware('cors')->group(function () {
 
 Route::get('admin/verify/{id}', [AdminController::class, 'verifyAdmin'])->middleware('cors');
 
+Route::get('agents/pioneer', [AgentController::class, 'homePagePioneerAgents'])->middleware('cors');
+
 Route::prefix('admin')->middleware(['cors', 'admin'])->group(function () {
     Route::prefix('listing')->group(function () {
         Route::get('suspend/{id}', [ListingController::class, 'adminSuspendListing']);
@@ -146,6 +148,9 @@ Route::prefix('agent')->middleware('cors')->group(function () {
 
 Route::prefix('listings')->middleware(['cors', 'role'])->group(function () {
     Route::get('/', [ListingController::class, 'fetchListings']);
+
+    // Route::post('/', [ListingController::class, 'fetchListings']);
+
     Route::get('/popular', [ListingController::class, 'fetchPopularListings']);
     Route::get('/{username}/{slug}', [ListingController::class, 'getSingleListing']);
     Route::post('/search', [SearchController::class, 'searchListings']);

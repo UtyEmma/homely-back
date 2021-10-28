@@ -44,7 +44,7 @@ class SendWishlistToAgent extends Notification
     {
         $details = $this->details;
 
-        return (new MailMessage)->view('emails.wishlists.agent-wishlist', [
+        return (new MailMessage)->view('emails.wishlists.agentWishlist', [
             'area' => $details['area'],
             'category' => $details['category'],
             'city' => $details['city'],

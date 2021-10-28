@@ -11,9 +11,9 @@ use Illuminate\Support\Facades\Notification;
 trait ResetPassword {
 
     private function sendResetEmail($token, $user){
-        $username = $user->firstname;
+        $firstname = $user->firstname;
         try {
-            Notification::send($user, new PasswordReset($token, $username));
+            Notification::send($user, new PasswordReset($token, $firstname));
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), $e->getCode());
         }

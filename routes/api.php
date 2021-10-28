@@ -31,7 +31,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('agent')->middleware(['cors', 'role:agent'])->group(function(){
+Route::prefix('agent')->middleware(['cors', 'role:agent'])->group(function () {
 
     Route::get('resend/{agent}', [AuthAgentController::class, 'resendVerificationLink']);
     Route::get('logout', [AuthAgentController::class, 'logout']);
@@ -39,13 +39,13 @@ Route::prefix('agent')->middleware(['cors', 'role:agent'])->group(function(){
     Route::post('reset-password', [AuthUserController::class, 'resetPassword']);
     Route::get('/user', [AuthAgentController::class, 'getLoggedInUser']);
 
-    Route::middleware('verified.email:agent')->group(function(){
+    Route::middleware('verified.email:agent')->group(function () {
 
         Route::post('update', [AgentController::class, 'update']);
         Route::get('user/{user}', [AgentController::class, 'single']);
         Route::get('unavailable', [AgentController::class, 'setStatusToUnavailable']);
 
-        Route::prefix('listing')->group(function(){
+        Route::prefix('listing')->group(function () {
             Route::post('create', [ListingController::class, 'createListing']);
             Route::get('agents-listings', [ListingController::class, 'getAgentsListings']);
             Route::post('update/{listing_id}', [ListingController::class, 'updateListing']);
@@ -54,56 +54,53 @@ Route::prefix('agent')->middleware(['cors', 'role:agent'])->group(function(){
             Route::get('rented/{listing_id}', [ListingController::class, 'setListingAsRented']);
         });
 
-        Route::prefix('reviews')->group(function(){
+        Route::prefix('reviews')->group(function () {
             Route::get('/', [ReviewController::class, 'fetchAgentReviews']);
             Route::post('/report/{review_id}', [ReviewController::class, 'reportUser']);
         });
 
-        Route::prefix('support')->group(function(){
+        Route::prefix('support')->group(function () {
             Route::post('/create', [SupportController::class, 'initiateNewIssue']);
             Route::get('/', [SupportController::class, 'fetchAgentTickets']);
             Route::get('/delete', [SupportController::class, 'deleteTicket']);
         });
 
-        Route::prefix('chats')->group(function(){
+        Route::prefix('chats')->group(function () {
             Route::post('/send', [ChatController::class, 'sendMessage']);
             Route::get('/{ticket_id}', [ChatController::class, 'fetchChats']);
         });
 
-        Route::prefix('wishlists')->group(function(){
+        Route::prefix('wishlists')->group(function () {
             Route::get('/', [AgentController::class, 'fetchAgentWishlists']);
         });
 
-        Route::prefix('notifications')->group(function(){
+        Route::prefix('notifications')->group(function () {
             Route::get('/', [NotificationController::class, 'fetchNotifications']);
             Route::get('/markasread', [NotificationController::class, 'markAsRead']);
         });
-
     });
-
 });
 
 
 
-Route::prefix('tenant')->middleware(['cors', 'role:tenant'])->group(function(){
+Route::prefix('tenant')->middleware(['cors', 'role:tenant'])->group(function () {
 
     Route::get('resend/{user}', [AuthUserController::class, 'resendVerificationLink']);
     Route::get('/user', [AuthUserController::class, 'getLoggedInUser']);
 
-    Route::middleware('verified.email:tenant')->group(function(){
+    Route::middleware('verified.email:tenant')->group(function () {
         Route::get('logout', [AuthUserController::class, 'logout']);
         Route::post('update', [UserController::class, 'update']);
         Route::get('auth_user', [UserController::class, 'getLoggedInUser']);
         Route::get('user/{user}', [UserController::class, 'show']);
 
-        Route::prefix('wishlist')->group(function(){
+        Route::prefix('wishlist')->group(function () {
             Route::post('create', [WishlistController::class, 'createWishlist']);
             Route::get('get-wishlist', [WishlistController::class, 'fetchTenantWishlist']);
             Route::get('delete/{id}', [WishlistController::class, 'deleteWishlist']);
-
         });
 
-        Route::prefix('favourites')->group(function(){
+        Route::prefix('favourites')->group(function () {
             Route::get('add/{listing_id}', [FavouritesController::class, 'addToFavourites']);
             Route::get('remove/{listing_id}', [FavouritesController::class, 'removeFromFavourites']);
             Route::get('/', [FavouritesController::class, 'fetchFavourites']);
@@ -111,7 +108,7 @@ Route::prefix('tenant')->middleware(['cors', 'role:tenant'])->group(function(){
     });
 });
 
-Route::prefix('reviews')->middleware('cors')->group(function(){
+Route::prefix('reviews')->middleware('cors')->group(function () {
     Route::post('create/{listing_id}', [ReviewController::class, 'createReview']);
     Route::post('agent/create/{agent_id}', [ReviewController::class, 'createAgentReview']);
     Route::post('edit', [ReviewController::class, 'updateReview']);
@@ -121,24 +118,26 @@ Route::prefix('reviews')->middleware('cors')->group(function(){
 
 Route::get('admin/verify/{id}', [AdminController::class, 'verifyAdmin'])->middleware('cors');
 
-Route::prefix('admin')->middleware(['cors', 'admin'])->group(function(){
-    Route::prefix('listing')->group(function(){
+Route::get('agents/pioneer', [AgentController::class, 'homePagePioneerAgents'])->middleware('cors');
+
+Route::prefix('admin')->middleware(['cors', 'admin'])->group(function () {
+    Route::prefix('listing')->group(function () {
         Route::get('suspend/{id}', [ListingController::class, 'adminSuspendListing']);
         Route::get('delete/{id}', [AdminController::class, 'adminDeleteListing']);
     });
-    Route::prefix('agent')->group(function(){
+    Route::prefix('agent')->group(function () {
         Route::get('suspend/{id}', [AgentController::class, 'adminSuspendAgent']);
         Route::get('delete/{id}', [AdminController::class, 'adminDeleteAgent']);
         Route::get('verify/{id}', [AgentController::class, 'adminVerifyAgent']);
     });
 });
 
-Route::prefix('tenant')->middleware('cors')->group(function(){
+Route::prefix('tenant')->middleware('cors')->group(function () {
     Route::post('login', [AuthUserController::class, 'login'])->middleware('role:tenant');
     Route::post('signup', [AuthUserController::class, 'signup']);
 });
 
-Route::prefix('agent')->middleware('cors')->group(function(){
+Route::prefix('agent')->middleware('cors')->group(function () {
     Route::post('login', [AuthAgentController::class, 'login'])->middleware('role:agent');
     Route::post('signup', [AuthAgentController::class, 'signup']);
     Route::get('all', [AgentController::class, 'show']);
@@ -147,28 +146,31 @@ Route::prefix('agent')->middleware('cors')->group(function(){
     Route::post('reset-password', [AuthAgentController::class, 'resetPassword']);
 });
 
-Route::prefix('listings')->middleware(['cors', 'role'])->group(function(){
+Route::prefix('listings')->middleware(['cors', 'role'])->group(function () {
     Route::get('/', [ListingController::class, 'fetchListings']);
+
+    // Route::post('/', [ListingController::class, 'fetchListings']);
+
     Route::get('/popular', [ListingController::class, 'fetchPopularListings']);
     Route::get('/{username}/{slug}', [ListingController::class, 'getSingleListing']);
     Route::post('/search', [SearchController::class, 'searchListings']);
     Route::post('/update-views/{listing_id}', [ListingController::class, 'updateListingViews']);
 });
 
-Route::prefix('details')->middleware('cors')->group(function(){
+Route::prefix('details')->middleware('cors')->group(function () {
     Route::get('/', [DetailController::class, 'fetchDetails']);
     Route::get('categories', [DetailController::class, 'fetchCategories']);
 });
 
-Route::prefix('reviews')->middleware('cors')->group(function(){
+Route::prefix('reviews')->middleware('cors')->group(function () {
     Route::get('fetch/{listing_id}', [ReviewController::class, 'fetchListingReviews']);
 });
 
-Route::prefix('social')->middleware('cors')->group(function(){
+Route::prefix('social')->middleware('cors')->group(function () {
     Route::post('auth', [SocialAuthController::class, 'handleAuth']);
 });
 
-Route::prefix('auth')->middleware('cors')->group(function(){
+Route::prefix('auth')->middleware('cors')->group(function () {
     Route::post('reset-password', [PasswordController::class, 'resetPassword']);
     Route::post('recover-password', [PasswordController::class, 'recoverPassword']);
     Route::get('email/verify/{code}', [VerificationController::class, 'verify_email']);

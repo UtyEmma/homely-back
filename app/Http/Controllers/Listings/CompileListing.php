@@ -89,13 +89,16 @@ trait CompileListing{
         $user && $user->state ? $state = $user->state : $state =  null;
         $user && $user->city ? $city = $user->city : $city = null;
 
-        $state ? $by_state = Listing::where('state', $user->state)->where('status', 'active')->paginate(15) : $by_state = [];
-        $city ? $by_city = Listing::where('city', $user->city)->where('status', 'active')->paginate(15) : $by_city = [];
+        $state ? $by_state = Listing::where('state', $user->state)->where('status', 'active')->limit($index)->get() : $by_state = [];
+        $city ? $by_city = Listing::where('city', $user->city)->where('status', 'active')->limit($index)->get() : $by_city = [];
 
 
 
         $related_listings = array_merge($by_state, $by_city);
-        count($related_listings) < $index ? $listings = array_merge($related_listings, Listing::where('status', 'active')->get()->toArray()) : $listings = $related_listings;
+        $allListings = Listing::where('status', 'active')->limit($index)->get();
+        $listings = count($related_listings) < $index
+                        ?  array_merge($related_listings, $allListings->toArray())
+                        : $related_listings;
 
         return $listings;
     }
@@ -139,7 +142,7 @@ trait CompileListing{
             foreach ($categories as $key => $category) {
                 $title = $category->category_title;
 
-                $category_listings = Listing::where('type', $title)->where('status', 'active')->orderBy('views', 'desc')->limit(9)->get();
+                $category_listings = Listing::where('type', $title)->where('status', 'active')->orderBy('views', 'desc')->limit(3)->get();
                 $formatted_listings = $this->formatListingData($category_listings, $user);
 
                 if (count($category_listings) > 0 && $i < 7) {

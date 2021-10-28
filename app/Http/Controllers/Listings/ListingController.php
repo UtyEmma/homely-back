@@ -118,7 +118,7 @@ class ListingController extends Controller{
             $featured_listings = $this->compileFeaturedListings($user);
 
         }catch (Exception $e) {
-            return $this->error(500, $e->getMessage()." Line:".$e->getLine());
+            return $this->error($e->getCode(), $e->getMessage()." Line:".$e->getLine());
         }
         return $this->success("Listings Loaded", [
             'listings' => $listings,

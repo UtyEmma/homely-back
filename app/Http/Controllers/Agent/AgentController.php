@@ -57,7 +57,7 @@ class AgentController extends Controller
 
         $updated_agent = Agent::find($agent->unique_id);
 
-        return $this->success("Agent Profile Updated!!!", [
+        return $this->success("Your Profile Update Was Successfull", [
             'user' => $updated_agent,
             'email_updated' => $email_updated
         ]);
@@ -141,7 +141,7 @@ class AgentController extends Controller
 
             $data = [
                 'type_id' => $agent_id,
-                'message' => $agent->status === 'suspended' ? 'Your Account has been suspeneded! Please contact our Support Center!' : 'Your account has been restored',
+                'message' => $agent->status === 'suspended' ? 'Your Account has been suspended! Kindly, contact our Support Center.' : 'Your account has been restored',
                 'publisher_id' => $admin->unique_id,
                 'receiver_id' => $agent_id
             ];

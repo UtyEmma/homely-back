@@ -104,10 +104,11 @@ class AppController extends Controller{
         $i = 1;
 
         foreach ($listings as $key => $listing) {
+            $agent = Agent::find($listing->agent_id);
             $array[] = array_merge($listing->toArray(), [
                 'index' => $i,
                 'images' => json_decode($listing->images),
-                'username' => Agent::find($listing->agent_id)->username
+                'username' => $agent->username
             ]);
             $i++;
         }

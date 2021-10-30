@@ -55,7 +55,8 @@ class ListingController extends Controller
 
         return $this->success($request->title . " has been added to your Listings", [
             'listing' => array_merge($listing->toArray(), ['images' => json_decode($listing->images)]),
-            'agent' => $agent
+            'agent' => $agent,
+            'slug' => $listing->slug
         ]);
     }
 

@@ -335,7 +335,7 @@
 
     </style>
   </head>
-  <body class="">
+  <body style="color:#153a62">
     {{-- <span class="preheader">Email Verification on Bayof</span> --}}
     <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body">
       <tr>
@@ -343,7 +343,7 @@
         <td class="container"><div align="center" style="line-height:10px">
             <img alt="your logo" src="https://test.bayof.co/images/logo/bayof-logo.png" style="display: block; height: auto; border: 0; width: 130px; max-width: 100%;" title="your logo" width="130"/>
         </div>
-          <div class="content">
+          <div class="content" style="max-width: 480px">
 
             <!-- START CENTERED WHITE CONTAINER -->
             <table role="presentation" class="main">
@@ -389,7 +389,7 @@
               <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                 <tr>
                   <td class="content-block">
-                    <span class="apple-link">Company Inc, 3 Abbey Road, San Francisco CA 94102</span>
+                    <span class="apple-link">Enugu, Nigeria</span>
                     <br> Don't like these emails? Email our support <a href="mailto:info@bayof.co">info@bayof.co</a>.
                   </td>
                 </tr>

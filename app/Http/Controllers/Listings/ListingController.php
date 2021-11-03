@@ -119,7 +119,6 @@ class ListingController extends Controller
             auth()->shouldUse('tenant');
             $user = auth()->user();
             $listings  = count($request->query()) < 1 ?  $this->compileListings($user) : $this->compileListingWithQuery($request, $user);
-            // return $listings;
 
             $featured_listings = $this->compileFeaturedListings($user);
         } catch (Exception $e) {

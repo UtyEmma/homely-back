@@ -14,12 +14,11 @@ trait CompileListing
 {
 
     // No of values to be displayed on each page due to pagination.
-    private $NO_FOR_PAGINATION = 5;
+    private $NO_FOR_PAGINATION = 6;
 
     protected function compileListings($user)
     {
-        $all = Listing::where('status', 'active')->paginate($this->NO_FOR_PAGINATION);
-        // $all = Listing::where('status', 'active')->get();
+        $all = Listing::where('status', 'active')->orderBy('id','desc')->paginate($this->NO_FOR_PAGINATION);
         $listings = $this->formatListingsWithPagination($all, $user);
         return $listings;
     }
@@ -34,7 +33,7 @@ trait CompileListing
     {
         // return 'man';
 
-        $query = Listing::query();
+        $query = Listing::query()->where('status', 'active');
 
         $query->when($request->query('state'), function ($q, $state) {
             return $q->where('state', $state);
@@ -87,7 +86,7 @@ trait CompileListing
 
 
         // $listings = $query->get();
-        $listings = $query->paginate($this->NO_FOR_PAGINATION);
+        $listings = $query->orderBy('id','desc')->paginate($this->NO_FOR_PAGINATION);
 
         return $this->formatListingsWithPagination($listings, $user);
     }
@@ -107,13 +106,13 @@ trait CompileListing
         $user && $user->state ? $state = $user->state : $state =  null;
         $user && $user->city ? $city = $user->city : $city = null;
 
-        $state ? $by_state = Listing::where('state', $user->state)->where('status', 'active')->limit($index)->get() : $by_state = [];
-        $city ? $by_city = Listing::where('city', $user->city)->where('status', 'active')->limit($index)->get() : $by_city = [];
+        $state ? $by_state = Listing::where('state', $user->state)->where('status', 'active')->orderBy('id','desc')->limit($index)->get() : $by_state = [];
+        $city ? $by_city = Listing::where('city', $user->city)->where('status', 'active')->orderBy('id','desc')->limit($index)->get() : $by_city = [];
 
 
 
         $related_listings = array_merge($by_state, $by_city);
-        $allListings = Listing::where('status', 'active')->limit($index)->get();
+        $allListings = Listing::where('status', 'active')->orderBy('id','desc')->limit($index)->get();
         $listings = count($related_listings) < $index
                         ?  array_merge($related_listings, $allListings->toArray())
                         : $related_listings;

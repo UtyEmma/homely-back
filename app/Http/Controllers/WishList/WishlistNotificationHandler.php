@@ -30,6 +30,7 @@ trait WishlistNotificationHandler{
     private function sendNotification ($agents, $wishlist){
         try {
             $details = $this->notificationDetails($wishlist);
+            // return $details;
             Notification::send($agents, new SendWishlistToAgent($details));
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), $e->getCode());

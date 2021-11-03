@@ -60,7 +60,7 @@ trait VerifyEmail {
             'link' => env('FRONTEND_URL')."/email/verify/".$verification_id,
             'thanks' => 'Copy this token your app to reset your password'
         ];
-        // return $user->firstname;
+        // return $details;
 
         try {
             Notification::send($user, new EmailVerification($details));

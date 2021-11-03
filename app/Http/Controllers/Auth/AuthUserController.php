@@ -37,7 +37,8 @@ class AuthUserController extends Controller{
                                         ['unique_id' => $user_id,
                                         'password' => $h_password]));
 
-            $this->verify(User::find($user_id), 'tenant', false);
+            $verify = $this->verify(User::find($user_id), 'tenant', false);
+            // return $verify;
 
         } catch (Exception $e) {
            return $this->error($e->getCode(), $e->getMessage()."::".$e->getLine());
